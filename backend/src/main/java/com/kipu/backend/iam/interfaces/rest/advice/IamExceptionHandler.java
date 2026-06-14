@@ -16,8 +16,8 @@ import java.util.Map;
 /**
  * Controller advice providing global centralized exception translation to consistent HTTP status codes.
  */
-@RestControllerAdvice
-public class GlobalExceptionHandler {
+@RestControllerAdvice(basePackages = "com.kipu.backend.iam")
+public class IamExceptionHandler {
 
     /**
      * Structure for standard API errors.
