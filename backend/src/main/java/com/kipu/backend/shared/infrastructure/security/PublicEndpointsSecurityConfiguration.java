@@ -18,6 +18,9 @@ public class PublicEndpointsSecurityConfiguration {
                         "/api/v1/material-catalogs/**",
                         "/api/v1/material-inventories/**",
                         "/api/v1/material-requests/**",
+                        "/api/v1/documents/**",
+                        "/api/v1/team-users/**",
+                        "/api/v1/team-workers/**",
                         "/api/v1/suppliers/**")
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
