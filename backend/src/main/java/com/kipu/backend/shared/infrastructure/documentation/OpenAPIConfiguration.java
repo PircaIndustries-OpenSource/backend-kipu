@@ -20,8 +20,8 @@ public class OpenAPIConfiguration {
         public OpenAPI kipuOpenAPI() {
                 return new OpenAPI()
                                 .info(new Info()
-                                                .title("Kipu Backend API - IAM Bounded Context")
-                                                .description("Identity and Access Management REST endpoints documentation for Kipu Platform.")
+                                .title("Kipu Backend API")
+                                .description("REST API documentation for Kipu Platform - IAM & Logistics Bounded Contexts.")
                                                 .version("v0.0.1")
                                                 .license(new License().name("Apache 2.0").url("https://springdoc.org")))
                                 .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
