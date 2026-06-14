@@ -1,12 +1,13 @@
-package com.kipu.backend.iam.interfaces.rest.advice;
+package com.kipu.backend.project.interfaces.rest.advice;
 
-import com.kipu.backend.iam.domain.model.exceptions.EmailAlreadyExistsException;
-import com.kipu.backend.iam.domain.model.exceptions.UserNotFoundException;
+import com.kipu.backend.project.domain.model.exceptions.DuplicateProjectNameException;
+import com.kipu.backend.project.domain.model.exceptions.InvalidProjectItemDatesException;
+import com.kipu.backend.project.domain.model.exceptions.JustificationRequiredException;
+import com.kipu.backend.project.domain.model.exceptions.ProjectNotFoundException;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,16 +18,14 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * Controller advice providing global centralized exception translation to consistent HTTP status codes
- * with internationalization (i18n) support.
+ * Controller advice providing i18n exception handling for the Project Bounded Context.
  */
-@RestControllerAdvice(basePackages = "com.kipu.backend.iam")
-public class IamExceptionHandler {
+@RestControllerAdvice(basePackages = "com.kipu.backend.project")
+public class ProjectExceptionHandler {
 
     private final MessageSource messageSource;
 
-    // Constructor injection
-    public IamExceptionHandler(MessageSource messageSource) {
+    public ProjectExceptionHandler(MessageSource messageSource) {
         this.messageSource = messageSource;
     }
 
@@ -36,19 +35,19 @@ public class IamExceptionHandler {
     public record ErrorDetails(String error, String message, int status) {}
 
     /**
-     * Handles Bad Request domain violations such as email clashes.
+     * Handles duplicate project name exception.
      */
-    @ExceptionHandler(EmailAlreadyExistsException.class)
-    public ResponseEntity<ErrorDetails> handleEmailAlreadyExists(EmailAlreadyExistsException ex) {
+    @ExceptionHandler(DuplicateProjectNameException.class)
+    public ResponseEntity<ErrorDetails> handleDuplicateProjectName(DuplicateProjectNameException ex) {
         Locale locale = LocaleContextHolder.getLocale();
         String message = messageSource.getMessage(
-                "iam.error.emailAlreadyExists",
-                new Object[]{ex.getEmail()},
+                "project.error.duplicateName",
+                null,
                 ex.getMessage(),
                 locale
         );
         ErrorDetails details = new ErrorDetails(
-                "EMAIL_ALREADY_EXISTS",
+                "DUPLICATE_PROJECT_NAME",
                 message,
                 HttpStatus.BAD_REQUEST.value()
         );
@@ -56,19 +55,59 @@ public class IamExceptionHandler {
     }
 
     /**
-     * Handles semantic entity retrieval failures.
+     * Handles justification required exception for status updates.
      */
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ErrorDetails> handleUserNotFound(UserNotFoundException ex) {
+    @ExceptionHandler(JustificationRequiredException.class)
+    public ResponseEntity<ErrorDetails> handleJustificationRequired(JustificationRequiredException ex) {
         Locale locale = LocaleContextHolder.getLocale();
         String message = messageSource.getMessage(
-                "iam.error.userNotFound",
-                new Object[]{ex.getIdentifier()},
+                "project.error.justificationRequired",
+                null,
                 ex.getMessage(),
                 locale
         );
         ErrorDetails details = new ErrorDetails(
-                "USER_NOT_FOUND",
+                "JUSTIFICATION_REQUIRED",
+                message,
+                HttpStatus.BAD_REQUEST.value()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(details);
+    }
+
+    /**
+     * Handles invalid project item dates (logical order error).
+     */
+    @ExceptionHandler(InvalidProjectItemDatesException.class)
+    public ResponseEntity<ErrorDetails> handleInvalidProjectItemDates(InvalidProjectItemDatesException ex) {
+        Locale locale = LocaleContextHolder.getLocale();
+        String message = messageSource.getMessage(
+                "project.error.invalidDates",
+                null,
+                ex.getMessage(),
+                locale
+        );
+        ErrorDetails details = new ErrorDetails(
+                "INVALID_ITEM_DATES",
+                message,
+                HttpStatus.BAD_REQUEST.value()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(details);
+    }
+
+    /**
+     * Handles project not found exception.
+     */
+    @ExceptionHandler(ProjectNotFoundException.class)
+    public ResponseEntity<ErrorDetails> handleProjectNotFound(ProjectNotFoundException ex) {
+        Locale locale = LocaleContextHolder.getLocale();
+        String message = messageSource.getMessage(
+                "project.error.notFound",
+                new Object[]{ex.getId()},
+                ex.getMessage(),
+                locale
+        );
+        ErrorDetails details = new ErrorDetails(
+                "PROJECT_NOT_FOUND",
                 message,
                 HttpStatus.NOT_FOUND.value()
         );
@@ -76,27 +115,7 @@ public class IamExceptionHandler {
     }
 
     /**
-     * Handles Spring Security authentication failures to ensure TS02 401 Unauthorized compliance.
-     */
-    @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<ErrorDetails> handleAuthenticationException(AuthenticationException ex) {
-        Locale locale = LocaleContextHolder.getLocale();
-        String message = messageSource.getMessage(
-                "iam.error.unauthorized",
-                new Object[]{ex.getMessage()},
-                "Authentication failed: " + ex.getMessage(),
-                locale
-        );
-        ErrorDetails details = new ErrorDetails(
-                "UNAUTHORIZED",
-                message,
-                HttpStatus.UNAUTHORIZED.value()
-        );
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(details);
-    }
-
-    /**
-     * Handles argument validation failures from @Valid annotations.
+     * Handles argument validation failures.
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidationExceptions(MethodArgumentNotValidException ex) {
@@ -116,7 +135,7 @@ public class IamExceptionHandler {
     }
 
     /**
-     * Handles business logic invalid inputs (like invalid roles).
+     * Handles business logic invalid inputs.
      */
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorDetails> handleIllegalArgumentException(IllegalArgumentException ex) {

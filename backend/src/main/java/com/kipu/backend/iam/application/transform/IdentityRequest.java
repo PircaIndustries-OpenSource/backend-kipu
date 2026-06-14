@@ -5,12 +5,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 /**
- * Command representing a user registration request.
+ * Command representing user registration or identity creation request from the frontend.
  */
-public record RegisterUserCommand(
+public record IdentityRequest(
         @NotBlank(message = "{iam.validation.username.required}")
         @Size(min = 3, max = 50, message = "{iam.validation.username.size}")
-        String username,
+        String name,
 
         @NotBlank(message = "{iam.validation.email.required}")
         @Email(message = "{iam.validation.email.format}")
@@ -22,4 +22,11 @@ public record RegisterUserCommand(
 
         @NotBlank(message = "{iam.validation.role.required}")
         String role
-) {}
+) {
+    /**
+     * Map frontend IdentityRequest to RegisterUserCommand.
+     */
+    public RegisterUserCommand toRegisterUserCommand() {
+        return new RegisterUserCommand(name, email, password, role);
+    }
+}
