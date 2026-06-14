@@ -12,6 +12,7 @@ import com.kipu.backend.teamworkers.interfaces.rest.resources.CreateTeamWorkerRe
 import com.kipu.backend.teamworkers.interfaces.rest.resources.TeamWorkerResource;
 import com.kipu.backend.teamworkers.interfaces.rest.transform.CreateTeamWorkerCommandFromResourceAssembler;
 import com.kipu.backend.teamworkers.interfaces.rest.transform.TeamWorkerResourceFromEntityAssembler;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +32,7 @@ public class TeamWorkersController {
     }
 
     @PostMapping
-    public ResponseEntity<TeamWorkerResource> createTeamWorker(@RequestBody CreateTeamWorkerResource resource) {
+    public ResponseEntity<TeamWorkerResource> createTeamWorker(@Valid @RequestBody CreateTeamWorkerResource resource) {
         var command = CreateTeamWorkerCommandFromResourceAssembler.toCommandFromResource(resource);
         var result = commandService.handle(command);
 
@@ -54,7 +55,7 @@ public class TeamWorkersController {
     @PostMapping("/{teamWorkerId}/machineries")
     public ResponseEntity<TeamWorkerResource> assignMachinery(
             @PathVariable String teamWorkerId,
-            @RequestBody AssignMachineryResource resource) {
+            @Valid @RequestBody AssignMachineryResource resource) {
 
         var command = new AssignMachineryToTeamWorkerCommand(teamWorkerId, resource.machineryId(), resource.fullName());
         var result = commandService.handle(command);

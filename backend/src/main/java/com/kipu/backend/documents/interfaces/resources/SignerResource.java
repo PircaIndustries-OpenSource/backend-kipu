@@ -1,4 +1,11 @@
 package com.kipu.backend.documents.interfaces.resources;
 
-public record SignerResource(String teamUserId, String fullName) {
-}
+import jakarta.validation.constraints.NotBlank;
+
+public record SignerResource(
+        @NotBlank(message = "The team user ID is required")
+        String teamUserId,
+
+        @NotBlank(message = "The signer's full name is required")
+        String fullName
+) {}

@@ -16,7 +16,6 @@ public record CreateTeamUserResource(
         @NotBlank(message = "The role cannot be blank")
         String role,
 
-        @NotBlank(message = "The projectId cannot be blank")
+        @NotBlank(message = "The project ID cannot be blank")
         String projectId
-        ) {
-}
+) {}

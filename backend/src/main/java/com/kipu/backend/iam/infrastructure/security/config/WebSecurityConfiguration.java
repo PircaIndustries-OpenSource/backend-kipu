@@ -39,6 +39,9 @@ public class WebSecurityConfiguration {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers("/api/v1/team-users/**").permitAll() // AÑADE ESTO
+                        .requestMatchers("/api/v1/team-workers/**").permitAll() // AÑADE ESTO
+                        .requestMatchers("/api/v1/documents/**").permitAll() // AÑADE ESTO
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
                         .anyRequest().authenticated()

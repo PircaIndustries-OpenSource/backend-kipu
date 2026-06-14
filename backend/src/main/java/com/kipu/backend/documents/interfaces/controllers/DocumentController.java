@@ -10,6 +10,7 @@ import com.kipu.backend.documents.interfaces.resources.CreateDocumentResource;
 import com.kipu.backend.documents.interfaces.resources.DocumentResource;
 import com.kipu.backend.documents.interfaces.transform.CreateDocumentCommandFromResourceAssembler;
 import com.kipu.backend.documents.interfaces.transform.DocumentResourceFromEntityAssembler;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,7 @@ public class DocumentController {
     }
 
     @PostMapping
-    public ResponseEntity<DocumentResource> createDocument(@RequestBody CreateDocumentResource resource) {
+    public ResponseEntity<DocumentResource> createDocument(@Valid @RequestBody CreateDocumentResource resource) {
         var command = CreateDocumentCommandFromResourceAssembler.toCommand(resource);
         var result = commandService.handle(command);
 
