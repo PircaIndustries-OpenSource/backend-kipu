@@ -7,10 +7,10 @@ import jakarta.validation.constraints.NotBlank;
  * Command representing a login request.
  */
 public record LoginCommand(
-        @NotBlank(message = "Email is required")
-        @Email(message = "Invalid email format")
+        @NotBlank(message = "{iam.validation.email.required}")
+        @Email(message = "{iam.validation.email.format}")
         String email,
 
-        @NotBlank(message = "Password is required")
+        @NotBlank(message = "{iam.validation.password.required}")
         String password
 ) {}

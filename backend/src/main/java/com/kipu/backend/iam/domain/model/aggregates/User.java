@@ -55,4 +55,15 @@ public class User {
         }
         this.role = role;
     }
+
+    /**
+     * Updates the password of the user (DDD business method).
+     * @param password The new hashed password
+     */
+    public void updatePassword(String password) {
+        if (password == null || password.isBlank()) {
+            throw new IllegalArgumentException("Password cannot be null or blank");
+        }
+        this.password = password;
+    }
 }

@@ -3,6 +3,7 @@ package com.kipu.backend.iam.application.internal.commandservices;
 import com.kipu.backend.iam.application.commandservices.UserCommandService;
 import com.kipu.backend.iam.application.transform.RegisterUserCommand;
 import com.kipu.backend.iam.application.transform.UpdateUserRoleCommand;
+import com.kipu.backend.iam.application.transform.UpdateUserPasswordCommand;
 import com.kipu.backend.iam.domain.model.aggregates.User;
 import com.kipu.backend.iam.domain.model.exceptions.EmailAlreadyExistsException;
 import com.kipu.backend.iam.domain.model.exceptions.UserNotFoundException;
@@ -66,6 +67,22 @@ public class UserCommandServiceImpl implements UserCommandService {
 
         // Business logic execution on the User aggregate root
         user.updateRole(roleEnum);
+
+        return userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public User handle(Long id, UpdateUserPasswordCommand command) {
+        // Retrieve existing User
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
+
+        // Secure password with BCrypt
+        String encodedPassword = passwordEncoder.encode(command.password());
+
+        // Business logic execution on the User aggregate root
+        user.updatePassword(encodedPassword);
 
         return userRepository.save(user);
     }
