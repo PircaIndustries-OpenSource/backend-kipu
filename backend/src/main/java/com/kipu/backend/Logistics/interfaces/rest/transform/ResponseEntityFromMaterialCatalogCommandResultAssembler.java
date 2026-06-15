@@ -2,7 +2,7 @@ package com.kipu.backend.Logistics.interfaces.rest.transform;
 
 import com.kipu.backend.Logistics.application.commandservices.MaterialCatalogCommandFailure;
 import com.kipu.backend.Logistics.domain.model.aggregates.MaterialCatalog;
-import com.kipu.backend.shared.infrastructure.documentation.application.result.Result;
+import com.kipu.backend.shared.application.result.Result;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;

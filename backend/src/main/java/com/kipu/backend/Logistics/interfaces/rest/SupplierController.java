@@ -9,12 +9,10 @@ import com.kipu.backend.Logistics.interfaces.rest.resources.CreateSupplierResour
 import com.kipu.backend.Logistics.interfaces.rest.resources.SupplierResource;
 import com.kipu.backend.Logistics.interfaces.rest.resources.UpdateSupplierResource;
 import com.kipu.backend.Logistics.interfaces.rest.transform.CreateSupplierCommandFromResourceAssembler;
-import com.kipu.backend.Logistics.interfaces.rest.transform.SupplierResourceFromEntityAssembler;
 import com.kipu.backend.Logistics.interfaces.rest.transform.ResponseEntityFromSupplierCommandResultAssembler;
 import com.kipu.backend.Logistics.interfaces.rest.transform.ResponseEntityFromSupplierQueryResultAssembler;
 import com.kipu.backend.Logistics.interfaces.rest.transform.ResponseEntityFromSupplierUpdateCommandResultAssembler;
 import com.kipu.backend.Logistics.interfaces.rest.transform.UpdateSupplierCommandFromResourceAssembler;
-import com.kipu.backend.shared.infrastructure.documentation.application.result.Result;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;

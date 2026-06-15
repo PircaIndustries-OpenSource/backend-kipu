@@ -10,12 +10,10 @@ import com.kipu.backend.Logistics.interfaces.rest.resources.MaterialRequestResou
 import com.kipu.backend.Logistics.interfaces.rest.resources.UpdateMaterialRequestResource;
 import com.kipu.backend.Logistics.interfaces.rest.resources.UpdateMaterialRequestStatusResource;
 import com.kipu.backend.Logistics.interfaces.rest.transform.CreateMaterialRequestCommandFromResourceAssembler;
-import com.kipu.backend.Logistics.interfaces.rest.transform.MaterialRequestResourceFromEntityAssembler;
 import com.kipu.backend.Logistics.interfaces.rest.transform.ResponseEntityFromMaterialRequestCommandResultAssembler;
 import com.kipu.backend.Logistics.interfaces.rest.transform.ResponseEntityFromMaterialRequestQueryResultAssembler;
 import com.kipu.backend.Logistics.interfaces.rest.transform.ResponseEntityFromMaterialRequestUpdateCommandResultAssembler;
 import com.kipu.backend.Logistics.interfaces.rest.transform.UpdateMaterialRequestCommandFromResourceAssembler;
-import com.kipu.backend.shared.infrastructure.documentation.application.result.Result;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;

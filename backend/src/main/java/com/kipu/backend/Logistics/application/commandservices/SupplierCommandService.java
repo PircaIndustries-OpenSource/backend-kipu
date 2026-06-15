@@ -3,7 +3,7 @@ package com.kipu.backend.Logistics.application.commandservices;
 import com.kipu.backend.Logistics.application.commands.CreateSupplierCommand;
 import com.kipu.backend.Logistics.application.commands.UpdateSupplierCommand;
 import com.kipu.backend.Logistics.domain.model.aggregates.Supplier;
-import com.kipu.backend.shared.infrastructure.documentation.application.result.Result;
+import com.kipu.backend.shared.application.result.Result;
 
 public interface SupplierCommandService {
     /**

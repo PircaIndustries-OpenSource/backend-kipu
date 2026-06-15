@@ -6,7 +6,7 @@ import com.kipu.backend.Logistics.application.commands.CreateSupplierCommand;
 import com.kipu.backend.Logistics.application.commands.UpdateSupplierCommand;
 import com.kipu.backend.Logistics.domain.model.aggregates.Supplier;
 import com.kipu.backend.Logistics.domain.model.repositories.SupplierRepository;
-import com.kipu.backend.shared.infrastructure.documentation.application.result.Result;
+import com.kipu.backend.shared.application.result.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;

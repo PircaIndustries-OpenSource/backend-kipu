@@ -10,7 +10,7 @@ import com.kipu.backend.Logistics.domain.model.aggregates.MaterialRequest;
 import com.kipu.backend.Logistics.domain.model.aggregates.MaterialRequestItem;
 import com.kipu.backend.Logistics.domain.model.repositories.MaterialRequestRepository;
 import com.kipu.backend.Logistics.domain.model.valueobjects.RequestStatus;
-import com.kipu.backend.shared.infrastructure.documentation.application.result.Result;
+import com.kipu.backend.shared.application.result.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

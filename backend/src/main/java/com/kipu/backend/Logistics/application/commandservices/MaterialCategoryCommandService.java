@@ -2,7 +2,7 @@ package com.kipu.backend.Logistics.application.commandservices;
 
 import com.kipu.backend.Logistics.application.commands.CreateMaterialCategoryCommand;
 import com.kipu.backend.Logistics.domain.model.aggregates.MaterialCategory;
-import com.kipu.backend.shared.infrastructure.documentation.application.result.Result;
+import com.kipu.backend.shared.application.result.Result;
 
 public interface MaterialCategoryCommandService {
     /**
