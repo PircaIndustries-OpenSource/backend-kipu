@@ -1,5 +1,6 @@
 package com.kipu.backend.iotmonitoring.concretecuring.domain.model.aggregates;
 
+import com.kipu.backend.iotmonitoring.concretecuring.domain.model.commands.CreateConcreteCuringSensorCommand;
 import com.kipu.backend.iotmonitoring.concretecuring.domain.model.valueobjects.CuringSensorState;
 import com.kipu.backend.iotmonitoring.concretecuring.domain.model.valueobjects.Humidity;
 import com.kipu.backend.iotmonitoring.concretecuring.domain.model.valueobjects.Temperature;
@@ -97,10 +98,10 @@ public class ConcreteCuringSensor extends AbstractDomainAggregateRoot<ConcreteCu
     }
 
     /**
-     * Constructor driving instantiation via a CreateConcreteCuringCommand.
-     * @param command The {@link CreateConcreteCuringCommand} instance
+     * Constructor driving instantiation via a CreateConcreteCuringSensorCommand.
+     * @param command The {@link CreateConcreteCuringSensorCommand} instance
      */
-    public ConcreteCuringSensor(CreateConcreteCuringCommand command) {
+    public ConcreteCuringSensor(CreateConcreteCuringSensorCommand command) {
         this(
                 command.projectId(),
                 command.sensorId(),
