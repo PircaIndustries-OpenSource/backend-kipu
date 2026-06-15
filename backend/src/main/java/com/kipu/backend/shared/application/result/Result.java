@@ -1,3 +1,5 @@
+package com.kipu.backend.shared.application.result;
+
 import org.jspecify.annotations.NullMarked;
 
 import java.util.Optional;
