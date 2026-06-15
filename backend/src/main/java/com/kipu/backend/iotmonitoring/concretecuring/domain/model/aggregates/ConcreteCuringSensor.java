@@ -1,7 +1,7 @@
 package com.kipu.backend.iotmonitoring.concretecuring.domain.model.aggregates;
 
 import com.kipu.backend.iotmonitoring.concretecuring.domain.model.commands.CreateConcreteCuringSensorCommand;
-import com.kipu.backend.iotmonitoring.concretecuring.domain.model.events.ConcreteCuringCreatedEvent;
+import com.kipu.backend.iotmonitoring.concretecuring.domain.model.events.ConcreteCuringSensorCreatedEvent;
 import com.kipu.backend.iotmonitoring.concretecuring.domain.model.valueobjects.CuringSensorState;
 import com.kipu.backend.iotmonitoring.concretecuring.domain.model.valueobjects.Humidity;
 import com.kipu.backend.iotmonitoring.concretecuring.domain.model.valueobjects.Temperature;
@@ -160,9 +160,9 @@ public class ConcreteCuringSensor extends AbstractDomainAggregateRoot<ConcreteCu
 
     /**
      * Signals that this aggregate has just been created and persisted.
-     * Registers a {@link ConcreteCuringCreatedEvent} for infrastructure publishing.
+     * Registers a {@link ConcreteCuringSensorCreatedEvent} for infrastructure publishing.
      */
     public void onCreated() {
-        registerDomainEvent(ConcreteCuringCreatedEvent.from(this));
+        registerDomainEvent(ConcreteCuringSensorCreatedEvent.from(this));
     }
 }

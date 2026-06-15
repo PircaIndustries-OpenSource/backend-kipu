@@ -19,7 +19,7 @@ import com.kipu.backend.iotmonitoring.concretecuring.domain.model.aggregates.Con
  * @param humidity         The initial relative humidity percentage.
  * @param limit            The safe temperature threshold limit before alerting.
  */
-public record ConcreteCuringCreatedEvent(
+public record ConcreteCuringSensorCreatedEvent(
         Long concreteCuringId,
         String projectId,
         String sensorId,
@@ -34,10 +34,10 @@ public record ConcreteCuringCreatedEvent(
      * Convenience factory that extracts all needed fields from a saved {@link ConcreteCuringSensor}.
      *
      * @param concreteCuringSensor the saved concrete curing aggregate (must already carry a non-null id)
-     * @return a fully populated {@link ConcreteCuringCreatedEvent}
+     * @return a fully populated {@link ConcreteCuringSensorCreatedEvent}
      */
-    public static ConcreteCuringCreatedEvent from (ConcreteCuringSensor concreteCuringSensor) {
-        return new ConcreteCuringCreatedEvent(
+    public static ConcreteCuringSensorCreatedEvent from (ConcreteCuringSensor concreteCuringSensor) {
+        return new ConcreteCuringSensorCreatedEvent(
                 concreteCuringSensor.getId(),
                 concreteCuringSensor.getProjectId(),
                 concreteCuringSensor.getSensorId(),
