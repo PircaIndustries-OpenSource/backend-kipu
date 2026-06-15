@@ -1,6 +1,7 @@
 package com.kipu.backend.iotmonitoring.concretecuring.domain.model.aggregates;
 
 import com.kipu.backend.iotmonitoring.concretecuring.domain.model.commands.CreateConcreteCuringSensorCommand;
+import com.kipu.backend.iotmonitoring.concretecuring.domain.model.events.ConcreteCuringCreatedEvent;
 import com.kipu.backend.iotmonitoring.concretecuring.domain.model.valueobjects.CuringSensorState;
 import com.kipu.backend.iotmonitoring.concretecuring.domain.model.valueobjects.Humidity;
 import com.kipu.backend.iotmonitoring.concretecuring.domain.model.valueobjects.Temperature;
