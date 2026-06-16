@@ -25,7 +25,7 @@ public interface ConcreteCuringSensorContextFacade {
             String location,
             Double temperatureReading,
             String temperatureUnit,
-            Double humidityPercentage,
+            Integer humidityPercentage,
             Double temperatureLimit
     );
 
