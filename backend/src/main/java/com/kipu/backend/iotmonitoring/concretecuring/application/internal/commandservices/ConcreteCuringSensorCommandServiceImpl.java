@@ -9,7 +9,7 @@ import com.kipu.backend.shared.application.result.Result;
 import org.springframework.stereotype.Service;
 
 /**
- * Concrete Curing Command Service Implementation
+ * Concrete Curing Sensor Command Service Implementation
  */
 @Service
 public class ConcreteCuringSensorCommandServiceImpl implements ConcreteCuringSensorCommandService {
