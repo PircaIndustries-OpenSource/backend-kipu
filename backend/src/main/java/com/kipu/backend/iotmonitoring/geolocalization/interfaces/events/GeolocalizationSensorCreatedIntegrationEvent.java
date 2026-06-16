@@ -26,7 +26,7 @@ public record GeolocalizationSensorCreatedIntegrationEvent(
         String sensorId,
         Integer numberId,
         String name,
-        String state,
+        Integer state,
         double longitude,
         double latitude) {
 
@@ -44,7 +44,7 @@ public record GeolocalizationSensorCreatedIntegrationEvent(
                 sensor.getSensorId(),
                 sensor.getNumberId(),
                 sensor.getName(),
-                sensor.getState().name(), // Enviamos el nombre del Enum como String para un contrato agnóstico
+                sensor.getState().getValue(), // Enviamos el nombre del Enum como String para un contrato agnóstico
                 coordinates.longitude(),
                 coordinates.latitude()
         );
