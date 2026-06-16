@@ -1,7 +1,7 @@
 package com.kipu.backend.iotmonitoring.geolocalization.domain.model.aggregates;
 
 import com.kipu.backend.iotmonitoring.geolocalization.domain.model.commands.CreateGeolocalizationSensorCommand;
-import com.kipu.backend.iotmonitoring.geolocalization.domain.model.events.GeolocalizationAssetCreatedEvent;
+import com.kipu.backend.iotmonitoring.geolocalization.domain.model.events.GeolocalizationSensorCreatedEvent;
 import com.kipu.backend.iotmonitoring.geolocalization.domain.model.valueobjects.Coordinates;
 import com.kipu.backend.iotmonitoring.geolocalization.domain.model.valueobjects.GeolocalizationSensorState;
 import com.kipu.backend.shared.domain.model.aggregates.AbstractDomainAggregateRoot;
@@ -39,7 +39,7 @@ public class GeolocalizationSensor extends AbstractDomainAggregateRoot<Geolocali
     /**
      * Base Domain Constructor.
      */
-    public GeolocalizationSensor(Long id, String projectId, String sensorId, Integer numberId, String name, GeolocalizationState state, Coordinates coordinates) {
+    public GeolocalizationSensor(Long id, String projectId, String sensorId, Integer numberId, String name, GeolocalizationSensorState state, Coordinates coordinates) {
         this.id = id;
         this.projectId = Objects.requireNonNull(projectId, "projectId must not be null");
         this.name = Objects.requireNonNull(name, "name must not be null");
@@ -49,7 +49,7 @@ public class GeolocalizationSensor extends AbstractDomainAggregateRoot<Geolocali
         this.numberId = numberId;
     }
 
-    public GeolocalizationSensor(String projectId, String sensorId, Integer numberId, String name, GeolocalizationState state, Coordinates coordinates) {
+    public GeolocalizationSensor(String projectId, String sensorId, Integer numberId, String name, GeolocalizationSensorState state, Coordinates coordinates) {
         this(null, projectId, sensorId, numberId, name, state, coordinates);
     }
 
@@ -62,7 +62,7 @@ public class GeolocalizationSensor extends AbstractDomainAggregateRoot<Geolocali
                 sensorId,
                 numberId,
                 name,
-                GeolocalizationSensor.fromInteger(state), // Aquí ocurre la magia del mapeo
+                GeolocalizationSensorState.fromInteger(state), // Aquí ocurre la magia del mapeo
                 new Coordinates(longitude, latitude));
     }
 
