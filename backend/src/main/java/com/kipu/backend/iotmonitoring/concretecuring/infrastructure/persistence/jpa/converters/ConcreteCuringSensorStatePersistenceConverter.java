@@ -8,7 +8,7 @@ import jakarta.persistence.Converter;
  * Converts CuringState between the domain model and persistence column values.
  */
 @Converter(autoApply = false)
-public class CuringSensorStatePersistenceConverter implements AttributeConverter<CuringSensorState, Integer> {
+public class ConcreteCuringSensorStatePersistenceConverter implements AttributeConverter<CuringSensorState, Integer> {
 
     @Override
     public Integer convertToDatabaseColumn(CuringSensorState attribute) {
