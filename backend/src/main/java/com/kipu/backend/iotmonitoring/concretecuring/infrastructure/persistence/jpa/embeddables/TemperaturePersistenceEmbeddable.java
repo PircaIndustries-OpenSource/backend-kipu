@@ -3,6 +3,9 @@ package com.kipu.backend.iotmonitoring.concretecuring.infrastructure.persistence
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
+/**
+ * Persistence representation for a concrete curing sensor temperature indicator.
+ */
 @Embeddable
 public class TemperaturePersistenceEmbeddable {
 
