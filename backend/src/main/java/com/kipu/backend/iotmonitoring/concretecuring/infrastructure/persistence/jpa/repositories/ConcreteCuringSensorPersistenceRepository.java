@@ -20,7 +20,7 @@ public interface ConcreteCuringSensorPersistenceRepository extends JpaRepository
      * @param sensorId The physical IoT sensor identifier.
      * @return An {@link Optional} containing the found entity, or empty if none matches.
      */
-    @Query("select cc from ConcreteCuringPersistenceEntity cc where cc.sensorId = :sensorId")
+    @Query("select cc from ConcreteCuringSensorPersistenceEntity cc where cc.sensorId = :sensorId")
     Optional<ConcreteCuringSensorPersistenceEntity> findBySensorId(@Param("sensorId") String sensorId);
 
     /**
@@ -29,6 +29,6 @@ public interface ConcreteCuringSensorPersistenceRepository extends JpaRepository
      * @param sensorId The physical IoT sensor identifier.
      * @return The total count of matching records.
      */
-    @Query("select count(cc) from ConcreteCuringPersistenceEntity cc where cc.sensorId = :sensorId")
+    @Query("select count(cc) from ConcreteCuringSensorPersistenceEntity cc where cc.sensorId = :sensorId")
     long countBySensorId(@Param("sensorId") String sensorId);
 }
