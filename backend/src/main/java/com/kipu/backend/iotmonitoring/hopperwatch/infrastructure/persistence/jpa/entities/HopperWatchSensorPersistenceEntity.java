@@ -10,7 +10,7 @@ import jakarta.persistence.*;
  * JPA persistence entity for hopper watch monitors.
  */
 @Entity
-@Table(name = "hopper_watches")
+@Table(name = "hopper_watch_sensors")
 public class HopperWatchSensorPersistenceEntity extends AuditableAbstractPersistenceEntity {
 
     @Column(name = "project_id", nullable = false)

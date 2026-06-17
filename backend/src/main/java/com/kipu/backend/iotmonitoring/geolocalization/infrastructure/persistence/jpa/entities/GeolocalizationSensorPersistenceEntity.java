@@ -10,7 +10,7 @@ import jakarta.persistence.*;
  * JPA persistence entity for geolocalization assets.
  */
 @Entity
-@Table(name = "geolocalization_assets")
+@Table(name = "geolocalization_sensors")
 public class GeolocalizationSensorPersistenceEntity extends AuditableAbstractPersistenceEntity {
 
     @Column(name = "project_id", nullable = false)
