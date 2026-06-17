@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(
         name = "HopperWatchSensorResponse",
         description = "Hopper watch information response payload",
-        example = "{\"id\": 1, \"projectId\": \"PROJ-102\", \"sensorId\": \"SN-HW-9942\", \"name\": \"Tolva de Agregados Principal\", \"unit\": \"kg\", \"state\": \"OK\", \"lastLecture\": 1250.5, \"safetyLimit\": 4500.0}"
+        example = "{\"id\": 1, \"projectId\": \"PROJ-102\", \"sensorId\": \"SN-HW-9942\", \"name\": \"Tolva de Agregados Principal\", \"unit\": \"kg\", \"state\": 1, \"lastLecture\": 1250, \"safetyLimit\": 4500}"
 )
 public record HopperWatchSensorResource(
         @Schema(description = "Hopper watch unique identifier", example = "1")
@@ -26,13 +26,13 @@ public record HopperWatchSensorResource(
         @Schema(description = "Measurement unit for telemetry readings", example = "kg")
         String unit,
 
-        @Schema(description = "Current operational state of the hopper", example = "OK")
-        String state,
+        @Schema(description = "Current operational state of the hopper (1 = OK, 2 = ALERT, 3 = CRITICAL)", example = "1")
+        Integer state,
 
-        @Schema(description = "Last recorded telemetry measurement lecture", example = "1250.5")
-        Double lastLecture,
+        @Schema(description = "Last recorded telemetry measurement lecture as a whole number", example = "1250")
+        Integer lastLecture,
 
-        @Schema(description = "Critical safety limit threshold for weight/volume", example = "4500.0")
-        Double safetyLimit
+        @Schema(description = "Critical safety limit threshold for weight/volume as a whole number", example = "4500")
+        Integer safetyLimit
 ) {
 }
