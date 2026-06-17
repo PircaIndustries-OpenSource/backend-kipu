@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/progress")
+@CrossOrigin(origins = {"http://localhost:4200", "https://mmanuel-fd.github.io"}, allowedHeaders = "*", allowCredentials = "true")
 @Tag(name = "Progress", description = "Project Advancement Management Endpoints")
 public class ProjectProgressController {
 

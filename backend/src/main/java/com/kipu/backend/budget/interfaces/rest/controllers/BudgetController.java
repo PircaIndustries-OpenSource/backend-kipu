@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/budgets")
+@CrossOrigin(origins = {"http://localhost:4200", "https://mmanuel-fd.github.io"}, allowedHeaders = "*", allowCredentials = "true")
 @Tag(name = "Budget", description = "Financial and Budgetary Allocation Endpoints")
 public class BudgetController {
 
