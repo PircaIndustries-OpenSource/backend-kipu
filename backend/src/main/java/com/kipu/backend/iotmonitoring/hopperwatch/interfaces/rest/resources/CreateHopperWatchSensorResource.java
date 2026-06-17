@@ -11,7 +11,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 @Schema(
         name = "CreateHopperWatchSensorRequest",
         description = "Request payload for creating a new hopper watch monitor",
-        example = "{\"projectId\": \"PROJ-102\", \"sensorId\": \"SN-HW-9942\", \"name\": \"Tolva de Agregados Principal\", \"unit\": \"kg\", \"lastLecture\": 0.0, \"safetyLimit\": 4500.0}"
+        example = "{\"projectId\": \"PROJ-102\", \"sensorId\": \"SN-HW-9942\", \"name\": \"Tolva de Agregados Principal\", \"unit\": \"kg\", \"state\": 1, \"lastLecture\": 0, \"safetyLimit\": 4500}"
 )
 public record CreateHopperWatchSensorResource(
         @NotBlank(message = "{validation.not-blank}")
@@ -31,13 +31,17 @@ public record CreateHopperWatchSensorResource(
         String unit,
 
         @NotNull(message = "{validation.not-null}")
-        @PositiveOrZero(message = "{validation.positive-or-zero}")
-        @Schema(description = "Initial telemetry reading value", example = "0.0")
-        Double lastLecture,
+        @Schema(description = "Numerical business value representing the initial operational state (1 = OK, 2 = ALERT, 3 = CRITICAL)", example = "1")
+        Integer state,
 
         @NotNull(message = "{validation.not-null}")
         @PositiveOrZero(message = "{validation.positive-or-zero}")
-        @Schema(description = "Critical safety weight/volume limit threshold for alerts", example = "4500.0")
-        Double safetyLimit
+        @Schema(description = "Initial telemetry reading value as a whole number", example = "0")
+        Integer lastLecture,
+
+        @NotNull(message = "{validation.not-null}")
+        @PositiveOrZero(message = "{validation.positive-or-zero}")
+        @Schema(description = "Critical safety weight/volume limit threshold for alerts as a whole number", example = "4500")
+        Integer safetyLimit
 ) {
 }
