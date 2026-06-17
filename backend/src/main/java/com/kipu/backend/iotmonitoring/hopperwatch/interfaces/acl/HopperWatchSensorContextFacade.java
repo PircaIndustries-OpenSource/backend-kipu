@@ -12,11 +12,12 @@ public interface HopperWatchSensorContextFacade {
      * @param sensorId    The unique hardware sensor identifier
      * @param name        The name of the hopper watch monitor
      * @param unit        The measurement unit (e.g., kg, m3)
+     * @param state       The initial state value (integer representation).
      * @param lastLecture The initial telemetry measurement value
      * @param safetyLimit The defined safety threshold limit for alerts
      * @return created hopper watch identifier, or {@code 0L} when creation fails
      */
-    Long createHopperWatchSensor(String projectId, String sensorId, String name, String unit, Double lastLecture, Double safetyLimit);
+    Long createHopperWatchSensor(String projectId, String sensorId, String name, Integer state, String unit, Integer lastLecture, Integer safetyLimit);
 
     /**
      * Fetches a hopper watch identifier by its unique hardware sensor ID.
