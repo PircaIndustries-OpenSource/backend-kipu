@@ -151,4 +151,11 @@ public class SeismicControlSensor extends AbstractDomainAggregateRoot<SeismicCon
     public void onCreated() {
         registerDomainEvent(SeismicControlSensorCreatedEvent.from(this));
     }
+    /**
+     * Rich telemetry Value Object getter.
+     * @return The {@link SeismicTelemetry} instance.
+     */
+    public SeismicTelemetry getTelemetryValue() {
+        return this.telemetry;
+    }
 }
