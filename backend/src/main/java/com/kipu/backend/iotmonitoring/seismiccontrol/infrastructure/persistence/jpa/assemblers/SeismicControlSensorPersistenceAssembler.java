@@ -1,16 +1,19 @@
 package com.kipu.backend.iotmonitoring.seismiccontrol.infrastructure.persistence.jpa.assemblers;
 
 import com.kipu.backend.iotmonitoring.seismiccontrol.domain.model.aggregates.SeismicControlSensor;
-import com.kipu.backend.iotmonitoring.seismiccontrol.domain.model.valueobjects.SeismicControlSensorState;
 import com.kipu.backend.iotmonitoring.seismiccontrol.domain.model.valueobjects.SeismicTelemetry;
 import com.kipu.backend.iotmonitoring.seismiccontrol.domain.model.valueobjects.SensorId;
 import com.kipu.backend.iotmonitoring.seismiccontrol.infrastructure.persistence.jpa.embeddables.SeismicTelemetryPersistenceEmbeddable;
 import com.kipu.backend.iotmonitoring.seismiccontrol.infrastructure.persistence.jpa.entities.SeismicControlSensorPersistenceEntity;
 
 /**
- * Static assembler between seismic control domain and persistence representations.
- * <p>Handles data mapping isolation between the pure Domain layer and the relational
- * Infrastructure persistence model.</p>
+ * Static assembler between seismic control domain and persistence
+ * representations.
+ * <p>
+ * Handles data mapping isolation between the pure Domain layer and the
+ * relational
+ * Infrastructure persistence model.
+ * </p>
  */
 public final class SeismicControlSensorPersistenceAssembler {
 
@@ -20,11 +23,14 @@ public final class SeismicControlSensorPersistenceAssembler {
     /**
      * Maps a JPA persistence entity into a rich Domain Aggregate Root.
      *
-     * @param entity The {@link SeismicControlSensorPersistenceEntity} from the database.
-     * @return A fully instantiated and validated {@link SeismicControlSensor} aggregate.
+     * @param entity The {@link SeismicControlSensorPersistenceEntity} from the
+     *               database.
+     * @return A fully instantiated and validated {@link SeismicControlSensor}
+     *         aggregate.
      */
     public static SeismicControlSensor toDomainFromPersistence(SeismicControlSensorPersistenceEntity entity) {
-        if (entity == null) return null;
+        if (entity == null)
+            return null;
 
         return new SeismicControlSensor(
                 entity.getId(),
@@ -34,18 +40,19 @@ public final class SeismicControlSensorPersistenceAssembler {
                 toDomainFromPersistence(entity.getTelemetry()),
                 entity.getLocation(),
                 entity.getTimeLecture(),
-                entity.getState()
-        );
+                entity.getState());
     }
 
     /**
      * Maps a rich Domain Aggregate Root into a JPA persistence entity.
      *
      * @param seismicControl The {@link SeismicControlSensor} aggregate root.
-     * @return A populated {@link SeismicControlSensorPersistenceEntity} ready for Hibernate.
+     * @return A populated {@link SeismicControlSensorPersistenceEntity} ready for
+     *         Hibernate.
      */
     public static SeismicControlSensorPersistenceEntity toPersistenceFromDomain(SeismicControlSensor seismicControl) {
-        if (seismicControl == null) return null;
+        if (seismicControl == null)
+            return null;
 
         var entity = new SeismicControlSensorPersistenceEntity();
         entity.setId(seismicControl.getId());
@@ -56,7 +63,8 @@ public final class SeismicControlSensorPersistenceAssembler {
         entity.setTimeLecture(seismicControl.getTimeLecture());
         entity.setState(seismicControl.getSeismicControlSensorStateValue());
 
-        // Se extrae el Value Object del dominio y se pasa al método sobrecargado correcto
+        // Se extrae el Value Object del dominio y se pasa al método sobrecargado
+        // correcto
         entity.setTelemetry(toPersistenceFromDomain(seismicControl.getTelemetryValue()));
 
         return entity;

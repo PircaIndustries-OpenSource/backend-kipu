@@ -7,9 +7,13 @@ import com.kipu.backend.iotmonitoring.hopperwatch.domain.model.queries.GetHopper
 import com.kipu.backend.iotmonitoring.hopperwatch.domain.model.queries.GetHopperWatchSensorsByProjectIdQuery;
 import com.kipu.backend.iotmonitoring.hopperwatch.interfaces.rest.resources.CreateHopperWatchSensorResource;
 import com.kipu.backend.iotmonitoring.hopperwatch.interfaces.rest.resources.HopperWatchSensorResource;
+import com.kipu.backend.iotmonitoring.hopperwatch.interfaces.rest.resources.UpdateHopperWatchSensorResource;
 import com.kipu.backend.iotmonitoring.hopperwatch.interfaces.rest.transform.CreateHopperWatchSensorCommandFromResourceAssembler;
 import com.kipu.backend.iotmonitoring.hopperwatch.interfaces.rest.transform.HopperWatchSensorResourceFromEntityAssembler;
+import com.kipu.backend.iotmonitoring.hopperwatch.interfaces.rest.transform.UpdateHopperWatchSensorCommandFromResourceAssembler;
+import com.kipu.backend.iotmonitoring.hopperwatch.domain.model.commands.DeleteHopperWatchSensorCommand;
 import com.kipu.backend.shared.application.result.ApplicationError;
+import com.kipu.backend.shared.application.result.Result;
 import com.kipu.backend.shared.interfaces.rest.transform.ErrorResponseAssembler;
 import com.kipu.backend.shared.interfaces.rest.transform.ResponseEntityAssembler;
 import io.swagger.v3.oas.annotations.Operation;
@@ -177,5 +181,73 @@ public class HopperWatchSensorController {
                 .toList();
 
         return ResponseEntity.ok(hopperWatchResources);
+    }
+
+    /**
+     * Update a hopper watch monitor
+     *
+     * @param hopperWatchId The internal database ID
+     * @param resource      The {@link UpdateHopperWatchSensorResource} instance incoming payload
+     * @return A {@link HopperWatchSensorResource} resource for the updated node
+     */
+    @PutMapping("/{hopperWatchId}")
+    @Operation(
+            summary = "Update hopper watch monitor",
+            description = "Updates an existing hopper watch monitor node's data."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Hopper watch updated successfully",
+                    content = @Content(schema = @Schema(implementation = HopperWatchSensorResource.class))
+            ),
+            @ApiResponse(responseCode = "400", description = "Invalid input data"),
+            @ApiResponse(responseCode = "404", description = "Hopper watch not found"),
+            @ApiResponse(responseCode = "409", description = "Conflict - Sensor ID already exists")
+    })
+    public ResponseEntity<?> updateHopperWatchSensor(
+            @PathVariable
+            @Parameter(description = "Hopper watch internal identifier", example = "1", required = true)
+            Long hopperWatchId,
+            @Valid @RequestBody UpdateHopperWatchSensorResource resource) {
+        
+        var updateCommand = UpdateHopperWatchSensorCommandFromResourceAssembler.toCommandFromResource(hopperWatchId, resource);
+        var result = hopperWatchCommandService.handle(updateCommand);
+
+        return ResponseEntityAssembler.toResponseEntityFromResult(
+                result,
+                HopperWatchSensorResourceFromEntityAssembler::toResourceFromEntity,
+                HttpStatus.OK
+        );
+    }
+
+    /**
+     * Delete a hopper watch monitor
+     *
+     * @param hopperWatchId The internal database ID
+     * @return No content
+     */
+    @DeleteMapping("/{hopperWatchId}")
+    @Operation(
+            summary = "Delete hopper watch monitor",
+            description = "Deletes an existing hopper watch monitor node by its database unique identifier."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Hopper watch deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "Hopper watch not found")
+    })
+    public ResponseEntity<?> deleteHopperWatchSensor(
+            @PathVariable
+            @Parameter(description = "Hopper watch internal identifier", example = "1", required = true)
+            Long hopperWatchId) {
+        
+        var deleteCommand = new DeleteHopperWatchSensorCommand(hopperWatchId);
+        var result = hopperWatchCommandService.handle(deleteCommand);
+
+        if (result instanceof Result.Failure<Void, ApplicationError> failure) {
+            return ErrorResponseAssembler.toErrorResponseFromApplicationError(failure.error());
+        }
+
+        return ResponseEntity.noContent().build();
     }
 }

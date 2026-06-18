@@ -83,4 +83,14 @@ public class HopperWatchSensorRepositoryImpl implements HopperWatchSensorReposit
                 .map(HopperWatchSensorPersistenceAssembler::toDomainFromPersistence)
                 .toList();
     }
+
+    @Override
+    public void deleteById(Long id) {
+        hopperWatchPersistenceRepository.deleteById(id);
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return hopperWatchPersistenceRepository.existsById(id);
+    }
 }

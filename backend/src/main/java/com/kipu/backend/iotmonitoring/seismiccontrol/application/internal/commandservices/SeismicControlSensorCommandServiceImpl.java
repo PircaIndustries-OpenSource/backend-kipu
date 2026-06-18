@@ -3,6 +3,8 @@ package com.kipu.backend.iotmonitoring.seismiccontrol.application.internal.comma
 import com.kipu.backend.iotmonitoring.seismiccontrol.application.commandservices.SeismicControlSensorCommandService;
 import com.kipu.backend.iotmonitoring.seismiccontrol.domain.model.aggregates.SeismicControlSensor;
 import com.kipu.backend.iotmonitoring.seismiccontrol.domain.model.commands.CreateSeismicControlSensorCommand;
+import com.kipu.backend.iotmonitoring.seismiccontrol.domain.model.commands.UpdateSeismicControlSensorCommand;
+import com.kipu.backend.iotmonitoring.seismiccontrol.domain.model.commands.DeleteSeismicControlSensorCommand;
 import com.kipu.backend.iotmonitoring.seismiccontrol.domain.model.valueobjects.SensorId;
 import com.kipu.backend.iotmonitoring.seismiccontrol.domain.repositories.SeismicControlSensorRepository;
 import com.kipu.backend.shared.application.result.ApplicationError;
@@ -11,8 +13,10 @@ import org.springframework.stereotype.Service;
 
 /**
  * Seismic Control Sensor Command Service Implementation.
- * <p>Orchestrates the business logic required to validate and safely instantiate
- * new tracking hardware nodes within the architectural cloud environment.</p>
+ * <p>
+ * Orchestrates the business logic required to validate and safely instantiate
+ * new tracking hardware nodes within the architectural cloud environment.
+ * </p>
  */
 @Service
 public class SeismicControlSensorCommandServiceImpl implements SeismicControlSensorCommandService {
@@ -22,7 +26,9 @@ public class SeismicControlSensorCommandServiceImpl implements SeismicControlSen
     /**
      * Component constructor for dependency injection.
      *
-     * @param seismicControlSensorRepository The {@link SeismicControlSensorRepository} domain port.
+     * @param seismicControlSensorRepository The
+     *                                       {@link SeismicControlSensorRepository}
+     *                                       domain port.
      */
     public SeismicControlSensorCommandServiceImpl(SeismicControlSensorRepository seismicControlSensorRepository) {
         this.seismicControlSensorRepository = seismicControlSensorRepository;
@@ -42,18 +48,61 @@ public class SeismicControlSensorCommandServiceImpl implements SeismicControlSen
             // 2. Instanciar el agregado puro delegando el mapeo a su constructor de comando
             var seismicControlSensor = new SeismicControlSensor(command);
 
-            // 3. Persistir a través del adaptador de infraestructura y retornar el resultado exitoso
+            // 3. Persistir a través del adaptador de infraestructura y retornar el
+            // resultado exitoso
             var savedSensor = seismicControlSensorRepository.save(seismicControlSensor);
             return Result.success(savedSensor);
 
         } catch (IllegalArgumentException e) {
-            // Captura errores de validación de negocio interceptados por Objects.requireNonNull o invariantes del VO
+            // Captura errores de validación de negocio interceptados por
+            // Objects.requireNonNull o invariantes del VO
             return Result.failure(ApplicationError.validationError("SeismicControlSensor", e.getMessage()));
         } catch (Exception e) {
-            // Captura fallos críticos inesperados o caídas imprevistas de conectividad con la infraestructura
+            // Captura fallos críticos inesperados o caídas imprevistas de conectividad con
+            // la infraestructura
             return Result.failure(ApplicationError.unexpected(
                     "Seismic control sensor creation",
                     e.getMessage()));
+        }
+    }
+
+    @Override
+    public Result<SeismicControlSensor, ApplicationError> handle(UpdateSeismicControlSensorCommand command) {
+        try {
+            var sensorOptional = seismicControlSensorRepository.findById(command.id());
+            if (sensorOptional.isEmpty()) {
+                return Result.failure(ApplicationError.notFound("SeismicControlSensor", command.id().toString()));
+            }
+            var sensor = sensorOptional.get();
+
+            var newSensorId = new SensorId(command.sensorId());
+            if (!sensor.getSensorId().equals(command.sensorId())
+                    && seismicControlSensorRepository.existsBySensorId(newSensorId)) {
+                return Result.failure(ApplicationError.conflict(
+                        "SeismicControlSensor",
+                        "A seismic control sensor with hardware ID '%s' already exists".formatted(command.sensorId())));
+            }
+
+            sensor.update(command);
+            var savedSensor = seismicControlSensorRepository.save(sensor);
+            return Result.success(savedSensor);
+        } catch (IllegalArgumentException e) {
+            return Result.failure(ApplicationError.validationError("SeismicControlSensor", e.getMessage()));
+        } catch (Exception e) {
+            return Result.failure(ApplicationError.unexpected("Seismic control sensor update", e.getMessage()));
+        }
+    }
+
+    @Override
+    public Result<Void, ApplicationError> handle(DeleteSeismicControlSensorCommand command) {
+        try {
+            if (!seismicControlSensorRepository.existsById(command.id())) {
+                return Result.failure(ApplicationError.notFound("SeismicControlSensor", command.id().toString()));
+            }
+            seismicControlSensorRepository.deleteById(command.id());
+            return Result.success(null);
+        } catch (Exception e) {
+            return Result.failure(ApplicationError.unexpected("Seismic control sensor deletion", e.getMessage()));
         }
     }
 }

@@ -82,4 +82,14 @@ public class SeismicControlSensorRepositoryImpl implements SeismicControlSensorR
                 .map(SeismicControlSensorPersistenceAssembler::toDomainFromPersistence).
                 toList();
     }
+
+    @Override
+    public void deleteById(Long id) {
+        seismicControlSensorPersistenceRepository.deleteById(id);
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return seismicControlSensorPersistenceRepository.existsById(id);
+    }
 }

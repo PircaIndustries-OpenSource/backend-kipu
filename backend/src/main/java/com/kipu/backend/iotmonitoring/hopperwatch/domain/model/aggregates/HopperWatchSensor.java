@@ -146,6 +146,18 @@ public class HopperWatchSensor extends AbstractDomainAggregateRoot<HopperWatchSe
     }
 
     /**
+     * Command-driven updater for smooth Application Layer integration.
+     * @param command The {@link com.kipu.backend.iotmonitoring.hopperwatch.domain.model.commands.UpdateHopperWatchSensorCommand} record.
+     */
+    public void update(com.kipu.backend.iotmonitoring.hopperwatch.domain.model.commands.UpdateHopperWatchSensorCommand command) {
+        this.sensorId = new SensorId(command.sensorId());
+        this.name = command.name();
+        this.unit = command.unit();
+        this.state = HopperSensorState.fromValue(command.state());
+        this.measurement = new HopperMeasurement(command.lastLecture(), command.limit());
+    }
+
+    /**
      * Signals that this hopper watch monitor has just been created and persisted.
      *
      * <p>Called by the repository adapter after the JPA identity has been assigned.

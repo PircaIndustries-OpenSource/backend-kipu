@@ -19,6 +19,10 @@ public interface HopperWatchSensorRepository {
 
     HopperWatchSensor save(HopperWatchSensor hopperWatch);
 
+    void deleteById(Long id);
+
+    boolean existsById(Long id);
+
     boolean existsBySensorId(SensorId sensorId);
 
     List<HopperWatchSensor> findAllByProjectId(String projectId);

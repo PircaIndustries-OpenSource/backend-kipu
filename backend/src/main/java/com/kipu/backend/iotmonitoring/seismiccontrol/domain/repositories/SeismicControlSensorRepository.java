@@ -22,6 +22,10 @@ public interface SeismicControlSensorRepository {
 
     SeismicControlSensor save(SeismicControlSensor seismicControl);
 
+    void deleteById(Long id);
+
+    boolean existsById(Long id);
+
     boolean existsBySensorId(SensorId sensorId);
 
     List<SeismicControlSensor> findAllByProjectId(String projectId);

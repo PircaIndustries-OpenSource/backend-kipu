@@ -7,9 +7,13 @@ import com.kipu.backend.iotmonitoring.seismiccontrol.domain.model.queries.GetSei
 import com.kipu.backend.iotmonitoring.seismiccontrol.domain.model.queries.GetSeismicControlSensorsByProjectIdQuery;
 import com.kipu.backend.iotmonitoring.seismiccontrol.interfaces.rest.resources.CreateSeismicControlSensorResource;
 import com.kipu.backend.iotmonitoring.seismiccontrol.interfaces.rest.resources.SeismicControlSensorResource;
+import com.kipu.backend.iotmonitoring.seismiccontrol.interfaces.rest.resources.UpdateSeismicControlSensorResource;
 import com.kipu.backend.iotmonitoring.seismiccontrol.interfaces.rest.transform.CreateSeismicControlSensorCommandFromResourceAssembler;
 import com.kipu.backend.iotmonitoring.seismiccontrol.interfaces.rest.transform.SeismicControlSensorResourceFromEntityAssembler;
+import com.kipu.backend.iotmonitoring.seismiccontrol.interfaces.rest.transform.UpdateSeismicControlSensorCommandFromResourceAssembler;
+import com.kipu.backend.iotmonitoring.seismiccontrol.domain.model.commands.DeleteSeismicControlSensorCommand;
 import com.kipu.backend.shared.application.result.ApplicationError;
+import com.kipu.backend.shared.application.result.Result;
 import com.kipu.backend.shared.interfaces.rest.transform.ErrorResponseAssembler;
 import com.kipu.backend.shared.interfaces.rest.transform.ResponseEntityAssembler;
 import io.swagger.v3.oas.annotations.Operation;
@@ -183,5 +187,73 @@ public class SeismicControlSensorsController {
                 .toList();
 
         return ResponseEntity.ok(sensorResources);
+    }
+
+    /**
+     * Update a seismic control sensor node
+     *
+     * @param seismicControlSensorId The internal database ID
+     * @param resource               The {@link UpdateSeismicControlSensorResource} instance incoming payload
+     * @return A {@link SeismicControlSensorResource} resource for the updated node
+     */
+    @PutMapping("/{seismicControlSensorId}")
+    @Operation(
+            summary = "Update seismic control sensor",
+            description = "Updates an existing seismic control sensor node's data."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Seismic control sensor updated successfully",
+                    content = @Content(schema = @Schema(implementation = SeismicControlSensorResource.class))
+            ),
+            @ApiResponse(responseCode = "400", description = "Invalid input data"),
+            @ApiResponse(responseCode = "404", description = "Seismic control sensor not found"),
+            @ApiResponse(responseCode = "409", description = "Conflict - Sensor ID already exists")
+    })
+    public ResponseEntity<?> updateSeismicControlSensor(
+            @PathVariable
+            @Parameter(description = "Seismic control sensor internal identifier", example = "1", required = true)
+            Long seismicControlSensorId,
+            @Valid @RequestBody UpdateSeismicControlSensorResource resource) {
+        
+        var updateCommand = UpdateSeismicControlSensorCommandFromResourceAssembler.toCommandFromResource(seismicControlSensorId, resource);
+        var result = seismicControlSensorCommandService.handle(updateCommand);
+
+        return ResponseEntityAssembler.toResponseEntityFromResult(
+                result,
+                SeismicControlSensorResourceFromEntityAssembler::toResourceFromEntity,
+                HttpStatus.OK
+        );
+    }
+
+    /**
+     * Delete a seismic control sensor node
+     *
+     * @param seismicControlSensorId The internal database ID
+     * @return No content
+     */
+    @DeleteMapping("/{seismicControlSensorId}")
+    @Operation(
+            summary = "Delete seismic control sensor",
+            description = "Deletes an existing seismic control sensor node by its database unique identifier."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Seismic control sensor deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "Seismic control sensor not found")
+    })
+    public ResponseEntity<?> deleteSeismicControlSensor(
+            @PathVariable
+            @Parameter(description = "Seismic control sensor internal identifier", example = "1", required = true)
+            Long seismicControlSensorId) {
+        
+        var deleteCommand = new DeleteSeismicControlSensorCommand(seismicControlSensorId);
+        var result = seismicControlSensorCommandService.handle(deleteCommand);
+
+        if (result instanceof Result.Failure<Void, ApplicationError> failure) {
+            return ErrorResponseAssembler.toErrorResponseFromApplicationError(failure.error());
+        }
+
+        return ResponseEntity.noContent().build();
     }
 }

@@ -2,6 +2,8 @@ package com.kipu.backend.iotmonitoring.hopperwatch.application.commandservices;
 
 import com.kipu.backend.iotmonitoring.hopperwatch.domain.model.aggregates.HopperWatchSensor;
 import com.kipu.backend.iotmonitoring.hopperwatch.domain.model.commands.CreateHopperWatchSensorCommand;
+import com.kipu.backend.iotmonitoring.hopperwatch.domain.model.commands.UpdateHopperWatchSensorCommand;
+import com.kipu.backend.iotmonitoring.hopperwatch.domain.model.commands.DeleteHopperWatchSensorCommand;
 import com.kipu.backend.shared.application.result.ApplicationError;
 import com.kipu.backend.shared.application.result.Result;
 
@@ -18,4 +20,22 @@ public interface HopperWatchSensorCommandService {
      * or an {@link ApplicationError} on failure (validation or business rule violation)
      */
     Result<HopperWatchSensor, ApplicationError> handle(CreateHopperWatchSensorCommand command);
+
+    /**
+     * Handle Update Hopper Watch Command.
+     *
+     * @param command The {@link UpdateHopperWatchSensorCommand} Command
+     * @return A {@link Result} containing the updated {@link HopperWatchSensor} on success,
+     * or an {@link ApplicationError} on failure
+     */
+    Result<HopperWatchSensor, ApplicationError> handle(UpdateHopperWatchSensorCommand command);
+
+    /**
+     * Handle Delete Hopper Watch Command.
+     *
+     * @param command The {@link DeleteHopperWatchSensorCommand} Command
+     * @return A {@link Result} containing nothing on success,
+     * or an {@link ApplicationError} on failure
+     */
+    Result<Void, ApplicationError> handle(DeleteHopperWatchSensorCommand command);
 }

@@ -93,6 +93,19 @@ public class SeismicControlSensor extends AbstractDomainAggregateRoot<SeismicCon
     }
 
     /**
+     * Command-driven updater for smooth Application Layer integration.
+     * @param command The {@link com.kipu.backend.iotmonitoring.seismiccontrol.domain.model.commands.UpdateSeismicControlSensorCommand} record.
+     */
+    public void update(com.kipu.backend.iotmonitoring.seismiccontrol.domain.model.commands.UpdateSeismicControlSensorCommand command) {
+        this.sensorId = new SensorId(command.sensorId());
+        this.unit = command.unit();
+        this.telemetry = new SeismicTelemetry(command.lastLecture(), command.limit());
+        this.location = command.location();
+        this.timeLecture = command.timeLecture();
+        this.state = SeismicControlSensorState.fromInteger(command.state());
+    }
+
+    /**
      * Raw sensor hardware identification getter for external communication.
      * @return Hardware code string
      */
