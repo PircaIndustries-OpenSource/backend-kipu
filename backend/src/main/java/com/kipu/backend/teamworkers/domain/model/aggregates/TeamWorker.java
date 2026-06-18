@@ -1,5 +1,7 @@
 package com.kipu.backend.teamworkers.domain.model.aggregates;
 
+import com.kipu.backend.shared.domain.exceptions.BusinessException;
+import com.kipu.backend.teamworkers.domain.model.exceptions.DomainValidationException;
 import com.kipu.backend.teamworkers.domain.model.valueobjects.WorkerId;
 import lombok.Getter;
 
@@ -47,7 +49,7 @@ public class TeamWorker {
                 .anyMatch(m -> m.getMachineryId().equals(machineryId));
 
         if (alreadyAssigned) {
-            throw new IllegalStateException("This machinery is already assigned.");
+            throw new BusinessException("worker.validation.machineryAlreadyAssigned");
         }
 
         this.machineries.add(new WorkerMachinery(machineryId, fullName));

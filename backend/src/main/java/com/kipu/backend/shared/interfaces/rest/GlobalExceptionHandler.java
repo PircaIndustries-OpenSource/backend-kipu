@@ -1,16 +1,21 @@
 package com.kipu.backend.shared.interfaces.rest;
 
 import com.kipu.backend.shared.application.result.ApplicationError;
+import com.kipu.backend.shared.domain.exceptions.BusinessException;
 import com.kipu.backend.shared.interfaces.rest.transform.ErrorResponseAssembler;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NullMarked;
+import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -24,6 +29,31 @@ import java.util.ResourceBundle;
 @NullMarked
 public class GlobalExceptionHandler {
     private static final String MESSAGES_BASENAME = "messages";
+
+    private final MessageSource messageSource;
+
+    public GlobalExceptionHandler(MessageSource messageSource) {
+        this.messageSource = messageSource;
+    }
+
+
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<Map<String, Object>> handleBusinessException(BusinessException ex) {
+
+        String translatedMessage = messageSource.getMessage(
+                ex.getMessageKey(),
+                ex.getArgs(),
+                LocaleContextHolder.getLocale()
+        );
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("code", "VALIDATION_ERROR");
+        response.put("message", "Validation failed: request-argument");
+        response.put("details", translatedMessage);
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
 
     /**
      * Handles validation exceptions from Spring's request body validation.
