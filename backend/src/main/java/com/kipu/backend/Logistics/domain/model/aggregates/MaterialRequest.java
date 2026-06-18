@@ -34,7 +34,7 @@ public class MaterialRequest {
         this.requestStatus = Objects.requireNonNull(requestStatus, "material.request.error.requestStatus.notBlank");
         this.requestPriority = Objects.requireNonNull(requestPriority, "material.request.error.requestPriority.notBlank");
         this.deliveryLocation = Objects.requireNonNull(deliveryLocation, "material.request.error.deliveryLocation.notBlank");
-        this.budgetLineId = Objects.requireNonNull(budgetLineId, "material.request.error.budgetLineId.notBlank");
+        this.budgetLineId = budgetLineId;
         this.purpose = purpose;
         this.additionalNotes = additionalNotes;
         this.requestedBy = Objects.requireNonNull(requestedBy, "material.request.error.requestedBy.notBlank");

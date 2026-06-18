@@ -36,8 +36,7 @@ public record CreateMaterialRequestCommand(Instant deadline, RequestPriority req
             throw new IllegalArgumentException("requestPriority cannot be null");
         if (deliveryLocation == null || deliveryLocation.isBlank())
             throw new IllegalArgumentException("deliveryLocation cannot be null or blank");
-        if (budgetLineId == null)
-            throw new IllegalArgumentException("budgetLineId cannot be null");
+        // budgetLineId is optional; null is allowed
         if (requestedBy == null)
             throw new IllegalArgumentException("requestedBy cannot be null");
         if (items == null || items.isEmpty())

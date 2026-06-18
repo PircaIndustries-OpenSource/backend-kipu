@@ -26,7 +26,7 @@ public class MaterialRequestResourceFromEntityAssembler {
                 entity.getRequestStatus().name(),
                 entity.getRequestPriority().name(),
                 entity.getDeliveryLocation(),
-                entity.getBudgetLineId().value(),
+                entity.getBudgetLineId() != null ? entity.getBudgetLineId().value() : null,
                 entity.getPurpose(),
                 entity.getAdditionalNotes(),
                 entity.getRequestedBy().value(),

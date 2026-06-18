@@ -25,8 +25,7 @@ public record CreateMaterialRequestResource(
         @Size(max = 255, message = "material.request.error.deliveryLocation.size")
         String deliveryLocation,
 
-        @Schema(description = "Budget line identifier", example = "100", requiredMode = Schema.RequiredMode.REQUIRED)
-        @NotNull(message = "material.request.error.budgetLineId.notBlank")
+        @Schema(description = "Budget line identifier", example = "100", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
         @Positive(message = "material.request.error.budgetLineId.invalidValue")
         Integer budgetLineId,
 
