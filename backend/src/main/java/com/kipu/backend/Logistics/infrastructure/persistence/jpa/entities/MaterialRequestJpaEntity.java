@@ -44,7 +44,7 @@ public class MaterialRequestJpaEntity {
     @Column(name = "delivery_location", nullable = false, length = 255)
     private String deliveryLocation;
 
-    @Column(name = "budget_line_id", nullable = false)
+    @Column(name = "budget_line_id")
     @Convert(converter = BudgetLineIdAttributeConverter.class)
     private BudgetLineId budgetLineId;
 

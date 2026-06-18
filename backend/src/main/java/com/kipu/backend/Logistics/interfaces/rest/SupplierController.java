@@ -20,9 +20,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import com.kipu.backend.Logistics.application.commandservices.SupplierCommandFailure;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -176,6 +179,28 @@ public class SupplierController {
         var command = UpdateSupplierCommandFromResourceAssembler.toPatchCommandFromResource(resource);
         var result = commandService.handlePatch(id, command);
         return ResponseEntityFromSupplierUpdateCommandResultAssembler.toResponseEntityFromResult(result, messageSource);
+    }
+
+    @Operation(summary = "Delete a supplier by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Supplier deleted"),
+            @ApiResponse(responseCode = "404", description = "Supplier not found",
+                    content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteSupplier(@PathVariable Long id) {
+        log.debug("DELETE /api/v1/suppliers/{}", id);
+        var result = commandService.handleDelete(id);
+        return result.fold(
+                unused -> ResponseEntity.noContent().build(),
+                failure -> {
+                    var status = failure instanceof SupplierCommandFailure.NotFound
+                            ? HttpStatus.NOT_FOUND : HttpStatus.BAD_REQUEST;
+                    return ResponseEntity.status(status).body(ProblemDetail.forStatusAndDetail(
+                            status,
+                            messageSource.getMessage(failure.messageKey(), null, failure.messageKey(),
+                                    LocaleContextHolder.getLocale())));
+                });
     }
 
     private static String mask(String value) {

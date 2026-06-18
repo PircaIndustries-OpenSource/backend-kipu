@@ -106,6 +106,24 @@ public class SupplierCommandServiceImpl implements SupplierCommandService {
         }
     }
 
+    @Override
+    @Transactional
+    public Result<Void, SupplierCommandFailure> handleDelete(Long id) {
+        var existing = repository.findById(id);
+        if (existing.isEmpty()) {
+            log.warn("Supplier not found for deletion: id={}", id);
+            return Result.failure(new SupplierCommandFailure.NotFound());
+        }
+        try {
+            repository.deleteById(id);
+            log.info("Supplier deleted: id={}", id);
+            return Result.success(null);
+        } catch (Exception e) {
+            log.error("Error deleting supplier id={}", id, e);
+            return Result.failure(new SupplierCommandFailure.DeleteFailed());
+        }
+    }
+
     private boolean isDuplicateRucViolation(DataIntegrityViolationException e) {
         Throwable cause = e;
         while (cause != null) {
