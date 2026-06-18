@@ -1,5 +1,6 @@
 package com.kipu.backend.teamworkers.domain.model.aggregates;
 
+import com.kipu.backend.shared.domain.exceptions.BusinessException;
 import com.kipu.backend.teamworkers.domain.model.exceptions.DomainValidationException;
 import lombok.Getter;
 
@@ -14,7 +15,7 @@ public class WorkerMachinery {
 
     public WorkerMachinery(String machineryId, String fullName) {
         if (machineryId == null || machineryId.isBlank()) {
-            throw new DomainValidationException("worker.validation.machineryIdRequired");
+            throw new BusinessException("worker.validation.machineryIdRequired");
         }
         this.machineryId = machineryId;
         this.fullName = fullName;

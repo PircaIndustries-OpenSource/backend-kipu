@@ -5,6 +5,7 @@ import com.kipu.backend.documents.domain.model.repositories.DocumentRepository;
 import com.kipu.backend.documents.infraestructure.persistence.jpa.entities.DocumentJpaEntity;
 import com.kipu.backend.documents.infraestructure.persistence.jpa.mappers.DocumentMapper;
 import com.kipu.backend.documents.infraestructure.persistence.jpa.repositories.DocumentJpaRepository;
+import com.kipu.backend.shared.domain.exceptions.BusinessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,7 +34,7 @@ public class DocumentRepositoryAdapter implements DocumentRepository {
     public Optional<Document> findById(String id) {
         var entity = jpaRepository.findById(id);
         if (entity.isEmpty()) {
-            throw new IllegalArgumentException("document.validation.noDocumentFound");
+            throw new BusinessException("document.validation.noDocumentFound");
         }
         return Optional.of(mapper.toDomain(entity.get()));
     }

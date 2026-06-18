@@ -6,10 +6,10 @@ import jakarta.validation.constraints.NotBlank;
 @Schema(description = "Payload to assign a specific machinery to an existing team worker")
 public record AssignMachineryResource(
         @Schema(description = "Unique identifier of the machinery to assign", example = "maq-12345")
-        @NotBlank(message = "worker.validation.machineryIdRequired")
+        @NotBlank(message = "{worker.validation.machineryIdRequired}")
         String machineryId,
 
         @Schema(description = "Full name or description of the machinery", example = "Caterpillar Excavator 320")
-        @NotBlank(message = "worker.validation.machineryFullNameRequired")
+        @NotBlank(message = "{worker.validation.machineryFullNameRequired}")
         String fullName
 ) {}

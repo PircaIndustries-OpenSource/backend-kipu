@@ -17,11 +17,10 @@ import java.util.Optional;
 public class DocumentCommandServiceImpl implements DocumentCommandService {
 
     private final DocumentRepository documentRepository;
-    private final MessageSource messageSource;
 
-    public DocumentCommandServiceImpl(DocumentRepository documentRepository, MessageSource messageSource) {
+    public DocumentCommandServiceImpl(DocumentRepository documentRepository) {
         this.documentRepository = documentRepository;
-        this.messageSource = messageSource;
+
     }
 
     @Override
@@ -40,18 +39,15 @@ public class DocumentCommandServiceImpl implements DocumentCommandService {
     @Override
     @Transactional
     public Optional<Document> handle(SignDocumentCommand command) {
+
         Document document = this.documentRepository.findById(command.id())
-                .orElseThrow(() -> {
-                    String errorMessage = messageSource.getMessage(
-                            "document.validation.documentNotFound",
-                            new Object[]{command.id()},
-                            LocaleContextHolder.getLocale()
-                    );
-                    return new IllegalArgumentException(errorMessage);
-                });
+                .orElseThrow(() -> new IllegalArgumentException("document.validation.documentNotFound"));
 
         document.markAsSigned();
 
         return Optional.of(this.documentRepository.save(document));
+
     }
+
 }
+
