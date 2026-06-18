@@ -73,8 +73,7 @@ public class GeolocalizationSensorContextFacadeImpl implements GeolocalizationSe
      */
     @Override
     public Long fetchGeolocalizationSensorIdBySensorId(String sensorId) {
-        // Al ser un String primitivo directo en Kipu, no instanciamos ningún Value Object complejo aquí
-        var getGeolocalizationSensorBySensorIdQuery = new GetGeolocalizationSensorBySensorIdQuery(sensorId);
+        var getGeolocalizationSensorBySensorIdQuery = new GetGeolocalizationSensorBySensorIdQuery(new com.kipu.backend.iotmonitoring.geolocalization.domain.model.valueobjects.SensorId(sensorId));
 
         var sensor = geolocalizationSensorQueryService.handle(getGeolocalizationSensorBySensorIdQuery);
 

@@ -1,6 +1,7 @@
 package com.kipu.backend.iotmonitoring.concretecuring.domain.repositories;
 
 import com.kipu.backend.iotmonitoring.concretecuring.domain.model.aggregates.ConcreteCuringSensor;
+import com.kipu.backend.iotmonitoring.concretecuring.domain.model.valueobjects.SensorId;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,11 +12,17 @@ import java.util.Optional;
 public interface ConcreteCuringSensorRepository {
     Optional<ConcreteCuringSensor> findById(Long id);
 
-    Optional<ConcreteCuringSensor> findBySensorId(String sensorId);
+    Optional<ConcreteCuringSensor> findBySensorId(SensorId sensorId);
 
     List<ConcreteCuringSensor> findAll();
 
     ConcreteCuringSensor save(ConcreteCuringSensor concreteCuringSensor);
 
-    boolean existsBySensorId(String sensorId);
+    void deleteById(Long id);
+
+    boolean existsById(Long id);
+
+    boolean existsBySensorId(SensorId sensorId);
+
+    List<ConcreteCuringSensor> findAllByProjectId(String projectId);
 }

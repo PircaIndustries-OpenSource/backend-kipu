@@ -4,6 +4,7 @@ import com.kipu.backend.iotmonitoring.geolocalization.domain.model.aggregates.Ge
 import com.kipu.backend.iotmonitoring.geolocalization.domain.model.queries.GetAllGeolocalizationSensorsQuery;
 import com.kipu.backend.iotmonitoring.geolocalization.domain.model.queries.GetGeolocalizationSensorByIdQuery;
 import com.kipu.backend.iotmonitoring.geolocalization.domain.model.queries.GetGeolocalizationSensorBySensorIdQuery;
+import com.kipu.backend.iotmonitoring.geolocalization.domain.model.queries.GetGeolocalizationSensorsByProjectIdQuery;
 
 import java.util.List;
 import java.util.Optional;
@@ -36,4 +37,12 @@ public interface GeolocalizationSensorQueryService {
      * @return A list of {@link GeolocalizationSensor} instances
      */
     List<GeolocalizationSensor> handle(GetAllGeolocalizationSensorsQuery query);
+
+    /**
+     * Handle Get Geolocalization Sensors By Project ID Query
+     *
+     * @param query The {@link GetGeolocalizationSensorsByProjectIdQuery} Query
+     * @return A list of {@link GeolocalizationSensor} instances
+     */
+    List<GeolocalizationSensor> handle(GetGeolocalizationSensorsByProjectIdQuery query);
 }

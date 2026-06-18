@@ -1,6 +1,7 @@
 package com.kipu.backend.iotmonitoring.concretecuring.infrastructure.persistence.jpa.assemblers;
 
 import com.kipu.backend.iotmonitoring.concretecuring.domain.model.aggregates.ConcreteCuringSensor;
+import com.kipu.backend.iotmonitoring.concretecuring.domain.model.valueobjects.SensorId;
 import com.kipu.backend.iotmonitoring.concretecuring.domain.model.valueobjects.Temperature;
 import com.kipu.backend.iotmonitoring.concretecuring.infrastructure.persistence.jpa.embeddables.TemperaturePersistenceEmbeddable;
 import com.kipu.backend.iotmonitoring.concretecuring.infrastructure.persistence.jpa.entities.ConcreteCuringSensorPersistenceEntity;
@@ -40,7 +41,7 @@ public final class ConcreteCuringSensorPersistenceAssembler {
         var entity = new ConcreteCuringSensorPersistenceEntity();
         entity.setId(concreteCuringSensor.getId()); // Setter disponible por herencia
         entity.setProjectId(concreteCuringSensor.getProjectId());
-        entity.setSensorId(concreteCuringSensor.getSensorId());
+        entity.setSensorId(new SensorId(concreteCuringSensor.getSensorId()));
         entity.setState(concreteCuringSensor.getState());
         entity.setLocation(concreteCuringSensor.getLocation());
         entity.setTemperature(toPersistenceFromDomain(concreteCuringSensor.getTemperatureValue()));

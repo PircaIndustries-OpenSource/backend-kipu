@@ -4,6 +4,7 @@ import com.kipu.backend.iotmonitoring.concretecuring.domain.model.aggregates.Con
 import com.kipu.backend.iotmonitoring.concretecuring.domain.model.queries.GetAllConcreteCuringSensorQueries;
 import com.kipu.backend.iotmonitoring.concretecuring.domain.model.queries.GetConcreteCuringSensorByIdQuery;
 import com.kipu.backend.iotmonitoring.concretecuring.domain.model.queries.GetConcreteCuringSensorBySensorIdQuery;
+import com.kipu.backend.iotmonitoring.concretecuring.domain.model.queries.GetConcreteCuringSensorsByProjectIdQuery;
 
 import java.util.List;
 import java.util.Optional;
@@ -36,4 +37,6 @@ public interface ConcreteCuringSensorQueryService {
      * @return A list of {@link ConcreteCuringSensor} instances
      */
     List<ConcreteCuringSensor> handle(GetAllConcreteCuringSensorQueries query);
+
+    List<ConcreteCuringSensor> handle(GetConcreteCuringSensorsByProjectIdQuery query);
 }

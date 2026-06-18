@@ -3,6 +3,8 @@ package com.kipu.backend.iotmonitoring.geolocalization.infrastructure.persistenc
 import com.kipu.backend.iotmonitoring.geolocalization.infrastructure.persistence.jpa.converters.GeolocalizationSensorStatePersistenceConverter;
 import com.kipu.backend.iotmonitoring.geolocalization.infrastructure.persistence.jpa.embeddables.CoordinatesPersistenceEmbeddable;
 import com.kipu.backend.iotmonitoring.geolocalization.domain.model.valueobjects.GeolocalizationSensorState;
+import com.kipu.backend.iotmonitoring.geolocalization.domain.model.valueobjects.SensorId;
+import com.kipu.backend.iotmonitoring.geolocalization.infrastructure.persistence.jpa.converters.SensorIdPersistenceConverter;
 import com.kipu.backend.shared.infrastructure.persistence.jpa.entities.AuditableAbstractPersistenceEntity;
 import jakarta.persistence.*;
 
@@ -16,8 +18,9 @@ public class GeolocalizationSensorPersistenceEntity extends AuditableAbstractPer
     @Column(name = "project_id", nullable = false)
     private String projectId;
 
-    @Column(name = "sensor_id")
-    private String sensorId; // Mantenido primitivo para consistencia con Concrete Curing
+    @Convert(converter = SensorIdPersistenceConverter.class)
+    @Column(name = "sensor_id", nullable = false, unique = true)
+    private SensorId sensorId;
 
     @Column(name = "number_id")
     private Integer numberId;
@@ -46,11 +49,11 @@ public class GeolocalizationSensorPersistenceEntity extends AuditableAbstractPer
         this.projectId = projectId;
     }
 
-    public String getSensorId() {
+    public SensorId getSensorId() {
         return sensorId;
     }
 
-    public void setSensorId(String sensorId) {
+    public void setSensorId(SensorId sensorId) {
         this.sensorId = sensorId;
     }
 

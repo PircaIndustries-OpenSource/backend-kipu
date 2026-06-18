@@ -2,6 +2,7 @@ package com.kipu.backend.iotmonitoring.geolocalization.infrastructure.persistenc
 
 import com.kipu.backend.iotmonitoring.geolocalization.domain.model.aggregates.GeolocalizationSensor;
 import com.kipu.backend.iotmonitoring.geolocalization.domain.model.valueobjects.Coordinates;
+import com.kipu.backend.iotmonitoring.geolocalization.domain.model.valueobjects.SensorId;
 import com.kipu.backend.iotmonitoring.geolocalization.infrastructure.persistence.jpa.embeddables.CoordinatesPersistenceEmbeddable;
 import com.kipu.backend.iotmonitoring.geolocalization.infrastructure.persistence.jpa.entities.GeolocalizationSensorPersistenceEntity;
 
@@ -25,7 +26,7 @@ public final class GeolocalizationSensorPersistenceAssembler {
         return new GeolocalizationSensor(
                 entity.getId(),
                 entity.getProjectId(),
-                entity.getSensorId(),
+                entity.getSensorId() != null ? entity.getSensorId() : null,
                 entity.getNumberId(),
                 entity.getName(),
                 entity.getState(), // El convertidor de JPA ya nos entrega el tipo seguro GeolocalizationState
@@ -45,7 +46,7 @@ public final class GeolocalizationSensorPersistenceAssembler {
         var entity = new GeolocalizationSensorPersistenceEntity();
         entity.setId(sensor.getId());
         entity.setProjectId(sensor.getProjectId());
-        entity.setSensorId(sensor.getSensorId());
+        entity.setSensorId(new SensorId(sensor.getSensorId()));
         entity.setNumberId(sensor.getNumberId());
         entity.setName(sensor.getName());
         entity.setState(sensor.getState()); // Se asigna el Enum; JPA se encargará de guardarlo como entero

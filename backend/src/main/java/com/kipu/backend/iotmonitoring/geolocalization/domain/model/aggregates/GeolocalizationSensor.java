@@ -4,6 +4,7 @@ import com.kipu.backend.iotmonitoring.geolocalization.domain.model.commands.Crea
 import com.kipu.backend.iotmonitoring.geolocalization.domain.model.events.GeolocalizationSensorCreatedEvent;
 import com.kipu.backend.iotmonitoring.geolocalization.domain.model.valueobjects.Coordinates;
 import com.kipu.backend.iotmonitoring.geolocalization.domain.model.valueobjects.GeolocalizationSensorState;
+import com.kipu.backend.iotmonitoring.geolocalization.domain.model.valueobjects.SensorId;
 import com.kipu.backend.shared.domain.model.aggregates.AbstractDomainAggregateRoot;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,8 +23,7 @@ public class GeolocalizationSensor extends AbstractDomainAggregateRoot<Geolocali
     @Getter
     private String projectId;
 
-    @Getter
-    private String sensorId;
+    private SensorId sensorId;
 
     @Getter
     private Integer numberId;
@@ -39,17 +39,17 @@ public class GeolocalizationSensor extends AbstractDomainAggregateRoot<Geolocali
     /**
      * Base Domain Constructor.
      */
-    public GeolocalizationSensor(Long id, String projectId, String sensorId, Integer numberId, String name, GeolocalizationSensorState state, Coordinates coordinates) {
+    public GeolocalizationSensor(Long id, String projectId, SensorId sensorId, Integer numberId, String name, GeolocalizationSensorState state, Coordinates coordinates) {
         this.id = id;
         this.projectId = Objects.requireNonNull(projectId, "projectId must not be null");
+        this.sensorId = Objects.requireNonNull(sensorId, "sensorId must not be null");
         this.name = Objects.requireNonNull(name, "name must not be null");
         this.state = Objects.requireNonNull(state, "state must not be null");
         this.coordinates = Objects.requireNonNull(coordinates, "coordinates must not be null");
-        this.sensorId = sensorId;
         this.numberId = numberId;
     }
 
-    public GeolocalizationSensor(String projectId, String sensorId, Integer numberId, String name, GeolocalizationSensorState state, Coordinates coordinates) {
+    public GeolocalizationSensor(String projectId, SensorId sensorId, Integer numberId, String name, GeolocalizationSensorState state, Coordinates coordinates) {
         this(null, projectId, sensorId, numberId, name, state, coordinates);
     }
 
@@ -59,7 +59,7 @@ public class GeolocalizationSensor extends AbstractDomainAggregateRoot<Geolocali
     public GeolocalizationSensor(String projectId, String sensorId, Integer numberId, String name, Integer state, Double longitude, Double latitude) {
         this(
                 projectId,
-                sensorId,
+                new SensorId(sensorId),
                 numberId,
                 name,
                 GeolocalizationSensorState.fromInteger(state), // Aquí ocurre la magia del mapeo
@@ -78,6 +78,18 @@ public class GeolocalizationSensor extends AbstractDomainAggregateRoot<Geolocali
                 command.state(), // Pasa el Integer directo, el constructor de arriba lo traduce
                 command.longitude(),
                 command.latitude());
+    }
+
+    public String getSensorId() {
+        return sensorId.value();
+    }
+
+    public void update(com.kipu.backend.iotmonitoring.geolocalization.domain.model.commands.UpdateGeolocalizationSensorCommand command) {
+        this.sensorId = new SensorId(command.sensorId());
+        this.numberId = command.numberId();
+        this.name = command.name();
+        this.state = GeolocalizationSensorState.fromInteger(command.state());
+        this.coordinates = new Coordinates(command.longitude(), command.latitude());
     }
 
     public Coordinates getCoordinatesValue() {

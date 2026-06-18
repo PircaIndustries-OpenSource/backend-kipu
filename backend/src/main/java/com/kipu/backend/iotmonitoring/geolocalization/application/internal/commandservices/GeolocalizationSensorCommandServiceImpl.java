@@ -3,6 +3,9 @@ package com.kipu.backend.iotmonitoring.geolocalization.application.internal.comm
 import com.kipu.backend.iotmonitoring.geolocalization.application.commandservices.GeolocalizationSensorCommandService;
 import com.kipu.backend.iotmonitoring.geolocalization.domain.model.aggregates.GeolocalizationSensor;
 import com.kipu.backend.iotmonitoring.geolocalization.domain.model.commands.CreateGeolocalizationSensorCommand;
+import com.kipu.backend.iotmonitoring.geolocalization.domain.model.commands.DeleteGeolocalizationSensorCommand;
+import com.kipu.backend.iotmonitoring.geolocalization.domain.model.commands.UpdateGeolocalizationSensorCommand;
+import com.kipu.backend.iotmonitoring.geolocalization.domain.model.valueobjects.SensorId;
 import com.kipu.backend.iotmonitoring.geolocalization.domain.repositories.GeolocalizationSensorRepository;
 import com.kipu.backend.shared.application.result.ApplicationError;
 import com.kipu.backend.shared.application.result.Result;
@@ -30,9 +33,8 @@ public class GeolocalizationSensorCommandServiceImpl implements GeolocalizationS
     public Result<GeolocalizationSensor, ApplicationError> handle(CreateGeolocalizationSensorCommand command) {
         try {
             // 1. Validación de Unicidad de Negocio (Conflict Error)
-            // Como mantuvimos sensorId como String primitivo, validamos el comando directamente sin instanciar un VO
             if (command.sensorId() != null && !command.sensorId().isBlank()) {
-                if (geolocalizationSensorRepository.existsBySensorId(command.sensorId())) {
+                if (geolocalizationSensorRepository.existsBySensorId(new SensorId(command.sensorId()))) {
                     return Result.failure(ApplicationError.conflict(
                             "GeolocalizationSensor",
                             "A geolocalization sensor with sensor ID '%s' already exists".formatted(command.sensorId())));
@@ -56,6 +58,48 @@ public class GeolocalizationSensorCommandServiceImpl implements GeolocalizationS
             return Result.failure(ApplicationError.unexpected(
                     "Geolocalization sensor creation",
                     e.getMessage()));
+        }
+    }
+
+    @Override
+    public Result<GeolocalizationSensor, ApplicationError> handle(UpdateGeolocalizationSensorCommand command) {
+        try {
+            var sensorOptional = geolocalizationSensorRepository.findById(command.id());
+            if (sensorOptional.isEmpty()) {
+                return Result.failure(ApplicationError.notFound("GeolocalizationSensor", command.id().toString()));
+            }
+
+            var sensor = sensorOptional.get();
+
+            if (!sensor.getSensorId().equals(command.sensorId()) && geolocalizationSensorRepository.existsBySensorId(new SensorId(command.sensorId()))) {
+                return Result.failure(ApplicationError.conflict(
+                        "GeolocalizationSensor",
+                        "A geolocalization sensor with sensor ID '%s' already exists".formatted(command.sensorId())));
+            }
+
+            sensor.update(command);
+            var savedSensor = geolocalizationSensorRepository.save(sensor);
+            return Result.success(savedSensor);
+
+        } catch (IllegalArgumentException e) {
+            return Result.failure(ApplicationError.validationError("GeolocalizationSensor", e.getMessage()));
+        } catch (Exception e) {
+            return Result.failure(ApplicationError.unexpected("Geolocalization sensor update", e.getMessage()));
+        }
+    }
+
+    @Override
+    public Result<Void, ApplicationError> handle(DeleteGeolocalizationSensorCommand command) {
+        try {
+            if (!geolocalizationSensorRepository.existsById(command.id())) {
+                return Result.failure(ApplicationError.notFound("GeolocalizationSensor", command.id().toString()));
+            }
+
+            geolocalizationSensorRepository.deleteById(command.id());
+            return Result.success(null);
+
+        } catch (Exception e) {
+            return Result.failure(ApplicationError.unexpected("Geolocalization sensor deletion", e.getMessage()));
         }
     }
 }

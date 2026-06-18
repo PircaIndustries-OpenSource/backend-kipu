@@ -5,6 +5,7 @@ import com.kipu.backend.iotmonitoring.concretecuring.domain.model.aggregates.Con
 import com.kipu.backend.iotmonitoring.concretecuring.domain.model.queries.GetAllConcreteCuringSensorQueries;
 import com.kipu.backend.iotmonitoring.concretecuring.domain.model.queries.GetConcreteCuringSensorByIdQuery;
 import com.kipu.backend.iotmonitoring.concretecuring.domain.model.queries.GetConcreteCuringSensorBySensorIdQuery;
+import com.kipu.backend.iotmonitoring.concretecuring.domain.model.queries.GetConcreteCuringSensorsByProjectIdQuery;
 import com.kipu.backend.iotmonitoring.concretecuring.domain.repositories.ConcreteCuringSensorRepository;
 import org.springframework.stereotype.Service;
 
@@ -43,5 +44,10 @@ public class ConcreteCuringSensorQueryServiceImpl implements ConcreteCuringSenso
     @Override
     public List<ConcreteCuringSensor> handle(GetAllConcreteCuringSensorQueries query) {
         return concreteCuringSensorRepository.findAll();
+    }
+
+    @Override
+    public List<ConcreteCuringSensor> handle(GetConcreteCuringSensorsByProjectIdQuery query){
+        return concreteCuringSensorRepository.findAllByProjectId(query.projectId());
     }
 }

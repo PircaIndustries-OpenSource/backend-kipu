@@ -1,9 +1,11 @@
 package com.kipu.backend.iotmonitoring.concretecuring.domain.model.aggregates;
 
 import com.kipu.backend.iotmonitoring.concretecuring.domain.model.commands.CreateConcreteCuringSensorCommand;
+import com.kipu.backend.iotmonitoring.concretecuring.domain.model.commands.UpdateConcreteCuringSensorCommand;
 import com.kipu.backend.iotmonitoring.concretecuring.domain.model.events.ConcreteCuringSensorCreatedEvent;
 import com.kipu.backend.iotmonitoring.concretecuring.domain.model.valueobjects.CuringSensorState;
 import com.kipu.backend.iotmonitoring.concretecuring.domain.model.valueobjects.Humidity;
+import com.kipu.backend.iotmonitoring.concretecuring.domain.model.valueobjects.SensorId;
 import com.kipu.backend.iotmonitoring.concretecuring.domain.model.valueobjects.Temperature;
 import com.kipu.backend.shared.domain.model.aggregates.AbstractDomainAggregateRoot;
 import lombok.Getter;
@@ -20,8 +22,7 @@ public class ConcreteCuringSensor extends AbstractDomainAggregateRoot<ConcreteCu
     @Getter
     private String projectId;
 
-    @Getter
-    private String sensorId;
+    private SensorId sensorId;
 
     @Getter
     @Setter
@@ -47,7 +48,7 @@ public class ConcreteCuringSensor extends AbstractDomainAggregateRoot<ConcreteCu
      * @param humidity Represents the humidity percentage detected by the concrete curing sensor
      * @param temperatureLimit Represents the set temperature limit on the concrete curing sensor
      */
-    public ConcreteCuringSensor(Long id, String projectId, String sensorId, CuringSensorState state, String location, Temperature temperature, Humidity humidity, Double temperatureLimit){
+    public ConcreteCuringSensor(Long id, String projectId, SensorId sensorId, CuringSensorState state, String location, Temperature temperature, Humidity humidity, Double temperatureLimit){
         this.id = id;
         this.projectId = Objects.requireNonNull(projectId, "projectId must not be null.");
         this.sensorId = Objects.requireNonNull(sensorId, "sensorId must not be null.");
@@ -71,7 +72,7 @@ public class ConcreteCuringSensor extends AbstractDomainAggregateRoot<ConcreteCu
      * @param humidity Represents the humidity percentage detected by the concrete curing sensor
      * @param temperatureLimit Represents the set temperature limit on the concrete curing sensor
      */
-    public ConcreteCuringSensor(String projectId, String sensorId, CuringSensorState state, String location, Temperature temperature, Humidity humidity, Double temperatureLimit) {
+    public ConcreteCuringSensor(String projectId, SensorId sensorId, CuringSensorState state, String location, Temperature temperature, Humidity humidity, Double temperatureLimit) {
         this(null, projectId, sensorId, state, location, temperature, humidity, temperatureLimit);
     }
 
@@ -89,8 +90,8 @@ public class ConcreteCuringSensor extends AbstractDomainAggregateRoot<ConcreteCu
     public ConcreteCuringSensor(String projectId, String sensorId, Integer stateOrdinal, String location, Double temperatureReading, String unit, Integer humidityPercentage, Double temperatureLimit){
         this (
                 projectId,
-                sensorId,
-                CuringSensorState.values()[stateOrdinal],
+                new SensorId(sensorId),
+                CuringSensorState.fromValue(stateOrdinal),
                 location,
                 new Temperature(temperatureReading, unit),
                 new Humidity(humidityPercentage),
@@ -116,6 +117,22 @@ public class ConcreteCuringSensor extends AbstractDomainAggregateRoot<ConcreteCu
     }
 
     // --- Value Object Unwrapping Getters ---
+
+    /**
+     * Raw sensor hardware identification getter for external communication.
+     * @return Hardware code string
+     */
+    public String getSensorId() {
+        return sensorId.value();
+    }
+
+    public CuringSensorState getState() {
+        return state;
+    }
+
+    public Integer getStateValue() {
+        return state.getValue();
+    }
 
     public Temperature getTemperatureValue() {
         return temperature;
@@ -150,6 +167,15 @@ public class ConcreteCuringSensor extends AbstractDomainAggregateRoot<ConcreteCu
         this.temperature = Objects.requireNonNull(newTemperature, "newTemperature must not be null");
         this.humidity = Objects.requireNonNull(newHumidity, "newHumidity must not be null");
         checkTemperatureAlert();
+    }
+
+    public void update(UpdateConcreteCuringSensorCommand command){
+        this.sensorId = new SensorId(command.sensorId());
+        this.state = CuringSensorState.fromValue(command.state());
+        this.location = command.location();
+        this.humidity = new Humidity(command.humidity());
+        this.temperature = new Temperature(command.temperature(), command.unit());
+        this.temperatureLimit = command.limit();
     }
 
     private void checkTemperatureAlert() {

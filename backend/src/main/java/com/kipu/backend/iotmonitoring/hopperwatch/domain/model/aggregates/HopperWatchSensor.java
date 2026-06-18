@@ -3,7 +3,7 @@ package com.kipu.backend.iotmonitoring.hopperwatch.domain.model.aggregates;
 import com.kipu.backend.iotmonitoring.hopperwatch.domain.model.commands.CreateHopperWatchSensorCommand;
 import com.kipu.backend.iotmonitoring.hopperwatch.domain.model.events.HopperWatchSensorCreatedEvent;
 import com.kipu.backend.iotmonitoring.hopperwatch.domain.model.valueobjects.HopperMeasurement;
-import com.kipu.backend.iotmonitoring.hopperwatch.domain.model.commands.
+import com.kipu.backend.iotmonitoring.hopperwatch.domain.model.commands.UpdateHopperWatchSensorCommand;
 import com.kipu.backend.iotmonitoring.hopperwatch.domain.model.valueobjects.HopperSensorState;
 import com.kipu.backend.iotmonitoring.hopperwatch.domain.model.valueobjects.SensorId;
 import com.kipu.backend.shared.domain.model.aggregates.AbstractDomainAggregateRoot;

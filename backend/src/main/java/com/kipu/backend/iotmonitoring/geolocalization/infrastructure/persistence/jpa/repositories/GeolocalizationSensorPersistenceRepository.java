@@ -1,5 +1,6 @@
 package com.kipu.backend.iotmonitoring.geolocalization.infrastructure.persistence.jpa.repositories;
 
+import com.kipu.backend.iotmonitoring.geolocalization.domain.model.valueobjects.SensorId;
 import com.kipu.backend.iotmonitoring.geolocalization.infrastructure.persistence.jpa.entities.GeolocalizationSensorPersistenceEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -21,7 +22,7 @@ public interface GeolocalizationSensorPersistenceRepository extends JpaRepositor
      * @return An {@link Optional} containing the found entity, or empty if none matches.
      */
     @Query("select sensor from GeolocalizationSensorPersistenceEntity sensor where sensor.sensorId = :sensorId")
-    Optional<GeolocalizationSensorPersistenceEntity> findBySensorId(@Param("sensorId") String sensorId);
+    Optional<GeolocalizationSensorPersistenceEntity> findBySensorId(@Param("sensorId") SensorId sensorId);
 
     /**
      * Counts how many sensors use a specific sensor identifier.
@@ -30,7 +31,7 @@ public interface GeolocalizationSensorPersistenceRepository extends JpaRepositor
      * @return The count of sensors matching the provided sensor id.
      */
     @Query("select count(sensor) from GeolocalizationSensorPersistenceEntity sensor where sensor.sensorId = :sensorId")
-    long countBySensorId(@Param("sensorId") String sensorId);
+    long countBySensorId(@Param("sensorId") SensorId sensorId);
 
     /**
      * Finds all geolocalization sensors associated with a specific project.

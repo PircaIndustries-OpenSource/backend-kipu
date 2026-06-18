@@ -2,9 +2,11 @@ package com.kipu.backend.iotmonitoring.concretecuring.infrastructure.persistence
 
 import com.kipu.backend.iotmonitoring.concretecuring.domain.model.valueobjects.CuringSensorState;
 import com.kipu.backend.iotmonitoring.concretecuring.domain.model.valueobjects.Humidity;
+import com.kipu.backend.iotmonitoring.concretecuring.domain.model.valueobjects.SensorId;
 import com.kipu.backend.iotmonitoring.concretecuring.infrastructure.persistence.jpa.converters.ConcreteCuringSensorStatePersistenceConverter;
 import com.kipu.backend.iotmonitoring.concretecuring.infrastructure.persistence.jpa.converters.HumidityPersistenceConverter;
 import com.kipu.backend.iotmonitoring.concretecuring.infrastructure.persistence.jpa.embeddables.TemperaturePersistenceEmbeddable;
+import com.kipu.backend.iotmonitoring.concretecuring.infrastructure.persistence.jpa.converters.SensorIdPersistenceConverter;
 import com.kipu.backend.shared.infrastructure.persistence.jpa.entities.AuditableAbstractPersistenceEntity;
 import jakarta.persistence.*;
 
@@ -18,8 +20,9 @@ public class ConcreteCuringSensorPersistenceEntity extends AuditableAbstractPers
     @Column(name = "project_id", nullable = false)
     private String projectId;
 
+    @Convert(converter = SensorIdPersistenceConverter.class)
     @Column(name = "sensor_id", nullable = false, unique = true)
-    private String sensorId;
+    private SensorId sensorId;
 
     @Convert(converter = ConcreteCuringSensorStatePersistenceConverter.class)
     @Column(name = "state", nullable = false)
@@ -55,11 +58,11 @@ public class ConcreteCuringSensorPersistenceEntity extends AuditableAbstractPers
         this.projectId = projectId;
     }
 
-    public String getSensorId() {
+    public SensorId getSensorId() {
         return sensorId;
     }
 
-    public void setSensorId(String sensorId) {
+    public void setSensorId(SensorId sensorId) {
         this.sensorId = sensorId;
     }
 

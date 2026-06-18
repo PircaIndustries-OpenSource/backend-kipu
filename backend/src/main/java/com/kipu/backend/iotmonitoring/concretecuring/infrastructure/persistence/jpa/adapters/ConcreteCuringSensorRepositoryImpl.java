@@ -1,6 +1,7 @@
 package com.kipu.backend.iotmonitoring.concretecuring.infrastructure.persistence.jpa.adapters;
 
 import com.kipu.backend.iotmonitoring.concretecuring.domain.model.aggregates.ConcreteCuringSensor;
+import com.kipu.backend.iotmonitoring.concretecuring.domain.model.valueobjects.SensorId;
 import com.kipu.backend.iotmonitoring.concretecuring.domain.repositories.ConcreteCuringSensorRepository;
 import com.kipu.backend.iotmonitoring.concretecuring.infrastructure.persistence.jpa.assemblers.ConcreteCuringSensorPersistenceAssembler;
 import com.kipu.backend.iotmonitoring.concretecuring.infrastructure.persistence.jpa.repositories.ConcreteCuringSensorPersistenceRepository;
@@ -37,7 +38,7 @@ public class ConcreteCuringSensorRepositoryImpl implements ConcreteCuringSensorR
     }
 
     @Override
-    public Optional<ConcreteCuringSensor> findBySensorId(String sensorId) {
+    public Optional<ConcreteCuringSensor> findBySensorId(SensorId sensorId) {
         return concreteCuringPersistenceRepository.findBySensorId(sensorId)
                 .map(ConcreteCuringSensorPersistenceAssembler::toDomainFromPersistence);
     }
@@ -77,7 +78,22 @@ public class ConcreteCuringSensorRepositoryImpl implements ConcreteCuringSensorR
     }
 
     @Override
-    public boolean existsBySensorId(String sensorId) {
+    public boolean existsBySensorId(SensorId sensorId) {
         return concreteCuringPersistenceRepository.countBySensorId(sensorId) > 0;
+    }
+
+    @Override
+    public List<ConcreteCuringSensor> findAllByProjectId(String projectId){
+        return concreteCuringPersistenceRepository.findAllByProjectId(projectId).stream()
+                .map(ConcreteCuringSensorPersistenceAssembler::toDomainFromPersistence)
+                .toList();
+    }
+
+    @Override
+    public void deleteById(Long id) {concreteCuringPersistenceRepository.deleteById(id);}
+
+    @Override
+    public boolean existsById(Long id) {
+        return concreteCuringPersistenceRepository.existsById(id);
     }
 }

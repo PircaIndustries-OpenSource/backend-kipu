@@ -2,6 +2,8 @@ package com.kipu.backend.iotmonitoring.geolocalization.application.commandservic
 
 import com.kipu.backend.iotmonitoring.geolocalization.domain.model.aggregates.GeolocalizationSensor;
 import com.kipu.backend.iotmonitoring.geolocalization.domain.model.commands.CreateGeolocalizationSensorCommand;
+import com.kipu.backend.iotmonitoring.geolocalization.domain.model.commands.DeleteGeolocalizationSensorCommand;
+import com.kipu.backend.iotmonitoring.geolocalization.domain.model.commands.UpdateGeolocalizationSensorCommand;
 import com.kipu.backend.shared.application.result.ApplicationError;
 import com.kipu.backend.shared.application.result.Result;
 
@@ -18,4 +20,8 @@ public interface GeolocalizationSensorCommandService {
      * or an {@link ApplicationError} on failure (validation or business rule violation)
      */
     Result<GeolocalizationSensor, ApplicationError> handle(CreateGeolocalizationSensorCommand command);
+
+    Result<GeolocalizationSensor, ApplicationError> handle(UpdateGeolocalizationSensorCommand command);
+
+    Result<Void, ApplicationError> handle(DeleteGeolocalizationSensorCommand command);
 }

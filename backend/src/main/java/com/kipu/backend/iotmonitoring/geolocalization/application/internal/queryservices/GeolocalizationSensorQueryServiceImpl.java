@@ -5,6 +5,7 @@ import com.kipu.backend.iotmonitoring.geolocalization.domain.model.aggregates.Ge
 import com.kipu.backend.iotmonitoring.geolocalization.domain.model.queries.GetAllGeolocalizationSensorsQuery;
 import com.kipu.backend.iotmonitoring.geolocalization.domain.model.queries.GetGeolocalizationSensorByIdQuery;
 import com.kipu.backend.iotmonitoring.geolocalization.domain.model.queries.GetGeolocalizationSensorBySensorIdQuery;
+import com.kipu.backend.iotmonitoring.geolocalization.domain.model.queries.GetGeolocalizationSensorsByProjectIdQuery;
 import com.kipu.backend.iotmonitoring.geolocalization.domain.repositories.GeolocalizationSensorRepository;
 import org.springframework.stereotype.Service;
 
@@ -44,5 +45,11 @@ public class GeolocalizationSensorQueryServiceImpl implements GeolocalizationSen
     @Override
     public List<GeolocalizationSensor> handle(GetAllGeolocalizationSensorsQuery query) {
         return geolocalizationSensorRepository.findAll();
+    }
+
+    // inherited javadoc
+    @Override
+    public List<GeolocalizationSensor> handle(GetGeolocalizationSensorsByProjectIdQuery query) {
+        return geolocalizationSensorRepository.findAllByProjectId(query.projectId());
     }
 }

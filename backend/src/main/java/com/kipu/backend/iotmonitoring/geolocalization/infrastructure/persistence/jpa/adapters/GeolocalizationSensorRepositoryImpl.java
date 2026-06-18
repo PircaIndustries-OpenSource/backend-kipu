@@ -2,6 +2,7 @@ package com.kipu.backend.iotmonitoring.geolocalization.infrastructure.persistenc
 
 import com.kipu.backend.iotmonitoring.geolocalization.domain.model.aggregates.GeolocalizationSensor;
 import com.kipu.backend.iotmonitoring.geolocalization.domain.model.events.GeolocalizationSensorCreatedEvent;
+import com.kipu.backend.iotmonitoring.geolocalization.domain.model.valueobjects.SensorId;
 import com.kipu.backend.iotmonitoring.geolocalization.domain.repositories.GeolocalizationSensorRepository;
 import com.kipu.backend.iotmonitoring.geolocalization.infrastructure.persistence.jpa.assemblers.GeolocalizationSensorPersistenceAssembler;
 import com.kipu.backend.iotmonitoring.geolocalization.infrastructure.persistence.jpa.repositories.GeolocalizationSensorPersistenceRepository;
@@ -38,7 +39,7 @@ public class GeolocalizationSensorRepositoryImpl implements GeolocalizationSenso
     }
 
     @Override
-    public Optional<GeolocalizationSensor> findBySensorId(String sensorId) {
+    public Optional<GeolocalizationSensor> findBySensorId(SensorId sensorId) {
         return geolocalizationSensorPersistenceRepository.findBySensorId(sensorId)
                 .map(GeolocalizationSensorPersistenceAssembler::toDomainFromPersistence);
     }
@@ -78,8 +79,18 @@ public class GeolocalizationSensorRepositoryImpl implements GeolocalizationSenso
     }
 
     @Override
-    public boolean existsBySensorId(String sensorId) {
+    public boolean existsBySensorId(SensorId sensorId) {
         // Ejecuta la consulta JPQL optimizada que definimos en el paso anterior
         return geolocalizationSensorPersistenceRepository.countBySensorId(sensorId) > 0;
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        geolocalizationSensorPersistenceRepository.deleteById(id);
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return geolocalizationSensorPersistenceRepository.existsById(id);
     }
 }

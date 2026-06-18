@@ -6,6 +6,7 @@ import com.kipu.backend.iotmonitoring.concretecuring.domain.model.aggregates.Con
 import com.kipu.backend.iotmonitoring.concretecuring.domain.model.commands.CreateConcreteCuringSensorCommand;
 import com.kipu.backend.iotmonitoring.concretecuring.domain.model.queries.GetConcreteCuringSensorBySensorIdQuery;
 import com.kipu.backend.iotmonitoring.concretecuring.domain.model.valueobjects.CuringSensorState;
+import com.kipu.backend.iotmonitoring.concretecuring.domain.model.valueobjects.SensorId;
 import com.kipu.backend.iotmonitoring.concretecuring.interfaces.acl.ConcreteCuringSensorContextFacade;
 import org.springframework.stereotype.Service;
 
@@ -81,7 +82,7 @@ public class ConcreteCuringSensorContextFacadeImpl implements ConcreteCuringSens
      */
     @Override
     public Long fetchConcreteCuringIdBySensorId(String sensorId) {
-        var getConcreteCuringSensorBySensorIdQuery = new GetConcreteCuringSensorBySensorIdQuery(sensorId);
+        var getConcreteCuringSensorBySensorIdQuery = new GetConcreteCuringSensorBySensorIdQuery(new SensorId(sensorId));
         var concreteCuring = concreteCuringSensorQueryService.handle(getConcreteCuringSensorBySensorIdQuery);
 
         return concreteCuring.map(ConcreteCuringSensor::getId).orElse(0L);
