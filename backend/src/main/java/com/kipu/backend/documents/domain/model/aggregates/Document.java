@@ -41,14 +41,14 @@ public class Document {
 
     public void assignSigner(String teamUserId, String fullName) {
         if (this.isSigned) {
-            throw new IllegalStateException("You can't assign signers to an already signed document.");
+            throw new IllegalStateException("document.validation.assignToSigned");
         }
 
         boolean alreadyAssigned = signers.stream()
                 .anyMatch(s -> s.teamUserId().equals(teamUserId));
 
         if (alreadyAssigned) {
-            throw new IllegalArgumentException("The user is already signed on this document.");
+            throw new IllegalArgumentException("document.validation.userAlreadyAssigned");
         }
 
         this.signers.add(new Signer(teamUserId, fullName));
@@ -56,7 +56,7 @@ public class Document {
 
     public void markAsSigned() {
         if (this.signers.isEmpty()) {
-            throw new IllegalStateException("You can't sign a document without signers");
+            throw new IllegalStateException("document.validation.signWithoutSigners");
         }
         this.isSigned = true;
         this.digitalSignatureToken = "SIGN-" + System.currentTimeMillis();

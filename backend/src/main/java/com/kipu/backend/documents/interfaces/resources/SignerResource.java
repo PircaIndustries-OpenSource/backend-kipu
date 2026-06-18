@@ -1,11 +1,15 @@
 package com.kipu.backend.documents.interfaces.resources;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 
+@Schema(description = "Represents a user required to sign a document")
 public record SignerResource(
-        @NotBlank(message = "The team user ID is required")
+        @Schema(description = "Unique identifier of the team user required to sign", example = "us-12345")
+        @NotBlank(message = "document.validation.invalidUserId")
         String teamUserId,
 
-        @NotBlank(message = "The signer's full name is required")
+        @Schema(description = "Full name of the signer", example = "Ing. Martin Suarez")
+        @NotBlank(message = "document.validation.emptyUserName")
         String fullName
 ) {}

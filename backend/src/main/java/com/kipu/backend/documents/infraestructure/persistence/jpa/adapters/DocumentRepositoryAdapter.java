@@ -33,7 +33,7 @@ public class DocumentRepositoryAdapter implements DocumentRepository {
     public Optional<Document> findById(String id) {
         var entity = jpaRepository.findById(id);
         if (entity.isEmpty()) {
-            throw new IllegalArgumentException("There's no document with the selected id");
+            throw new IllegalArgumentException("document.validation.noDocumentFound");
         }
         return Optional.of(mapper.toDomain(entity.get()));
     }

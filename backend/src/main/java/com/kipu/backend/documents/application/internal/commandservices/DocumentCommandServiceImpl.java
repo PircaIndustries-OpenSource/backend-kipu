@@ -7,6 +7,8 @@ import com.kipu.backend.documents.domain.model.repositories.DocumentRepository;
 import com.kipu.backend.documents.domain.model.valueobjects.Signer;
 
 import jakarta.transaction.Transactional;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -15,9 +17,11 @@ import java.util.Optional;
 public class DocumentCommandServiceImpl implements DocumentCommandService {
 
     private final DocumentRepository documentRepository;
+    private final MessageSource messageSource;
 
-    public DocumentCommandServiceImpl(DocumentRepository documentRepository) {
+    public DocumentCommandServiceImpl(DocumentRepository documentRepository, MessageSource messageSource) {
         this.documentRepository = documentRepository;
+        this.messageSource = messageSource;
     }
 
     @Override
@@ -37,7 +41,15 @@ public class DocumentCommandServiceImpl implements DocumentCommandService {
     @Transactional
     public Optional<Document> handle(SignDocumentCommand command) {
         Document document = this.documentRepository.findById(command.id())
-                .orElseThrow(() -> new IllegalArgumentException("User with id " + command.id() + " was not found"));
+                .orElseThrow(() -> {
+                    String errorMessage = messageSource.getMessage(
+                            "document.validation.documentNotFound",
+                            new Object[]{command.id()},
+                            LocaleContextHolder.getLocale()
+                    );
+                    return new IllegalArgumentException(errorMessage);
+                });
+
         document.markAsSigned();
 
         return Optional.of(this.documentRepository.save(document));
