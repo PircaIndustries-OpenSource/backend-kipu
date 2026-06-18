@@ -2,6 +2,7 @@ package com.kipu.backend.iotmonitoring.hopperwatch.infrastructure.persistence.jp
 
 import com.kipu.backend.iotmonitoring.hopperwatch.domain.model.aggregates.HopperWatchSensor;
 import com.kipu.backend.iotmonitoring.hopperwatch.domain.model.valueobjects.HopperMeasurement;
+import com.kipu.backend.iotmonitoring.hopperwatch.domain.model.valueobjects.SensorId;
 import com.kipu.backend.iotmonitoring.hopperwatch.infrastructure.persistence.jpa.embeddables.HopperMeasurementPersistenceEmbeddable;
 import com.kipu.backend.iotmonitoring.hopperwatch.infrastructure.persistence.jpa.entities.HopperWatchSensorPersistenceEntity;
 
@@ -19,6 +20,8 @@ public final class HopperWatchSensorPersistenceAssembler {
      * @return A validated {@link HopperWatchSensor} aggregate root
      */
     public static HopperWatchSensor toDomainFromPersistence(HopperWatchSensorPersistenceEntity entity) {
+        if (entity == null) return null;
+
         return new HopperWatchSensor(
                 entity.getId(),
                 entity.getProjectId(),
@@ -39,7 +42,7 @@ public final class HopperWatchSensorPersistenceAssembler {
         var entity = new HopperWatchSensorPersistenceEntity();
         entity.setId(hopperWatch.getId());
         entity.setProjectId(hopperWatch.getProjectId());
-        entity.setSensorId(hopperWatch.getSensorId());
+        entity.setSensorId(new SensorId(hopperWatch.getSensorId()));
         entity.setName(hopperWatch.getName());
         entity.setUnit(hopperWatch.getUnit());
         entity.setState(hopperWatch.getState());

@@ -1,6 +1,7 @@
 package com.kipu.backend.iotmonitoring.hopperwatch.infrastructure.persistence.jpa.adapters;
 
 import com.kipu.backend.iotmonitoring.hopperwatch.domain.model.aggregates.HopperWatchSensor;
+import com.kipu.backend.iotmonitoring.hopperwatch.domain.model.valueobjects.SensorId;
 import com.kipu.backend.iotmonitoring.hopperwatch.domain.repositories.HopperWatchSensorRepository;
 import com.kipu.backend.iotmonitoring.hopperwatch.infrastructure.persistence.jpa.assemblers.HopperWatchSensorPersistenceAssembler;
 import com.kipu.backend.iotmonitoring.hopperwatch.infrastructure.persistence.jpa.repositories.HopperWatchSensorPersistenceRepository;
@@ -37,7 +38,7 @@ public class HopperWatchSensorRepositoryImpl implements HopperWatchSensorReposit
     }
 
     @Override
-    public Optional<HopperWatchSensor> findBySensorId(String sensorId) {
+    public Optional<HopperWatchSensor> findBySensorId(SensorId sensorId) {
         return hopperWatchPersistenceRepository.findBySensorId(sensorId)
                 .map(HopperWatchSensorPersistenceAssembler::toDomainFromPersistence);
     }
@@ -72,7 +73,7 @@ public class HopperWatchSensorRepositoryImpl implements HopperWatchSensorReposit
     }
 
     @Override
-    public boolean existsBySensorId(String sensorId) {
+    public boolean existsBySensorId(SensorId sensorId) {
         return hopperWatchPersistenceRepository.countBySensorId(sensorId) > 0;
     }
 

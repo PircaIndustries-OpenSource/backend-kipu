@@ -4,6 +4,7 @@ import com.kipu.backend.iotmonitoring.seismiccontrol.domain.model.aggregates.Sei
 import com.kipu.backend.iotmonitoring.seismiccontrol.domain.model.queries.GetAllSeismicControlSensorsQuery;
 import com.kipu.backend.iotmonitoring.seismiccontrol.domain.model.queries.GetSeismicControlSensorByIdQuery;
 import com.kipu.backend.iotmonitoring.seismiccontrol.domain.model.queries.GetSeismicControlSensorBySensorIdQuery;
+import com.kipu.backend.iotmonitoring.seismiccontrol.domain.model.queries.GetSeismicControlSensorsByProjectIdQuery;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,4 +39,11 @@ public interface SeismicControlSensorQueryService {
      * @return A {@link List} of active {@link SeismicControlSensor} aggregate roots.
      */
     List<SeismicControlSensor> handle(GetAllSeismicControlSensorsQuery query);
+
+    /**
+     * Handle Get Hopper Watches By Project ID Query
+     * @param query The {@link GetSeismicControlSensorsByProjectIdQuery} Query
+     * @return A list of {@link SeismicControlSensor} instances associated with the project
+     */
+    List<SeismicControlSensor> handle(GetSeismicControlSensorsByProjectIdQuery query);
 }

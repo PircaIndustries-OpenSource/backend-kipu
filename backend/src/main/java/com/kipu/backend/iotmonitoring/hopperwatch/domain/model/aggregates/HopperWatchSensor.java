@@ -4,6 +4,7 @@ import com.kipu.backend.iotmonitoring.hopperwatch.domain.model.commands.CreateHo
 import com.kipu.backend.iotmonitoring.hopperwatch.domain.model.events.HopperWatchSensorCreatedEvent;
 import com.kipu.backend.iotmonitoring.hopperwatch.domain.model.valueobjects.HopperMeasurement;
 import com.kipu.backend.iotmonitoring.hopperwatch.domain.model.valueobjects.HopperSensorState;
+import com.kipu.backend.iotmonitoring.hopperwatch.domain.model.valueobjects.SensorId;
 import com.kipu.backend.shared.domain.model.aggregates.AbstractDomainAggregateRoot;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,8 +27,7 @@ public class HopperWatchSensor extends AbstractDomainAggregateRoot<HopperWatchSe
     @Getter
     private String projectId;
 
-    @Getter
-    private String sensorId;
+    private SensorId sensorId;
 
     @Getter
     private String name;
@@ -41,7 +41,7 @@ public class HopperWatchSensor extends AbstractDomainAggregateRoot<HopperWatchSe
     /**
      * Creates a hopper watch monitor from the provided domain values.
      */
-    public HopperWatchSensor(Long id, String projectId, String sensorId, String name, String unit, HopperSensorState state, HopperMeasurement measurement) {
+    public HopperWatchSensor(Long id, String projectId, SensorId sensorId, String name, String unit, HopperSensorState state, HopperMeasurement measurement) {
         this.id = id;
         this.projectId = Objects.requireNonNull(projectId, "projectId must not be null");
         this.sensorId = Objects.requireNonNull(sensorId, "sensorId must not be null");
@@ -54,7 +54,7 @@ public class HopperWatchSensor extends AbstractDomainAggregateRoot<HopperWatchSe
     /**
      * Creates a hopper watch monitor from the provided domain values (without ID).
      */
-    public HopperWatchSensor(String projectId, String sensorId, String name, String unit, HopperSensorState state, HopperMeasurement measurement) {
+    public HopperWatchSensor(String projectId, SensorId sensorId, String name, String unit, HopperSensorState state, HopperMeasurement measurement) {
         // CORREGIDO: Se cambió 'this.this' por 'this' heredando correctamente al constructor principal
         this(null, projectId, sensorId, name, unit, state, measurement);
     }
@@ -65,7 +65,7 @@ public class HopperWatchSensor extends AbstractDomainAggregateRoot<HopperWatchSe
     public HopperWatchSensor(String projectId, String sensorId, String name, String unit, Integer state, Integer lastLecture, Integer limit) {
         this(
                 projectId,
-                sensorId,
+                new SensorId(sensorId),
                 name,
                 unit,
                 HopperSensorState.fromValue(state),
@@ -87,6 +87,14 @@ public class HopperWatchSensor extends AbstractDomainAggregateRoot<HopperWatchSe
                 command.lastLecture(),
                 command.limit()
         );
+    }
+
+    /**
+     * Raw sensor hardware identification getter for external communication.
+     * @return Hardware code string
+     */
+    public String getSensorId() {
+        return sensorId.value();
     }
 
     /**

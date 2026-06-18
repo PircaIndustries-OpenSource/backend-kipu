@@ -34,7 +34,7 @@ public final class SeismicControlSensorPersistenceAssembler {
                 toDomainFromPersistence(entity.getTelemetry()),
                 entity.getLocation(),
                 entity.getTimeLecture(),
-                SeismicControlSensorState.fromInteger(entity.getState())
+                entity.getState()
         );
     }
 
@@ -54,7 +54,7 @@ public final class SeismicControlSensorPersistenceAssembler {
         entity.setUnit(seismicControl.getUnit());
         entity.setLocation(seismicControl.getLocation());
         entity.setTimeLecture(seismicControl.getTimeLecture());
-        entity.setState(seismicControl.getState());
+        entity.setState(seismicControl.getSeismicControlSensorStateValue());
 
         // Se extrae el Value Object del dominio y se pasa al método sobrecargado correcto
         entity.setTelemetry(toPersistenceFromDomain(seismicControl.getTelemetryValue()));

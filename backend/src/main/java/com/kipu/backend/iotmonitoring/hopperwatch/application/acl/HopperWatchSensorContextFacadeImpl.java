@@ -5,6 +5,7 @@ import com.kipu.backend.iotmonitoring.hopperwatch.application.queryservices.Hopp
 import com.kipu.backend.iotmonitoring.hopperwatch.domain.model.commands.CreateHopperWatchSensorCommand;
 import com.kipu.backend.iotmonitoring.hopperwatch.domain.model.queries.GetHopperWatchSensorBySensorIdQuery;
 import com.kipu.backend.iotmonitoring.hopperwatch.interfaces.acl.HopperWatchSensorContextFacade;
+import com.kipu.backend.iotmonitoring.hopperwatch.domain.model.valueobjects.SensorId;
 import org.springframework.stereotype.Service;
 
 /**
@@ -65,7 +66,7 @@ public class HopperWatchSensorContextFacadeImpl implements HopperWatchSensorCont
      */
     @Override
     public Long fetchHopperWatchSensorIdBySensorId(String sensorId) {
-        var getHopperWatchSensorBySensorIdQuery = new GetHopperWatchSensorBySensorIdQuery(sensorId);
+        var getHopperWatchSensorBySensorIdQuery = new GetHopperWatchSensorBySensorIdQuery(new SensorId(sensorId));
         var hopperWatch = hopperWatchQueryService.handle(getHopperWatchSensorBySensorIdQuery);
 
         return hopperWatch.isEmpty() ? 0L : hopperWatch.get().getId();

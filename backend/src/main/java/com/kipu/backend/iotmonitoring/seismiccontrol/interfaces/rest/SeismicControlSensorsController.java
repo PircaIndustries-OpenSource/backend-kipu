@@ -4,6 +4,7 @@ import com.kipu.backend.iotmonitoring.seismiccontrol.application.commandservices
 import com.kipu.backend.iotmonitoring.seismiccontrol.application.queryservices.SeismicControlSensorQueryService;
 import com.kipu.backend.iotmonitoring.seismiccontrol.domain.model.queries.GetAllSeismicControlSensorsQuery;
 import com.kipu.backend.iotmonitoring.seismiccontrol.domain.model.queries.GetSeismicControlSensorByIdQuery;
+import com.kipu.backend.iotmonitoring.seismiccontrol.domain.model.queries.GetSeismicControlSensorsByProjectIdQuery;
 import com.kipu.backend.iotmonitoring.seismiccontrol.interfaces.rest.resources.CreateSeismicControlSensorResource;
 import com.kipu.backend.iotmonitoring.seismiccontrol.interfaces.rest.resources.SeismicControlSensorResource;
 import com.kipu.backend.iotmonitoring.seismiccontrol.interfaces.rest.transform.CreateSeismicControlSensorCommandFromResourceAssembler;
@@ -117,6 +118,40 @@ public class SeismicControlSensorsController {
         var sensorEntity = sensorOptional.get();
         var sensorResource = SeismicControlSensorResourceFromEntityAssembler.toResourceFromEntity(sensorEntity);
         return ResponseEntity.ok(sensorResource);
+    }
+
+    /**
+     * Get all seismic control sensor nodes from a project
+     *
+     * @return A list of {@link SeismicControlSensorResource} active resources
+     */
+    @GetMapping("/project/{projectId}")
+    @Operation(
+            summary = "Get all seismic control sensors by Project ID",
+            description = "Retrieves a list of all active seismic control sensor nodes associated with a specific architectural project."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Seismic control sensors for project fetched successfully",
+                    content = @Content(schema = @Schema(implementation = SeismicControlSensorResource.class)))
+    })
+    public ResponseEntity<List<SeismicControlSensorResource>> getSeismicControlSensorsByProjectId(
+            @PathVariable
+            @Parameter(description = "Architectural project identifier", example = "PRJ-001", required = true)
+            String projectId
+    ) {
+        // Ejecuta la consulta pasando el parámetro (si usas un Value Object para el ProjectId en tu query, cámbialo a `new ProjectId(projectId)`)
+        var getByProjectIdQuery = new GetSeismicControlSensorsByProjectIdQuery(projectId);
+        var sensorsList = seismicControlSensorQueryService.handle(getByProjectIdQuery);
+
+        if (sensorsList.isEmpty()) {
+            return ResponseEntity.ok(Collections.emptyList());
+        }
+
+        var sensorResources = sensorsList.stream()
+                .map(SeismicControlSensorResourceFromEntityAssembler::toResourceFromEntity)
+                .toList();
+
+        return ResponseEntity.ok(sensorResources);
     }
 
     /**

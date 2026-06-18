@@ -5,6 +5,7 @@ import com.kipu.backend.iotmonitoring.seismiccontrol.domain.model.aggregates.Sei
 import com.kipu.backend.iotmonitoring.seismiccontrol.domain.model.queries.GetAllSeismicControlSensorsQuery;
 import com.kipu.backend.iotmonitoring.seismiccontrol.domain.model.queries.GetSeismicControlSensorByIdQuery;
 import com.kipu.backend.iotmonitoring.seismiccontrol.domain.model.queries.GetSeismicControlSensorBySensorIdQuery;
+import com.kipu.backend.iotmonitoring.seismiccontrol.domain.model.queries.GetSeismicControlSensorsByProjectIdQuery;
 import com.kipu.backend.iotmonitoring.seismiccontrol.domain.repositories.SeismicControlSensorRepository;
 import org.springframework.stereotype.Service;
 
@@ -46,5 +47,10 @@ public class SeismicControlSensorQueryServiceImpl implements SeismicControlSenso
     @Override
     public List<SeismicControlSensor> handle(GetAllSeismicControlSensorsQuery query) {
         return seismicControlSensorRepository.findAll();
+    }
+
+    @Override
+    public List<SeismicControlSensor> handle(GetSeismicControlSensorsByProjectIdQuery query) {
+        return seismicControlSensorRepository.findAllByProjectId(query.projectId());
     }
 }

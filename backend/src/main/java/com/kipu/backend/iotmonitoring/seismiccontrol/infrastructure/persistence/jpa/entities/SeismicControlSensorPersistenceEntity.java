@@ -1,6 +1,8 @@
 package com.kipu.backend.iotmonitoring.seismiccontrol.infrastructure.persistence.jpa.entities;
 
+import com.kipu.backend.iotmonitoring.seismiccontrol.domain.model.valueobjects.SeismicControlSensorState;
 import com.kipu.backend.iotmonitoring.seismiccontrol.domain.model.valueobjects.SensorId;
+import com.kipu.backend.iotmonitoring.seismiccontrol.infrastructure.persistence.jpa.converters.SeismicControlStatePersistenceConverter;
 import com.kipu.backend.iotmonitoring.seismiccontrol.infrastructure.persistence.jpa.converters.SensorIdPersistenceConverter;
 import com.kipu.backend.iotmonitoring.seismiccontrol.infrastructure.persistence.jpa.embeddables.SeismicTelemetryPersistenceEmbeddable;
 import com.kipu.backend.shared.infrastructure.persistence.jpa.entities.AuditableAbstractPersistenceEntity;
@@ -29,8 +31,9 @@ public class SeismicControlSensorPersistenceEntity extends AuditableAbstractPers
     @Column(name = "lecture_timestamp", nullable = false)
     private String timeLecture;
 
+    @Convert(converter = SeismicControlStatePersistenceConverter.class)
     @Column(name = "operational_state", nullable = false)
-    private Integer state;
+    private SeismicControlSensorState state;
 
     @Embedded
     @AttributeOverrides({
@@ -85,11 +88,11 @@ public class SeismicControlSensorPersistenceEntity extends AuditableAbstractPers
         this.timeLecture = timeLecture;
     }
 
-    public Integer getState() {
+    public SeismicControlSensorState getState() {
         return state;
     }
 
-    public void setState(Integer state) {
+    public void setState(SeismicControlSensorState state) {
         this.state = state;
     }
 

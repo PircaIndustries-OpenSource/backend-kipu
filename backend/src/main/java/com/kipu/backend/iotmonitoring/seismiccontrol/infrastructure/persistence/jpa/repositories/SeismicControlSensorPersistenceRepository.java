@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -22,4 +23,8 @@ public interface SeismicControlSensorPersistenceRepository extends JpaRepository
 
     @Query("select count(sensor) from SeismicControlSensorPersistenceEntity sensor where sensor.sensorId = :sensorId")
     long countBySensorId(@Param("sensorId") SensorId sensorId);
+
+    @Query("select sensor from SeismicControlSensorPersistenceEntity sensor where sensor.projectId = :projectId")
+    List<SeismicControlSensorPersistenceEntity> findAllByProjectId(@Param("projectId") String projectId);
+
 }

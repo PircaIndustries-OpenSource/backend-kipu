@@ -75,4 +75,11 @@ public class SeismicControlSensorRepositoryImpl implements SeismicControlSensorR
     public boolean existsBySensorId(SensorId sensorId) {
         return seismicControlSensorPersistenceRepository.countBySensorId(sensorId) > 0;
     }
+
+    @Override
+    public List<SeismicControlSensor> findAllByProjectId(String projectId) {
+        return seismicControlSensorPersistenceRepository.findAllByProjectId(projectId).stream()
+                .map(SeismicControlSensorPersistenceAssembler::toDomainFromPersistence).
+                toList();
+    }
 }

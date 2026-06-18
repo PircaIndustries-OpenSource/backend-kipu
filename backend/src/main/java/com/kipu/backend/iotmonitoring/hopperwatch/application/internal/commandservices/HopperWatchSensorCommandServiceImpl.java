@@ -3,6 +3,7 @@ package com.kipu.backend.iotmonitoring.hopperwatch.application.internal.commands
 import com.kipu.backend.iotmonitoring.hopperwatch.application.commandservices.HopperWatchSensorCommandService;
 import com.kipu.backend.iotmonitoring.hopperwatch.domain.model.aggregates.HopperWatchSensor;
 import com.kipu.backend.iotmonitoring.hopperwatch.domain.model.commands.CreateHopperWatchSensorCommand;
+import com.kipu.backend.iotmonitoring.hopperwatch.domain.model.valueobjects.SensorId;
 import com.kipu.backend.iotmonitoring.hopperwatch.domain.repositories.HopperWatchSensorRepository;
 import com.kipu.backend.shared.application.result.ApplicationError;
 import com.kipu.backend.shared.application.result.Result;
@@ -28,7 +29,8 @@ public class HopperWatchSensorCommandServiceImpl implements HopperWatchSensorCom
     public Result<HopperWatchSensor, ApplicationError> handle(CreateHopperWatchSensorCommand command) {
         try {
             // Regla de negocio: Verificar que el hardware de telemetría (sensorId) no esté duplicado
-            if (hopperWatchRepository.existsBySensorId(command.sensorId())) {
+            var sensorId = new SensorId(command.sensorId());
+            if (hopperWatchRepository.existsBySensorId(sensorId)) {
                 return Result.failure(ApplicationError.conflict(
                         "HopperWatchSensor",
                         "A hopper watch with sensor ID '%s' already exists".formatted(command.sensorId())));

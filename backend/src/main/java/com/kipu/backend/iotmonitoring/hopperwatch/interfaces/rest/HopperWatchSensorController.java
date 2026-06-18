@@ -4,6 +4,7 @@ import com.kipu.backend.iotmonitoring.hopperwatch.application.commandservices.Ho
 import com.kipu.backend.iotmonitoring.hopperwatch.application.queryservices.HopperWatchSensorQueryService;
 import com.kipu.backend.iotmonitoring.hopperwatch.domain.model.queries.GetAllHopperWatchSensorsQuery;
 import com.kipu.backend.iotmonitoring.hopperwatch.domain.model.queries.GetHopperWatchSensorByIdQuery;
+import com.kipu.backend.iotmonitoring.hopperwatch.domain.model.queries.GetHopperWatchSensorsByProjectIdQuery;
 import com.kipu.backend.iotmonitoring.hopperwatch.interfaces.rest.resources.CreateHopperWatchSensorResource;
 import com.kipu.backend.iotmonitoring.hopperwatch.interfaces.rest.resources.HopperWatchSensorResource;
 import com.kipu.backend.iotmonitoring.hopperwatch.interfaces.rest.transform.CreateHopperWatchSensorCommandFromResourceAssembler;
@@ -114,6 +115,37 @@ public class HopperWatchSensorController {
         var hopperWatchEntity = hopperWatch.get();
         var hopperWatchResource = HopperWatchSensorResourceFromEntityAssembler.toResourceFromEntity(hopperWatchEntity);
         return ResponseEntity.ok(hopperWatchResource);
+    }
+
+    @GetMapping("/project/{projectId}")
+    @Operation(
+            summary = "Get all hopper watches by Project ID",
+            description = "Retrieves a list of all active IoT hopper watch devices associated with a specific architectural project."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Hopper watches for project retrieved successfully",
+                    content = @Content(schema = @Schema(implementation = HopperWatchSensorResource.class))
+            )
+    })
+    public ResponseEntity<List<HopperWatchSensorResource>> getHopperWatchSensorsByProjectId(
+            @PathVariable
+            @Parameter(description = "Architectural project identifier", example = "PRJ-001", required = true)
+            String projectId
+    ) {
+        var getHopperWatchSensorsByProjectIdQuery = new GetHopperWatchSensorsByProjectIdQuery(projectId);
+        var hopperWatches = hopperWatchQueryService.handle(getHopperWatchSensorsByProjectIdQuery);
+
+        if (hopperWatches.isEmpty()) {
+            return ResponseEntity.ok(Collections.emptyList());
+        }
+
+        var hopperWatchResources = hopperWatches.stream()
+                .map(HopperWatchSensorResourceFromEntityAssembler::toResourceFromEntity)
+                .toList();
+
+        return ResponseEntity.ok(hopperWatchResources);
     }
 
     /**
