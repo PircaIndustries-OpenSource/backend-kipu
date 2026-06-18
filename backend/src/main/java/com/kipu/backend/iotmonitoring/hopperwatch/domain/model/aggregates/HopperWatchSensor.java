@@ -3,6 +3,7 @@ package com.kipu.backend.iotmonitoring.hopperwatch.domain.model.aggregates;
 import com.kipu.backend.iotmonitoring.hopperwatch.domain.model.commands.CreateHopperWatchSensorCommand;
 import com.kipu.backend.iotmonitoring.hopperwatch.domain.model.events.HopperWatchSensorCreatedEvent;
 import com.kipu.backend.iotmonitoring.hopperwatch.domain.model.valueobjects.HopperMeasurement;
+import com.kipu.backend.iotmonitoring.hopperwatch.domain.model.commands.
 import com.kipu.backend.iotmonitoring.hopperwatch.domain.model.valueobjects.HopperSensorState;
 import com.kipu.backend.iotmonitoring.hopperwatch.domain.model.valueobjects.SensorId;
 import com.kipu.backend.shared.domain.model.aggregates.AbstractDomainAggregateRoot;
@@ -147,9 +148,9 @@ public class HopperWatchSensor extends AbstractDomainAggregateRoot<HopperWatchSe
 
     /**
      * Command-driven updater for smooth Application Layer integration.
-     * @param command The {@link com.kipu.backend.iotmonitoring.hopperwatch.domain.model.commands.UpdateHopperWatchSensorCommand} record.
+     * @param command The {@link { UpdateHopperWatchSensorCommand } record.
      */
-    public void update(com.kipu.backend.iotmonitoring.hopperwatch.domain.model.commands.UpdateHopperWatchSensorCommand command) {
+    public void update(UpdateHopperWatchSensorCommand command) {
         this.sensorId = new SensorId(command.sensorId());
         this.name = command.name();
         this.unit = command.unit();
