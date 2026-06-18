@@ -1,21 +1,27 @@
 package com.kipu.backend.teamusers.interfaces.rest.resources;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+@Schema(description = "Payload to invite or register a new user into a project team")
 public record CreateTeamUserResource(
-        @NotBlank(message = "The full name cannot be blank")
-        @Size(min = 3, max = 100, message = "The full name must have between 3 and 100 characters")
+        @Schema(description = "Full name of the team user", example = "Lucia Gomez")
+        @NotBlank(message = "{user.validation.fullNameRequired}")
+        @Size(min = 3, max = 100, message = "{user.validation.fullNameSize}")
         String fullName,
 
-        @NotBlank(message = "The email cannot be blank")
-        @Email(message = "The email format is invalid")
+        @Schema(description = "Valid email address of the team user", example = "lucia.gomez@kipu.com")
+        @NotBlank(message = "user.validation.emailRequired")
+        @Email(message = "{user.validation.emailFormat}")
         String email,
 
-        @NotBlank(message = "The role cannot be blank")
+        @Schema(description = "Assigned role of the user within the platform", example = "Ingeniero Residente")
+        @NotBlank(message = "{user.validation.roleRequired}")
         String role,
 
-        @NotBlank(message = "The project ID cannot be blank")
+        @Schema(description = "Unique identifier of the project the user is invited to", example = "proj-01")
+        @NotBlank(message = "{user.validation.projectIdRequired}")
         String projectId
 ) {}

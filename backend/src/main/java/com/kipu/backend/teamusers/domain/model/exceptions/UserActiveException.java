@@ -4,6 +4,6 @@ public class UserActiveException extends RuntimeException {
 
     public UserActiveException() {
 
-        super("The user is already active");
+        super("user.validation.alreadyActive");
     }
 }
