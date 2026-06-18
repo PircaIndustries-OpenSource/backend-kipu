@@ -3,7 +3,8 @@ package com.kipu.backend.Logistics.application.commandservices;
 public sealed interface SupplierCommandFailure permits
         SupplierCommandFailure.DuplicateRuc,
         SupplierCommandFailure.NotFound,
-        SupplierCommandFailure.UpdateFailed {
+        SupplierCommandFailure.UpdateFailed,
+        SupplierCommandFailure.DeleteFailed {
 
     String messageKey();
 
@@ -25,6 +26,13 @@ public sealed interface SupplierCommandFailure permits
         @Override
         public String messageKey() {
             return "supplier.error.notUpdated";
+        }
+    }
+
+    record DeleteFailed() implements SupplierCommandFailure {
+        @Override
+        public String messageKey() {
+            return "supplier.error.notDeleted";
         }
     }
 }

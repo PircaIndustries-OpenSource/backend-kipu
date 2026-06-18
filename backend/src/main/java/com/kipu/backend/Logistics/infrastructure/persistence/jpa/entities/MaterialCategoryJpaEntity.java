@@ -15,7 +15,10 @@ import java.time.Instant;
 @Entity
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "material_category")
+@Table(name = "material_category",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = "name", name = "uk_material_category_name")
+        })
 public class MaterialCategoryJpaEntity {
 
     @Id

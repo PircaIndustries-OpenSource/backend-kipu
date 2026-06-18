@@ -43,7 +43,7 @@ public class LogisticsValueObjectFromStringAssembler {
     }
 
     public static BudgetLineId toBudgetLineIdFromInteger(Integer value) {
-        return new BudgetLineId(value);
+        return value == null ? null : new BudgetLineId(value);
     }
 
     public static UserId toUserIdFromInteger(Integer value) {

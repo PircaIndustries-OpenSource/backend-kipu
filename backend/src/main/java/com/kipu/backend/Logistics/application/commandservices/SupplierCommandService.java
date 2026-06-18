@@ -32,4 +32,12 @@ public interface SupplierCommandService {
      * @return success when the supplier is updated, failure when not found
      */
     Result<Supplier, SupplierCommandFailure> handlePatch(Long id, UpdateSupplierCommand command);
+
+    /**
+     * Handles deletion of a supplier.
+     *
+     * @param id the supplier ID
+     * @return success when the supplier is deleted, failure when not found
+     */
+    Result<Void, SupplierCommandFailure> handleDelete(Long id);
 }
