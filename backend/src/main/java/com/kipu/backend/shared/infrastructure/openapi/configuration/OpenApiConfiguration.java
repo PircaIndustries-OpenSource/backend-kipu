@@ -14,6 +14,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
+import org.springdoc.core.customizers.OperationCustomizer;
+import io.swagger.v3.oas.models.parameters.HeaderParameter;
 
 /**
  * Configures the OpenAPI specification exposed by the platform.
@@ -85,5 +87,16 @@ public class OpenApiConfiguration {
                                                 .description("Please input Bearer JWT token in the format 'Bearer <token>'")));
 
                 return openApi;
+        }
+
+        @Bean
+        public OperationCustomizer addAcceptLanguageHeader() {
+                return (operation, handlerMethod) -> {
+                        operation.addParametersItem(new HeaderParameter()
+                                        .name("Accept-Language")
+                                        .description("Language preference (e.g. es, en)")
+                                        .required(false));
+                        return operation;
+                };
         }
 }
