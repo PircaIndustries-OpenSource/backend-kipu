@@ -68,7 +68,7 @@ public class OpenApiConfiguration {
                                 .url("https://staging-api.kipu.com")
                                 .description("Staging Environment"),
                         new Server()
-                                .url("https://api.kipu.com")
+                                .url("http://158.23.163.220:8080")
                                 .description("Production Environment")
                 ));
 

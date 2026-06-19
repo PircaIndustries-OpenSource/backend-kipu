@@ -22,7 +22,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/team-users")
-@CrossOrigin(origins = "*", allowedHeaders = "*") 
 public class TeamUserController {
 
     private final TeamUserCommandService commandService;
