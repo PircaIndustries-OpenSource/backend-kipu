@@ -19,9 +19,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
-/**
- * Main Web Security Configuration class setting up filters, rules, statelessness, and authorization.
- */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -51,6 +48,7 @@ public class WebSecurityConfiguration {
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
@@ -64,7 +62,7 @@ public class WebSecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // PERMITIR TODAS LAS OPTIONS
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/api/v1/identity/**").permitAll()
                         .requestMatchers("/api/v1/material-categories/**").permitAll()
