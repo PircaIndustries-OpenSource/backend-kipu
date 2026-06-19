@@ -92,10 +92,13 @@ public class OpenApiConfiguration {
         @Bean
         public OperationCustomizer addAcceptLanguageHeader() {
                 return (operation, handlerMethod) -> {
-                        operation.addParametersItem(new HeaderParameter()
-                                        .name("Accept-Language")
-                                        .description("Language preference (e.g. es, en)")
-                                        .required(false));
+                        if (operation.getParameters() == null || operation.getParameters().stream()
+                                        .noneMatch(p -> "Accept-Language".equalsIgnoreCase(p.getName()))) {
+                                operation.addParametersItem(new HeaderParameter()
+                                                .name("Accept-Language")
+                                                .description("Language preference (e.g. es, en)")
+                                                .required(false));
+                        }
                         return operation;
                 };
         }
