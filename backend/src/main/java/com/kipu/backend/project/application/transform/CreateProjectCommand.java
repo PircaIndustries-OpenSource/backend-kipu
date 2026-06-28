@@ -25,5 +25,7 @@ public record CreateProjectCommand(
         @NotBlank(message = "{project.validation.location.required}")
         String location,
 
-        String imageUrl
+        String imageUrl,
+
+        String createdBy
 ) {}

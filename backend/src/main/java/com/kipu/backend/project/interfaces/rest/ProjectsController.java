@@ -42,7 +42,14 @@ public class ProjectsController {
     @PostMapping
     @Operation(summary = "Register a new project")
     public ResponseEntity<ProjectResource> createProject(@Valid @RequestBody CreateProjectCommand command) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        String username = command.createdBy();
+        if (username == null || username.isBlank()) {
+            try {
+                username = SecurityContextHolder.getContext().getAuthentication().getName();
+            } catch (Exception e) {
+                username = "anonymousUser";
+            }
+        }
         Project project = projectCommandService.handle(command, username);
         return ResponseEntity.status(HttpStatus.CREATED).body(ProjectResource.fromProject(project));
     }
@@ -53,8 +60,15 @@ public class ProjectsController {
      */
     @GetMapping
     @Operation(summary = "Get all projects associated with the authenticated user")
-    public ResponseEntity<List<ProjectResource>> getProjects() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    public ResponseEntity<List<ProjectResource>> getProjects(@RequestParam(value = "createdBy", required = false) String createdBy) {
+        String username = createdBy;
+        if (username == null || username.isBlank()) {
+            try {
+                username = SecurityContextHolder.getContext().getAuthentication().getName();
+            } catch (Exception e) {
+                username = "anonymousUser";
+            }
+        }
         List<Project> projects = projectQueryService.handleGetProjectsByCreatedBy(username);
         
         List<ProjectResource> resources = projects.stream()
