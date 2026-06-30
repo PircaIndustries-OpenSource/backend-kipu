@@ -112,4 +112,14 @@ public class ProjectsController {
         Project project = projectCommandService.handle(id, command);
         return ResponseEntity.ok(ProjectResource.fromProject(project));
     }
+
+    /**
+     * Deletes a project by ID.
+     */
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete project by ID")
+    public ResponseEntity<Void> deleteProject(@PathVariable("id") String id) {
+        projectCommandService.handleDelete(id);
+        return ResponseEntity.noContent().build();
+    }
 }

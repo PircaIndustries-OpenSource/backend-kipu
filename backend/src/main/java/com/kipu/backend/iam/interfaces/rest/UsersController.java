@@ -16,6 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * REST controller for handling user management endpoints.
  */
@@ -52,6 +55,16 @@ public class UsersController {
         User user = userQueryService.handle(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
         return ResponseEntity.ok(UserResource.fromUser(user));
+    }
+
+    @GetMapping
+    @Operation(summary = "Get all users", security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<List<UserResource>> getAllUsers() {
+        List<User> users = userQueryService.handleGetAll();
+        List<UserResource> resources = users.stream()
+                .map(UserResource::fromUser)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(resources);
     }
 
     /**
