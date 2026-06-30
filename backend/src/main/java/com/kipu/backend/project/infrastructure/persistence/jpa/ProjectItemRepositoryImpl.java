@@ -32,4 +32,9 @@ public class ProjectItemRepositoryImpl implements ProjectItemRepository {
     public List<ProjectItem> findByProjectId(String projectId) {
         return repositoryJPA.findByProjectId(projectId);
     }
+
+    @Override
+    public void deleteByProjectId(String projectId) {
+        repositoryJPA.deleteByProjectId(projectId);
+    }
 }

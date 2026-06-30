@@ -107,4 +107,14 @@ public class ProjectCommandServiceImpl implements ProjectCommandService {
         }
         return LocalDate.parse(cleanDate);
     }
+
+    @Override
+    @Transactional
+    public void handleDelete(String id) {
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new ProjectNotFoundException(id));
+        
+        projectItemRepository.deleteByProjectId(id);
+        projectRepository.deleteById(id);
+    }
 }

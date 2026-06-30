@@ -48,4 +48,9 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     public boolean existsByName(String name) {
         return repositoryJPA.existsByName(name);
     }
+
+    @Override
+    public void deleteById(String id) {
+        repositoryJPA.deleteById(id);
+    }
 }
