@@ -13,6 +13,9 @@ public record UpdateMachineryResource(
         @Schema(description = "Worker assigned (DNI - FullName)", example = "12345678 - Juan Pérez")
         String assignedTo,
 
+        @Schema(description = "Team worker ID assigned", example = "wrk-a1b2c3d4e5f6")
+        String assignedWorkerId,
+
         @Schema(description = "Maintenance hours accumulated", example = "120")
         String maintenanceHours,
 

@@ -35,6 +35,9 @@ public class MachineryJpaEntity {
     @Convert(converter = MachineryAssignedToAttributeConverter.class)
     private MachineryAssignedTo assignedTo;
 
+    @Column(name = "assigned_worker_id", length = 50)
+    private String assignedWorkerId;
+
     @Column(name = "registration_date", nullable = false)
     private Instant registrationDate;
 
@@ -58,13 +61,14 @@ public class MachineryJpaEntity {
     private Instant updatedAt;
 
     public MachineryJpaEntity(String id, MachineryName name, MachineryStatus status, MachineryAssignedTo assignedTo,
-                              Instant registrationDate, MachineryMaintenanceHours maintenanceHours,
+                              String assignedWorkerId, Instant registrationDate, MachineryMaintenanceHours maintenanceHours,
                               MachineryAssignmentDetail assignmentDetail, String projectId,
                               Instant createdAt, Instant updatedAt) {
         this.id = id != null ? id : UUID.randomUUID().toString();
         this.name = name;
         this.status = status;
         this.assignedTo = assignedTo;
+        this.assignedWorkerId = assignedWorkerId;
         this.registrationDate = registrationDate;
         this.maintenanceHours = maintenanceHours;
         this.assignmentDetail = assignmentDetail;

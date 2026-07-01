@@ -3,10 +3,15 @@ package com.kipu.backend.teamusers.interfaces.rest.resources;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @Schema(description = "Payload to invite or register a new user into a project team")
 public record CreateTeamUserResource(
+        @Schema(description = "IAM user identifier", example = "1")
+        @NotNull(message = "{user.validation.userIdRequired}")
+        Long userId,
+
         @Schema(description = "Full name of the team user", example = "Lucia Gomez")
         @NotBlank(message = "{user.validation.fullNameRequired}")
         @Size(min = 3, max = 100, message = "{user.validation.fullNameSize}")

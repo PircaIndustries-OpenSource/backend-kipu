@@ -11,6 +11,7 @@ public class Machinery {
     private final MachineryName name;
     private final MachineryStatus status;
     private final MachineryAssignedTo assignedTo;
+    private final String assignedWorkerId;
     private final Instant registrationDate;
     private final MachineryMaintenanceHours maintenanceHours;
     private final MachineryAssignmentDetail assignmentDetail;
@@ -19,13 +20,14 @@ public class Machinery {
     private final Instant updatedAt;
 
     private Machinery(String id, MachineryName name, MachineryStatus status, MachineryAssignedTo assignedTo,
-                      Instant registrationDate, MachineryMaintenanceHours maintenanceHours,
+                      String assignedWorkerId, Instant registrationDate, MachineryMaintenanceHours maintenanceHours,
                       MachineryAssignmentDetail assignmentDetail, String projectId,
                       Instant createdAt, Instant updatedAt) {
         this.id = id;
         this.name = Objects.requireNonNull(name, "machinery.error.name.notBlank");
         this.status = Objects.requireNonNull(status, "machinery.error.status.notBlank");
         this.assignedTo = assignedTo;
+        this.assignedWorkerId = assignedWorkerId;
         this.registrationDate = Objects.requireNonNull(registrationDate, "machinery.error.registrationDate.notBlank");
         this.maintenanceHours = Objects.requireNonNull(maintenanceHours, "machinery.error.maintenanceHours.notBlank");
         this.assignmentDetail = Objects.requireNonNull(assignmentDetail, "machinery.error.assignmentDetail.notBlank");
@@ -38,27 +40,29 @@ public class Machinery {
                                    MachineryAssignmentDetail assignmentDetail, String projectId) {
         Instant now = Instant.now();
         return new Machinery(
-                null, name, MachineryStatus.AVAILABLE, assignedTo,
+                null, name, MachineryStatus.AVAILABLE, assignedTo, null,
                 now, new MachineryMaintenanceHours("0"),
                 assignmentDetail, projectId, now, now
         );
     }
 
     public static Machinery rehydrate(String id, MachineryName name, MachineryStatus status, MachineryAssignedTo assignedTo,
-                                      Instant registrationDate, MachineryMaintenanceHours maintenanceHours,
+                                      String assignedWorkerId, Instant registrationDate, MachineryMaintenanceHours maintenanceHours,
                                       MachineryAssignmentDetail assignmentDetail, String projectId,
                                       Instant createdAt, Instant updatedAt) {
-        return new Machinery(id, name, status, assignedTo, registrationDate, maintenanceHours,
+        return new Machinery(id, name, status, assignedTo, assignedWorkerId, registrationDate, maintenanceHours,
                 assignmentDetail, projectId, createdAt, updatedAt);
     }
 
     public Machinery update(MachineryName name, MachineryStatus status, MachineryAssignedTo assignedTo,
-                            MachineryMaintenanceHours maintenanceHours, MachineryAssignmentDetail assignmentDetail) {
+                            String assignedWorkerId, MachineryMaintenanceHours maintenanceHours,
+                            MachineryAssignmentDetail assignmentDetail) {
         return new Machinery(
                 this.id,
                 name != null ? name : this.name,
                 status != null ? status : this.status,
                 assignedTo != null ? assignedTo : this.assignedTo,
+                assignedWorkerId != null ? assignedWorkerId : this.assignedWorkerId,
                 this.registrationDate,
                 maintenanceHours != null ? maintenanceHours : this.maintenanceHours,
                 assignmentDetail != null ? assignmentDetail : this.assignmentDetail,
@@ -72,6 +76,7 @@ public class Machinery {
     public MachineryName getName() { return name; }
     public MachineryStatus getStatus() { return status; }
     public MachineryAssignedTo getAssignedTo() { return assignedTo; }
+    public String getAssignedWorkerId() { return assignedWorkerId; }
     public Instant getRegistrationDate() { return registrationDate; }
     public MachineryMaintenanceHours getMaintenanceHours() { return maintenanceHours; }
     public MachineryAssignmentDetail getAssignmentDetail() { return assignmentDetail; }

@@ -10,6 +10,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class TeamUserCommandServiceImpl implements TeamUserCommandService {
@@ -30,13 +31,14 @@ public class TeamUserCommandServiceImpl implements TeamUserCommandService {
         }
 
         var teamUser = new TeamUser(
+                command.userId(),
                 command.fullName(),
                 command.emailAddress(),
                 command.role(),
                 command.projectId()
         );
 
-        teamUser.setId("us-" + System.currentTimeMillis());
+        teamUser.setId(UUID.randomUUID().toString());
 
         try {
             var savedUser = teamUserRepository.save(teamUser);
@@ -57,8 +59,6 @@ public class TeamUserCommandServiceImpl implements TeamUserCommandService {
         var newUser = teamUser.get();
         newUser.deactivate();
 
-        System.out.println("DEBUG: The user " + newUser.getId() + " has isActive = " + newUser.isActive());
-
         return Optional.of(teamUserRepository.save(newUser));
     }
 
@@ -71,8 +71,6 @@ public class TeamUserCommandServiceImpl implements TeamUserCommandService {
 
         var newUser = teamUser.get();
         newUser.activate();
-
-        System.out.println("DEBUG: The user " + newUser.getId() + " has isActive = " + newUser.isActive());
 
         return Optional.of(teamUserRepository.save(newUser));
     }

@@ -1,6 +1,5 @@
 package com.kipu.backend.teamusers.infraestructure.persistence.jpa.entities;
 
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +13,9 @@ public class TeamUserJpaEntity {
     @Id
     @Column(name = "id")
     private String id;
+
+    @Column(name = "user_id")
+    private Long userId;
 
     @Column(name = "full_name")
     private String fullName;
@@ -32,7 +34,9 @@ public class TeamUserJpaEntity {
 
     public TeamUserJpaEntity() {}
 
-    public TeamUserJpaEntity(String fullName, String email, String role, String projectId) {
+    public TeamUserJpaEntity(String id, Long userId, String fullName, String email, String role, String projectId) {
+        this.id = id;
+        this.userId = userId;
         this.fullName = fullName;
         this.email = email;
         this.role = role;

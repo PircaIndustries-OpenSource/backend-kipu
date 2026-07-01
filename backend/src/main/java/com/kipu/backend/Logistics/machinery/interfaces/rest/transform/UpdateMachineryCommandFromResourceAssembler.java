@@ -11,6 +11,7 @@ public class UpdateMachineryCommandFromResourceAssembler {
                 resource.name() != null ? new MachineryName(resource.name()) : null,
                 resource.status() != null ? MachineryStatus.valueOf(resource.status()) : null,
                 resource.assignedTo() != null ? new MachineryAssignedTo(resource.assignedTo()) : null,
+                resource.assignedWorkerId(),
                 resource.maintenanceHours() != null ? new MachineryMaintenanceHours(resource.maintenanceHours()) : null,
                 resource.assignmentDetail() != null ? new MachineryAssignmentDetail(resource.assignmentDetail()) : null
         );
