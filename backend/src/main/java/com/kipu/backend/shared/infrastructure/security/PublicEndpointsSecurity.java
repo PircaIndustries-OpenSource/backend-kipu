@@ -10,29 +10,30 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class PublicEndpointsSecurity {
 
-    @Bean
-    @Order(1)
-    public SecurityFilterChain publicEndpointsFilterChain(HttpSecurity http) throws Exception {
-        http
-                .securityMatcher(
-                        "/api/v1/material-categories/**",
-                        "/api/v1/material-catalogs/**",
-                        "/api/v1/material-inventories/**",
-                        "/api/v1/material-requests/**",
-                        "/api/v1/documents/**",
-                        "/api/v1/team-users/**",
-                        "/api/v1/team-workers/**",
-                        "/api/v1/suppliers/**",
-                        "/api/v1/geolocalization-sensors/**", // Enpoint de geolocalización público
-                        "/api/v1/concrete-curing-sensors/**",
-                        "/api/v1/seismic-control-sensors/**",
-                        "/api/v1/hopper-watches/**"// Endpoint de curado de concreto público
-                )
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()
-                );
+        @Bean
+        @Order(1)
+        public SecurityFilterChain publicEndpointsFilterChain(HttpSecurity http) throws Exception {
+                http
+                                .securityMatcher(
+                                                "/api/v1/material-categories/**",
+                                                "/api/v1/material-catalogs/**",
+                                                "/api/v1/material-inventories/**",
+                                                "/api/v1/material-requests/**",
+                                                "/api/v1/documents/**",
+                                                "/api/v1/team-users/**",
+                                                "/api/v1/team-workers/**",
+                                                "/api/v1/suppliers/**",
+                                                "/api/v1/geolocalization-sensors/**", // Enpoint de geolocalización
+                                                                                      // público
+                                                "/api/v1/concrete-curing-sensors/**",
+                                                "/api/v1/seismic-control-sensors/**",
+                                                "/api/v1/hopper-watches/**", // Endpoint de curado de concreto público
+                                                "/api/v1/material-wastes/**")
+                                .cors(org.springframework.security.config.Customizer.withDefaults())
+                                .csrf(AbstractHttpConfigurer::disable)
+                                .authorizeHttpRequests(auth -> auth
+                                                .anyRequest().permitAll());
 
-        return http.build();
-    }
+                return http.build();
+        }
 }

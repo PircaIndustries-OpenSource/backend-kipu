@@ -64,11 +64,11 @@ public class OpenApiConfiguration {
                 // Add server configurations
                 openApi.servers(List.of(
                         new Server()
-                                .url("http://158.23.163.220")
-                                .description("Production Environment"),
-                        new Server()
                                 .url("http://localhost:8080")
-                                .description("Local Development Environment")
+                                .description("Local Development Environment"),
+                        new Server()
+                                .url("http://158.23.163.220")
+                                .description("Production Environment")
                 ));
 
                 // Add a security scheme for JWT Authentication

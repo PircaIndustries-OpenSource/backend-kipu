@@ -31,7 +31,8 @@ public class WebSecurityConfiguration {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
@@ -41,10 +42,11 @@ public class WebSecurityConfiguration {
         configuration.setAllowedOrigins(List.of(
                 "http://localhost:4200",
                 "http://localhost:3000",
+                "http://localhost:8080",
+                "http://127.0.0.1:8080",
                 "http://158.23.163.220",
                 "http://158.23.163.220:8080",
-                "https://kipu-frontend-42d0d.web.app"
-        ));
+                "https://kipu-frontend-42d0d.web.app"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
@@ -84,8 +86,7 @@ public class WebSecurityConfiguration {
                         .requestMatchers("/api/v1/documents/**").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
-                        .anyRequest().authenticated()
-                )
+                        .anyRequest().authenticated())
                 .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
