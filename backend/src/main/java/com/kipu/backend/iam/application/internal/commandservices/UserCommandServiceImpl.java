@@ -23,11 +23,13 @@ public class UserCommandServiceImpl implements UserCommandService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final com.kipu.backend.iam.application.internal.outboundservices.email.EmailService emailService;
 
     // Constructor injection
-    public UserCommandServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserCommandServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, com.kipu.backend.iam.application.internal.outboundservices.email.EmailService emailService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.emailService = emailService;
     }
 
     @Override
@@ -84,7 +86,20 @@ public class UserCommandServiceImpl implements UserCommandService {
         // Business logic execution on the User aggregate root
         user.updatePassword(encodedPassword);
 
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+
+        // Send confirmation email
+        String subject = "Kipu - Contraseña Actualizada Exitosamente";
+        String body = "<h1>Contraseña Actualizada</h1>"
+                    + "<p>Hola " + user.getUsername() + ",</p>"
+                    + "<p>Te informamos que tu contraseña ha sido modificada con éxito. Si no fuiste tú, por favor contacta a soporte inmediatamente.</p>";
+        try {
+            this.emailService.sendHtmlEmail(user.getEmail(), subject, body);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return savedUser;
     }
 
     /**

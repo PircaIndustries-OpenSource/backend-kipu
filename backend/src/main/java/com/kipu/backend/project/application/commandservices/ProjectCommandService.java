@@ -15,4 +15,5 @@ public interface ProjectCommandService {
     Project handle(CreateProjectCommand command, String username);
     Project handle(String id, UpdateProjectStatusCommand command);
     List<ProjectItem> handle(String projectId, List<CreateProjectItemCommand> commands);
+    void handleDelete(String id);
 }

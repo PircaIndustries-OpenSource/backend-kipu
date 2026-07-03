@@ -4,6 +4,7 @@ import com.kipu.backend.iam.domain.model.aggregates.User;
 import com.kipu.backend.iam.domain.repositories.UserRepository;
 import org.springframework.stereotype.Component;
 import java.util.Optional;
+import java.util.List;
 
 /**
  * Infrastructure repository adapter implementing the pure UserRepository domain interface.
@@ -42,5 +43,10 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public boolean existsByEmail(String email) {
         return userRepositoryJPA.existsByEmail(email);
+    }
+
+    @Override
+    public List<User> findAll() {
+        return userRepositoryJPA.findAll();
     }
 }

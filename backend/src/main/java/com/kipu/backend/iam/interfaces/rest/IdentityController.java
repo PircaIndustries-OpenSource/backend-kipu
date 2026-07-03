@@ -75,8 +75,17 @@ public class IdentityController {
     @PostMapping
     @Operation(summary = "Register a new user identity")
     public ResponseEntity<IdentityResource> registerIdentity(@Valid @RequestBody IdentityRequest request) {
-        User user = userCommandService.handle(request.toRegisterUserCommand());
-        return ResponseEntity.status(HttpStatus.CREATED).body(IdentityResource.fromUser(user));
+        try {
+            User user = userCommandService.handle(request.toRegisterUserCommand());
+            return ResponseEntity.status(HttpStatus.CREATED).body(IdentityResource.fromUser(user));
+        } catch (Exception e) {
+            try {
+                java.io.PrintWriter pw = new java.io.PrintWriter(new java.io.FileWriter("C:\\Users\\Effor\\.gemini\\antigravity\\backend_error.txt", true));
+                e.printStackTrace(pw);
+                pw.close();
+            } catch (Exception ignored) {}
+            throw e;
+        }
     }
 
     /**

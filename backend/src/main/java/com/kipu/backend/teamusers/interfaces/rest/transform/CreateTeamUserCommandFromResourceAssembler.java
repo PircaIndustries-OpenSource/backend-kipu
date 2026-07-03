@@ -8,6 +8,7 @@ import com.kipu.backend.teamusers.interfaces.rest.resources.CreateTeamUserResour
 public class CreateTeamUserCommandFromResourceAssembler {
     public static CreateTeamUserCommand toCommand(CreateTeamUserResource resource) {
         return new CreateTeamUserCommand(
+                resource.userId(),
                 new FullName(resource.fullName()),
                 new EmailAddress(resource.email()),
                 resource.role(),

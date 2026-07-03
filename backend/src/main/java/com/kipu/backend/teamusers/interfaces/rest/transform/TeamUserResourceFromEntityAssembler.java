@@ -7,6 +7,7 @@ public class TeamUserResourceFromEntityAssembler {
     public static TeamUserResource toResource(TeamUser teamUser) {
         return new TeamUserResource(
                 teamUser.getId(),
+                teamUser.getUserId(),
                 teamUser.getFullName().fullName(),
                 teamUser.getEmail().address(),
                 teamUser.getRole(),

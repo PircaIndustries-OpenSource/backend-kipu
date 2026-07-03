@@ -12,6 +12,7 @@ import lombok.Setter;
 public class TeamUser {
     @Setter
     private String id;
+    private Long userId;
     private FullName fullName;
     private EmailAddress email;
     private String role;
@@ -20,7 +21,8 @@ public class TeamUser {
 
     protected TeamUser() {}
 
-    public TeamUser(FullName fullName, EmailAddress email, String role, String projectId) {
+    public TeamUser(Long userId, FullName fullName, EmailAddress email, String role, String projectId) {
+        this.userId = userId;
         this.fullName = fullName;
         this.email = email;
         this.role = role;
@@ -28,8 +30,9 @@ public class TeamUser {
         this.projectId = projectId;
     }
 
-    public TeamUser(String id, FullName fullName, EmailAddress email, String role, String projectId) {
+    public TeamUser(String id, Long userId, FullName fullName, EmailAddress email, String role, String projectId) {
         this.id = id;
+        this.userId = userId;
         this.fullName = fullName;
         this.email = email;
         this.role = role;
@@ -37,8 +40,9 @@ public class TeamUser {
         this.projectId = projectId;
     }
 
-    public TeamUser(String id, FullName fullName, EmailAddress email, String role, boolean isActive, String projectId) {
+    public TeamUser(String id, Long userId, FullName fullName, EmailAddress email, String role, boolean isActive, String projectId) {
         this.id = id;
+        this.userId = userId;
         this.fullName = fullName;
         this.email = email;
         this.role = role;
@@ -46,13 +50,10 @@ public class TeamUser {
         this.projectId = projectId;
     }
 
-
-
     public void deactivate() {
         if (!this.isActive) {
             throw new UserInactiveException();
         }
-
         this.isActive = false;
     }
 
@@ -60,7 +61,6 @@ public class TeamUser {
         if (this.isActive) {
             throw new UserActiveException();
         }
-
         this.isActive = true;
     }
 
@@ -70,5 +70,4 @@ public class TeamUser {
         }
         this.role = newRole;
     }
-
 }

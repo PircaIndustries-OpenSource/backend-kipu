@@ -12,4 +12,5 @@ import java.util.List;
 @Repository
 public interface ProjectItemRepositoryJPA extends JpaRepository<ProjectItem, Long> {
     List<ProjectItem> findByProjectId(String projectId);
+    void deleteByProjectId(String projectId);
 }

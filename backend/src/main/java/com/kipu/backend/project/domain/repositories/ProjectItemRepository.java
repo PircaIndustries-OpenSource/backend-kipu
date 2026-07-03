@@ -11,4 +11,5 @@ public interface ProjectItemRepository {
     ProjectItem save(ProjectItem projectItem);
     List<ProjectItem> saveAll(List<ProjectItem> projectItems);
     List<ProjectItem> findByProjectId(String projectId);
+    void deleteByProjectId(String projectId);
 }
