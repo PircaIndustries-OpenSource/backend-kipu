@@ -11,9 +11,11 @@ public class MachineryResourceFromEntityAssembler {
                 entity.getName().value(),
                 entity.getStatus().name(),
                 entity.getAssignedTo() != null ? entity.getAssignedTo().value() : null,
+                entity.getAssignedWorkerId(),
                 entity.getRegistrationDate() != null ? entity.getRegistrationDate().toString() : null,
                 entity.getMaintenanceHours() != null ? entity.getMaintenanceHours().value() : null,
-                entity.getAssignmentDetail() != null ? entity.getAssignmentDetail().value() : null
+                entity.getAssignmentDetail() != null ? entity.getAssignmentDetail().value() : null,
+                entity.getProjectId()
         );
     }
 }

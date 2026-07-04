@@ -21,8 +21,9 @@ public class PublicEndpointsSecurity {
                                                 "/api/v1/material-requests/**",
                                                 "/api/v1/documents/**",
                                                 "/api/v1/team-users/**",
-                                                "/api/v1/team-workers/**",
-                                                "/api/v1/suppliers/**",
+                                "/api/v1/team-workers/**",
+                                "/api/v1/machinery-catalog/**",
+                                "/api/v1/suppliers/**",
                                                 "/api/v1/geolocalization-sensors/**", // Enpoint de geolocalización
                                                                                       // público
                                                 "/api/v1/concrete-curing-sensors/**",

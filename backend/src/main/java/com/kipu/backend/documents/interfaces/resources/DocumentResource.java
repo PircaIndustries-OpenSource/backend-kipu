@@ -1,10 +1,8 @@
 package com.kipu.backend.documents.interfaces.resources;
 
-import com.kipu.backend.documents.domain.model.valueobjects.Signer;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Schema(description = "Represents a document and its digital signature status")
