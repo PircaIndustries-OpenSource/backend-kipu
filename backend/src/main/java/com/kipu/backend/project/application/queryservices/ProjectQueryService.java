@@ -14,4 +14,5 @@ public interface ProjectQueryService {
     List<Project> handleGetAllProjects();
     List<Project> handleGetProjectsByCreatedBy(String username);
     List<ProjectItem> handleGetProjectItemsByProjectId(String projectId);
+    List<Project> handleGetProjectsByIds(List<String> ids);
 }

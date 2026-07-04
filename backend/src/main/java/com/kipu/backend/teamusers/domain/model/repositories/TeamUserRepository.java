@@ -18,5 +18,4 @@ public interface TeamUserRepository {
     List<TeamUser> findByIsActiveTrue(String projectId);
     List<TeamUser> search(String projectId, String searchTerm);
     Optional<TeamUser> findByEmailAddressAndProjectId(EmailAddress email, String projectId);
-    List<TeamUser> findByEmail(String email);
 }

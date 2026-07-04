@@ -15,4 +15,5 @@ public interface ProjectRepositoryJPA extends JpaRepository<Project, String> {
     Optional<Project> findByName(String name);
     List<Project> findByCreatedBy(String createdBy);
     boolean existsByName(String name);
+    List<Project> findByIdIn(List<String> ids);
 }

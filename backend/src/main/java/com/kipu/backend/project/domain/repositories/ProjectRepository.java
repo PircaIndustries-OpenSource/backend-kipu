@@ -16,4 +16,5 @@ public interface ProjectRepository {
     List<Project> findByCreatedBy(String username);
     boolean existsByName(String name);
     void deleteById(String id);
+    List<Project> findByIdIn(List<String> ids);
 }

@@ -58,9 +58,4 @@ public class TeamUserRepositoryAdapter implements TeamUserRepository {
         var entities = jpaRepository.findByEmailAndProjectId(email.address(), projectId);
         return entities.map(mapper::toDomain);
     }
-
-    @Override
-    public List<TeamUser> findByEmail(String email) {
-        return jpaRepository.findByEmail(email).stream().map(mapper::toDomain).toList();
-    }
 }

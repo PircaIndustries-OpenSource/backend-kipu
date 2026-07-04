@@ -46,6 +46,13 @@ public class ProjectQueryServiceImpl implements ProjectQueryService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<Project> handleGetProjectsByIds(List<String> ids) {
+        if (ids == null || ids.isEmpty()) return List.of();
+        return projectRepository.findByIdIn(ids);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<ProjectItem> handleGetProjectItemsByProjectId(String projectId) {
         return projectItemRepository.findByProjectId(projectId);
     }

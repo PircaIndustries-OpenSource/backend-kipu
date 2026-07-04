@@ -6,6 +6,8 @@ import com.kipu.backend.project.application.transform.CreateProjectCommand;
 import com.kipu.backend.project.application.transform.ProjectResource;
 import com.kipu.backend.project.application.transform.UpdateProjectStatusCommand;
 import com.kipu.backend.project.domain.model.aggregates.Project;
+import com.kipu.backend.teamusers.infraestructure.persistence.jpa.entities.TeamUserJpaEntity;
+import com.kipu.backend.teamusers.infraestructure.persistence.jpa.repositories.TeamUserJpaRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,12 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * REST controller for handling Construction Project endpoints.
- */
 @RestController
 @RequestMapping("/api/v1/projects")
 @Tag(name = "Projects", description = "Endpoints for project lifecycle management")
@@ -29,16 +28,16 @@ public class ProjectsController {
 
     private final ProjectCommandService projectCommandService;
     private final ProjectQueryService projectQueryService;
+    private final TeamUserJpaRepository teamUserJpaRepository;
 
     public ProjectsController(ProjectCommandService projectCommandService,
-                              ProjectQueryService projectQueryService) {
+                              ProjectQueryService projectQueryService,
+                              TeamUserJpaRepository teamUserJpaRepository) {
         this.projectCommandService = projectCommandService;
         this.projectQueryService = projectQueryService;
+        this.teamUserJpaRepository = teamUserJpaRepository;
     }
 
-    /**
-     * Creates/Registers a new project (TS07).
-     */
     @PostMapping
     @Operation(summary = "Register a new project")
     public ResponseEntity<ProjectResource> createProject(@Valid @RequestBody CreateProjectCommand command) {
@@ -54,10 +53,6 @@ public class ProjectsController {
         return ResponseEntity.status(HttpStatus.CREATED).body(ProjectResource.fromProject(project));
     }
 
-    /**
-     * Lists all projects associated with the authenticated user (TS08).
-     * Returns a direct JSON Array to align with Angular frontend expectations.
-     */
     @GetMapping
     @Operation(summary = "Get all projects associated with the authenticated user")
     public ResponseEntity<List<ProjectResource>> getProjects(@RequestParam(value = "createdBy", required = false) String createdBy) {
@@ -69,18 +64,28 @@ public class ProjectsController {
                 username = "anonymousUser";
             }
         }
-        List<Project> projects = projectQueryService.handleGetProjectsByCreatedBy(username);
-        
-        List<ProjectResource> resources = projects.stream()
+
+        List<Project> created = projectQueryService.handleGetProjectsByCreatedBy(username);
+
+        Set<String> projectIds = new HashSet<>();
+        projectIds.addAll(created.stream().map(Project::getId).toList());
+
+        try {
+            List<TeamUserJpaEntity> teamUsers = teamUserJpaRepository.findByEmail(username);
+            projectIds.addAll(teamUsers.stream().map(TeamUserJpaEntity::getProjectId).toList());
+        } catch (Exception e) {
+            // ignore
+        }
+
+        List<Project> allProjects = projectQueryService.handleGetProjectsByIds(new ArrayList<>(projectIds));
+
+        List<ProjectResource> resources = allProjects.stream()
                 .map(ProjectResource::fromProject)
                 .collect(Collectors.toList());
-                
+
         return ResponseEntity.ok(resources);
     }
 
-    /**
-     * Retrieves a single project by ID.
-     */
     @GetMapping("/{id}")
     @Operation(summary = "Get project details by ID")
     public ResponseEntity<ProjectResource> getProjectById(@PathVariable("id") String id) {
@@ -89,9 +94,6 @@ public class ProjectsController {
         return ResponseEntity.ok(ProjectResource.fromProject(project));
     }
 
-    /**
-     * Updates the status of a project (TS09 - Gherkin specification mapping).
-     */
     @PatchMapping("/{id}/status")
     @Operation(summary = "Update project status (Gherkin mapping)")
     public ResponseEntity<ProjectResource> updateProjectStatusGherkin(
@@ -101,9 +103,6 @@ public class ProjectsController {
         return ResponseEntity.ok(ProjectResource.fromProject(project));
     }
 
-    /**
-     * Updates the status of a project (Angular frontend mapping).
-     */
     @PatchMapping("/{id}")
     @Operation(summary = "Update project status (Frontend mapping)")
     public ResponseEntity<ProjectResource> updateProjectStatusFrontend(
@@ -113,9 +112,6 @@ public class ProjectsController {
         return ResponseEntity.ok(ProjectResource.fromProject(project));
     }
 
-    /**
-     * Deletes a project by ID.
-     */
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete project by ID")
     public ResponseEntity<Void> deleteProject(@PathVariable("id") String id) {

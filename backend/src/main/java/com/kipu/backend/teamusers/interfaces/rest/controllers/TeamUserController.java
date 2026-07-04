@@ -7,7 +7,6 @@ import com.kipu.backend.teamusers.application.internal.commandservices.TeamUserC
 import com.kipu.backend.teamusers.application.internal.queriesservices.TeamUserQueryService;
 import com.kipu.backend.teamusers.application.queries.GetAllActiveTeamUsersQuery;
 import com.kipu.backend.teamusers.application.queries.GetAllTeamUsersQuery;
-import com.kipu.backend.teamusers.application.queries.GetTeamUsersByEmailQuery;
 import com.kipu.backend.teamusers.application.queries.SearchTeamUsersQuery;
 import com.kipu.backend.teamusers.domain.model.aggregates.TeamUser;
 import com.kipu.backend.teamusers.interfaces.rest.resources.CreateTeamUserResource;
@@ -54,15 +53,6 @@ public class TeamUserController {
                     .stream().map(TeamUserResourceFromEntityAssembler::toResource).toList());
         }
         var query = new GetAllTeamUsersQuery(projectId);
-        return ResponseEntity.ok(queryService.handle(query)
-                .stream().map(TeamUserResourceFromEntityAssembler::toResource).toList());
-    }
-
-    @GetMapping("/by-email")
-    public ResponseEntity<List<TeamUserResource>> getTeamUsersByEmail(
-            @RequestParam String email
-    ) {
-        var query = new GetTeamUsersByEmailQuery(email);
         return ResponseEntity.ok(queryService.handle(query)
                 .stream().map(TeamUserResourceFromEntityAssembler::toResource).toList());
     }
