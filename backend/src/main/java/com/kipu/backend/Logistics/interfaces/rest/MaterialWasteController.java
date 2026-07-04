@@ -108,14 +108,10 @@ public class MaterialWasteController {
     })
     @GetMapping
     public ResponseEntity<?> getAllMaterialWastes(
-            @Parameter(description = "Optional project ID filter")
-            @RequestParam(required = false) Integer projectId) {
-        if (projectId != null) {
+        @Parameter(description = "Optional project ID filter")
+        @RequestParam(required = false) String projectId) {
+        if (projectId != null && !projectId.isBlank()) {
             log.debug("GET /api/v1/material-wastes?projectId={}", projectId);
-            if (projectId <= 0) {
-                return ResponseEntityFromMaterialWasteQueryResultAssembler.badRequest(
-                        messageSource, "material.waste.error.projectId.invalidValue");
-            }
             var wastes = queryService.handle(new GetMaterialWastesByProjectIdQuery(new ProjectId(projectId)));
             return ResponseEntityFromMaterialWasteQueryResultAssembler.toResponseEntityFromList(wastes);
         }

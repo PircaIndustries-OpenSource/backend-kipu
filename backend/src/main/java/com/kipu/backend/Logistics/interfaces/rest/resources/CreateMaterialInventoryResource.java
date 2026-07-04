@@ -9,9 +9,8 @@ import jakarta.validation.constraints.PositiveOrZero;
 @Schema(description = "Request resource used to create a material inventory")
 public record CreateMaterialInventoryResource(
         @Schema(description = "Project identifier", example = "10", requiredMode = Schema.RequiredMode.REQUIRED)
-        @NotNull(message = "material.inventory.error.projectId.notBlank")
-        @PositiveOrZero(message = "material.inventory.error.projectId.invalidValue")
-        Integer projectId,
+        @NotBlank(message = "material.inventory.error.projectId.notBlank")
+        String projectId,
 
         @Schema(description = "Material catalog identifier", example = "5", requiredMode = Schema.RequiredMode.REQUIRED)
         @NotNull(message = "material.inventory.error.materialCatalogId.notBlank")

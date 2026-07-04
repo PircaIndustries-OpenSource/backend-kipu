@@ -11,7 +11,7 @@ public record MaterialWasteResource(
         Long id,
 
         @Schema(description = "Project identifier", example = "1")
-        Integer projectId,
+        String projectId,
 
         @Schema(description = "Material catalog identifier", example = "5")
         Integer materialCatalogId,

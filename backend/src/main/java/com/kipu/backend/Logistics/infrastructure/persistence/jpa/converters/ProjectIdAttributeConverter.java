@@ -5,14 +5,14 @@ import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
 @Converter(autoApply = true)
-public class ProjectIdAttributeConverter implements AttributeConverter<ProjectId, Integer> {
+public class ProjectIdAttributeConverter implements AttributeConverter<ProjectId, String> {
     @Override
-    public Integer convertToDatabaseColumn(ProjectId attribute) {
+    public String convertToDatabaseColumn(ProjectId attribute) {
         return attribute == null ? null : attribute.value();
     }
 
     @Override
-    public ProjectId convertToEntityAttribute(Integer dbData) {
+    public ProjectId convertToEntityAttribute(String dbData) {
         return dbData == null ? null : new ProjectId(dbData);
     }
 }

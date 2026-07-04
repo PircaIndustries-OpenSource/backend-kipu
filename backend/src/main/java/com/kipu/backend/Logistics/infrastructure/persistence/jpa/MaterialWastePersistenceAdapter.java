@@ -41,7 +41,7 @@ public class MaterialWastePersistenceAdapter implements MaterialWasteRepository 
 
     @Override
     public List<MaterialWaste> findByProjectId(ProjectId projectId) {
-        return repository.findByProjectId(projectId).stream()
+        return repository.findByProjectId(projectId.value()).stream()
                 .map(MaterialWastePersistenceMapper::toDomain)
                 .collect(Collectors.toList());
     }
