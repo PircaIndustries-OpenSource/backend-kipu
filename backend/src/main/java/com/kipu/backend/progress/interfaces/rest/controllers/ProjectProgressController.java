@@ -45,6 +45,7 @@ public class ProjectProgressController {
                     resource.details(), resource.specialty(), resource.responsible(),
                     resource.workers(), resource.weather(), resource.weight()
             );
+            progress.setCurrentPercentage(resource.percentage() != null ? resource.percentage() : 0);
         }
 
         ProjectProgress saved = progressRepository.save(progress);
