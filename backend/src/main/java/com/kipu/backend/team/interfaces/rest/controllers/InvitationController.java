@@ -66,6 +66,14 @@ public class InvitationController {
         return ResponseEntity.ok(invitations);
     }
 
+    @GetMapping("/{id}")
+    @Operation(summary = "Get invitation by ID")
+    public ResponseEntity<Invitation> getInvitationById(@PathVariable Long id) {
+        return invitationRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @GetMapping("/user/{email}")
     @Operation(summary = "Get invitations by email")
     public ResponseEntity<List<Invitation>> getInvitationsByEmail(@PathVariable String email) {
