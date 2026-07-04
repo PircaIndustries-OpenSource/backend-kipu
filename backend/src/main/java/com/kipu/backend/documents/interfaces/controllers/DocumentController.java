@@ -46,7 +46,7 @@ public class DocumentController {
     @PostMapping("/{id}/send-code")
     public ResponseEntity<Void> sendSignCode(@PathVariable String id,
                                               @Valid @RequestBody SendSignCodeRequest request) {
-        var command = new SendSignCodeCommand(id, request.email());
+        var command = new SendSignCodeCommand(id, request.email(), request.teamUserId());
         commandService.handle(command);
         return ResponseEntity.ok().build();
     }

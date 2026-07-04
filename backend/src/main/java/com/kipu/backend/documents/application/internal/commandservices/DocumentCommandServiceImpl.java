@@ -45,8 +45,12 @@ public class DocumentCommandServiceImpl implements DocumentCommandService {
     @Override
     @Transactional
     public void handle(SendSignCodeCommand command) {
-        if (!documentRepository.findById(command.documentId()).isPresent()) {
-            throw new BusinessException("document.validation.documentNotFound");
+        Document document = documentRepository.findById(command.documentId())
+                .orElseThrow(() -> new BusinessException("document.validation.documentNotFound"));
+        boolean isSigner = document.getSigners().stream()
+                .anyMatch(s -> s.teamUserId().equals(command.teamUserId()));
+        if (!isSigner) {
+            throw new BusinessException("document.validation.userNotSigner");
         }
         otpService.generateAndSendOtp(command.email());
     }

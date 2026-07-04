@@ -40,7 +40,8 @@ public class InvitationController {
     public ResponseEntity<?> sendInvitation(@RequestBody Invitation invitation) {
         List<Invitation> existingInvitations = invitationRepository.findByProjectId(invitation.getProjectId());
         boolean alreadyInvited = existingInvitations.stream()
-                .anyMatch(i -> i.getEmail().equalsIgnoreCase(invitation.getEmail()));
+                .anyMatch(i -> i.getEmail().equalsIgnoreCase(invitation.getEmail())
+                        && "PENDING".equals(i.getStatus()));
         if (alreadyInvited) {
             return ResponseEntity.badRequest().body("User is already invited to this project.");
         }
