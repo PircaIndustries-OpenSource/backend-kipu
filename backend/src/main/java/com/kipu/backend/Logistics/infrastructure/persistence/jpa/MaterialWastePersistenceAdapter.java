@@ -5,12 +5,14 @@ import com.kipu.backend.Logistics.domain.model.repositories.MaterialWasteReposit
 import com.kipu.backend.Logistics.domain.model.valueobjects.external.ProjectId;
 import com.kipu.backend.Logistics.infrastructure.persistence.jpa.mappers.MaterialWastePersistenceMapper;
 import com.kipu.backend.Logistics.infrastructure.persistence.jpa.repositories.SpringDataMaterialWasteJpaRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 public class MaterialWastePersistenceAdapter implements MaterialWasteRepository {
 
@@ -41,9 +43,14 @@ public class MaterialWastePersistenceAdapter implements MaterialWasteRepository 
 
     @Override
     public List<MaterialWaste> findByProjectId(ProjectId projectId) {
-        return repository.findByProjectId(projectId.value()).stream()
-                .map(MaterialWastePersistenceMapper::toDomain)
-                .collect(Collectors.toList());
+        try {
+            return repository.findByProjectId(projectId.value()).stream()
+                    .map(MaterialWastePersistenceMapper::toDomain)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            log.warn("Could not query wastes by projectId (DB schema may need reset): {}", e.getMessage());
+            return List.of();
+        }
     }
 
     @Override

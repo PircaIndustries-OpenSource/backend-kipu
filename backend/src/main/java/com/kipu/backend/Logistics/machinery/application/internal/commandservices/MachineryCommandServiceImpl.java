@@ -8,6 +8,7 @@ import com.kipu.backend.Logistics.machinery.domain.model.aggregates.Machinery;
 import com.kipu.backend.Logistics.machinery.domain.model.valueobjects.MachineryStatus;
 import com.kipu.backend.Logistics.machinery.domain.repositories.MachineryRepository;
 import com.kipu.backend.shared.application.result.Result;
+import com.kipu.backend.shared.domain.exceptions.BusinessException;
 import com.kipu.backend.teamworkers.application.commands.AssignMachineryToTeamWorkerCommand;
 import com.kipu.backend.teamworkers.application.commands.RemoveMachineryFromTeamWorkerCommand;
 import com.kipu.backend.teamworkers.application.internal.commandservices.TeamWorkerCommandService;
@@ -48,7 +49,7 @@ public class MachineryCommandServiceImpl implements MachineryCommandService {
     }
 
     @Override
-    @Transactional
+    @Transactional(noRollbackFor = BusinessException.class)
     public Result<Machinery, MachineryCommandFailure> handleUpdate(String id, UpdateMachineryCommand command) {
         var existing = repository.findById(id);
         if (existing.isEmpty()) {
@@ -75,7 +76,7 @@ public class MachineryCommandServiceImpl implements MachineryCommandService {
     }
 
     @Override
-    @Transactional
+    @Transactional(noRollbackFor = BusinessException.class)
     public Result<Machinery, MachineryCommandFailure> handlePatch(String id, UpdateMachineryCommand command) {
         var existing = repository.findById(id);
         if (existing.isEmpty()) {
