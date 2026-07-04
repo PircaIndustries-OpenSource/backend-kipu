@@ -13,6 +13,8 @@ public class Invitation {
     private String role;
     private String status; // PENDING, ACCEPTED, REJECTED
     private String projectId;
+    private String projectName;
+    private String invitedBy;
 
     public Invitation() {
     }

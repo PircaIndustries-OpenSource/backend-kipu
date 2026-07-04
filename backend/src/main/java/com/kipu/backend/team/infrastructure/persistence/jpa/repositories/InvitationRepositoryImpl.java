@@ -28,6 +28,8 @@ public class InvitationRepositoryImpl implements InvitationRepository {
                 entity.getProjectId()
         );
         invitation.setId(entity.getId());
+        invitation.setProjectName(entity.getProjectName());
+        invitation.setInvitedBy(entity.getInvitedBy());
         return invitation;
     }
 
@@ -42,6 +44,8 @@ public class InvitationRepositoryImpl implements InvitationRepository {
         entity.setRole(invitation.getRole());
         entity.setStatus(invitation.getStatus());
         entity.setProjectId(invitation.getProjectId());
+        entity.setProjectName(invitation.getProjectName());
+        entity.setInvitedBy(invitation.getInvitedBy());
         return entity;
     }
 

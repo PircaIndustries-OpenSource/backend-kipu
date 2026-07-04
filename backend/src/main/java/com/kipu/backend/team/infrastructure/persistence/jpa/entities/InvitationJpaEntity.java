@@ -29,4 +29,8 @@ public class InvitationJpaEntity extends AuditableAbstractPersistenceEntity {
     private String status;
 
     private String projectId;
+
+    private String projectName;
+
+    private String invitedBy;
 }
