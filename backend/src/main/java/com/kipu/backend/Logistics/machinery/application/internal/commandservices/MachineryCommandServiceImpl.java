@@ -105,18 +105,22 @@ public class MachineryCommandServiceImpl implements MachineryCommandService {
         String machineryId = after.getId();
         String machineryName = after.getName().value();
 
-        if (after.getStatus() == MachineryStatus.IN_USE && after.getAssignedWorkerId() != null) {
-            var assignCmd = new AssignMachineryToTeamWorkerCommand(
-                    after.getAssignedWorkerId(), machineryId, machineryName);
-            teamWorkerCommandService.handle(assignCmd);
-            log.debug("Assigned machinery {} to worker {}", machineryId, after.getAssignedWorkerId());
-        }
+        try {
+            if (after.getStatus() == MachineryStatus.IN_USE && after.getAssignedWorkerId() != null) {
+                var assignCmd = new AssignMachineryToTeamWorkerCommand(
+                        after.getAssignedWorkerId(), machineryId, machineryName);
+                teamWorkerCommandService.handle(assignCmd);
+                log.debug("Assigned machinery {} to worker {}", machineryId, after.getAssignedWorkerId());
+            }
 
-        if (after.getStatus() != MachineryStatus.IN_USE && before.getAssignedWorkerId() != null) {
-            var removeCmd = new RemoveMachineryFromTeamWorkerCommand(
-                    before.getAssignedWorkerId(), machineryId);
-            teamWorkerCommandService.handle(removeCmd);
-            log.debug("Removed machinery {} from worker {}", machineryId, before.getAssignedWorkerId());
+            if (after.getStatus() != MachineryStatus.IN_USE && before.getAssignedWorkerId() != null) {
+                var removeCmd = new RemoveMachineryFromTeamWorkerCommand(
+                        before.getAssignedWorkerId(), machineryId);
+                teamWorkerCommandService.handle(removeCmd);
+                log.debug("Removed machinery {} from worker {}", machineryId, before.getAssignedWorkerId());
+            }
+        } catch (Exception e) {
+            log.warn("Worker sync skipped for machinery {}: {}", machineryId, e.getMessage());
         }
     }
 
