@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import java.util.List;
 import java.util.Optional;
 
-public interface TeamUserJpaRepository extends JpaRepository<TeamUserJpaEntity, Long>,
+public interface TeamUserJpaRepository extends JpaRepository<TeamUserJpaEntity, String>,
         JpaSpecificationExecutor<TeamUserJpaEntity> {
     List<TeamUserJpaEntity> findByIsActiveTrue(String projectId);
     List<TeamUserJpaEntity> findByProjectId(String projectId);
