@@ -2,6 +2,12 @@ package com.kipu.backend.team.interfaces.rest.controllers;
 
 import com.kipu.backend.team.domain.model.entities.Invitation;
 import com.kipu.backend.team.domain.repositories.InvitationRepository;
+import com.kipu.backend.iam.domain.repositories.UserRepository;
+import java.util.Optional;
+import com.kipu.backend.teamusers.application.commands.CreateTeamUserCommand;
+import com.kipu.backend.teamusers.application.internal.commandservices.TeamUserCommandService;
+import com.kipu.backend.teamusers.domain.model.valueobjects.EmailAddress;
+import com.kipu.backend.teamusers.domain.model.valueobjects.FullName;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
@@ -17,9 +23,15 @@ import java.util.List;
 public class InvitationController {
 
     private final InvitationRepository invitationRepository;
+    private final TeamUserCommandService teamUserCommandService;
+    private final UserRepository userRepository;
 
-    public InvitationController(InvitationRepository invitationRepository) {
+    public InvitationController(InvitationRepository invitationRepository,
+                                TeamUserCommandService teamUserCommandService,
+                                UserRepository userRepository) {
         this.invitationRepository = invitationRepository;
+        this.teamUserCommandService = teamUserCommandService;
+        this.userRepository = userRepository;
     }
 
     @PostMapping
@@ -34,7 +46,6 @@ public class InvitationController {
         invitation.setStatus("PENDING");
         Invitation saved = invitationRepository.save(invitation);
         
-        // Simulación de correo electrónico
         System.out.println("=========================================================");
         System.out.println("SIMULACIÓN DE CORREO: Invitación a unirse a Kipú");
         System.out.println("Para: " + invitation.getEmail());
@@ -62,11 +73,29 @@ public class InvitationController {
     }
     
     @PutMapping("/{id}/accept")
-    @Operation(summary = "Accept an invitation")
-    public ResponseEntity<Invitation> acceptInvitation(@PathVariable Long id) {
+    @Operation(summary = "Accept an invitation and create team user")
+    public ResponseEntity<?> acceptInvitation(@PathVariable Long id) {
         return invitationRepository.findById(id).map(existing -> {
             existing.setStatus("ACCEPTED");
             Invitation saved = invitationRepository.save(existing);
+
+            String fullNameStr = (existing.getFirstName() + " " + existing.getLastName()).trim();
+            FullName fullName = new FullName(fullNameStr);
+            EmailAddress email = new EmailAddress(existing.getEmail());
+
+            Long userId = null;
+            try {
+                Optional<User> iamUser = userRepository.findByEmail(existing.getEmail());
+                if (iamUser.isPresent()) {
+                    userId = iamUser.get().getId();
+                }
+            } catch (Exception e) {
+                // ignore
+            }
+
+            var command = new CreateTeamUserCommand(userId, fullName, email, existing.getRole(), existing.getProjectId());
+            teamUserCommandService.handle(command);
+
             return ResponseEntity.ok(saved);
         }).orElse(ResponseEntity.notFound().build());
     }
