@@ -5,6 +5,7 @@ import com.kipu.backend.Logistics.machinery.domain.model.valueobjects.*;
 public record CreateMachineryCommand(
         MachineryName name,
         MachineryAssignedTo assignedTo,
+        String assignedWorkerId,
         MachineryAssignmentDetail assignmentDetail,
         String projectId
 ) {

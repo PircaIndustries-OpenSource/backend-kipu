@@ -14,6 +14,9 @@ public record CreateMachineryResource(
         @Schema(description = "Worker assigned (DNI - FullName)", example = "12345678 - Juan Pérez", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
         String assignedTo,
 
+        @Schema(description = "Team worker ID assigned", example = "wrk-a1b2c3d4e5f6", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+        String assignedWorkerId,
+
         @Schema(description = "Assignment detail/purpose", example = "Asignado para excavación en zona A", maxLength = 500, requiredMode = Schema.RequiredMode.REQUIRED)
         @NotBlank(message = "machinery.error.assignmentDetail.notBlank")
         @Size(max = 500, message = "machinery.error.assignmentDetail.size")

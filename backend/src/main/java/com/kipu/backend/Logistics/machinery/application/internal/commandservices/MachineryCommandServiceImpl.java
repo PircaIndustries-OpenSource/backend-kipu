@@ -36,11 +36,17 @@ public class MachineryCommandServiceImpl implements MachineryCommandService {
             var machinery = Machinery.create(
                     command.name(),
                     command.assignedTo(),
+                    command.assignedWorkerId(),
                     command.assignmentDetail(),
                     command.projectId()
             );
             var saved = repository.save(machinery);
             log.info("Machinery created: id={}, name={}", saved.getId(), saved.getName().value());
+            try {
+                syncWorkerOnStatusChange(machinery, saved);
+            } catch (Exception e) {
+                log.warn("Worker sync skipped for new machinery {}: {}", saved.getId(), e.getMessage());
+            }
             return Result.success(saved);
         } catch (Exception e) {
             log.error("Error creating machinery", e);

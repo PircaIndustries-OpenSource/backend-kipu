@@ -37,10 +37,12 @@ public class Machinery {
     }
 
     public static Machinery create(MachineryName name, MachineryAssignedTo assignedTo,
-                                   MachineryAssignmentDetail assignmentDetail, String projectId) {
+                                   String assignedWorkerId, MachineryAssignmentDetail assignmentDetail, String projectId) {
         Instant now = Instant.now();
+        boolean hasWorker = assignedWorkerId != null && !assignedWorkerId.isBlank();
         return new Machinery(
-                null, name, MachineryStatus.AVAILABLE, assignedTo, null,
+                null, name, hasWorker ? MachineryStatus.IN_USE : MachineryStatus.AVAILABLE,
+                assignedTo, assignedWorkerId,
                 now, new MachineryMaintenanceHours("0"),
                 assignmentDetail, projectId, now, now
         );
