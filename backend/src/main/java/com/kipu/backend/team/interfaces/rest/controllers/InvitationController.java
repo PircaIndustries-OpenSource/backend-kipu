@@ -2,6 +2,7 @@ package com.kipu.backend.team.interfaces.rest.controllers;
 
 import com.kipu.backend.team.domain.model.entities.Invitation;
 import com.kipu.backend.team.domain.repositories.InvitationRepository;
+import com.kipu.backend.iam.domain.model.aggregates.User;
 import com.kipu.backend.iam.domain.repositories.UserRepository;
 import java.util.Optional;
 import com.kipu.backend.teamusers.application.commands.CreateTeamUserCommand;

@@ -14,4 +14,5 @@ public interface TeamUserJpaRepository extends JpaRepository<TeamUserJpaEntity, 
     List<TeamUserJpaEntity> findByIsActiveTrue(String projectId);
     List<TeamUserJpaEntity> findByProjectId(String projectId);
     Optional<TeamUserJpaEntity> findByEmailAndProjectId(String email, String projectId);
+    List<TeamUserJpaEntity> findByEmail(String email);
 }
