@@ -13,7 +13,6 @@ public interface TeamUserJpaRepository extends JpaRepository<TeamUserJpaEntity, 
         JpaSpecificationExecutor<TeamUserJpaEntity> {
     List<TeamUserJpaEntity> findByIsActiveTrue(String projectId);
     List<TeamUserJpaEntity> findByProjectId(String projectId);
-    Optional<TeamUserJpaEntity> findById(String id);
     Optional<TeamUserJpaEntity> findByEmailAndProjectId(String email, String projectId);
     List<TeamUserJpaEntity> findByEmail(String email);
 }
