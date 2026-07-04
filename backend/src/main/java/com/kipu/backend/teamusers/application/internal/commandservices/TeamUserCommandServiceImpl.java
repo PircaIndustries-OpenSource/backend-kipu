@@ -3,6 +3,7 @@ package com.kipu.backend.teamusers.application.internal.commandservices;
 import com.kipu.backend.teamusers.application.commands.ActivateTeamUserCommand;
 import com.kipu.backend.teamusers.application.commands.CreateTeamUserCommand;
 import com.kipu.backend.teamusers.application.commands.DeactiveTeamUserCommand;
+import com.kipu.backend.teamusers.application.commands.UpdateTeamUserRoleCommand;
 import com.kipu.backend.teamusers.domain.model.aggregates.TeamUser;
 import com.kipu.backend.teamusers.domain.model.exceptions.ExistingUserException;
 import com.kipu.backend.teamusers.domain.model.repositories.TeamUserRepository;
@@ -73,5 +74,22 @@ public class TeamUserCommandServiceImpl implements TeamUserCommandService {
         newUser.activate();
 
         return Optional.of(teamUserRepository.save(newUser));
+    }
+
+    @Override
+    @Transactional
+    public Optional<TeamUser> handle(UpdateTeamUserRoleCommand command) {
+        return teamUserRepository.findById(command.id()).map(user -> {
+            user.updateRole(command.newRole());
+            return teamUserRepository.save(user);
+        });
+    }
+
+    @Override
+    @Transactional
+    public boolean handleDelete(String id) {
+        if (!teamUserRepository.findById(id).isPresent()) return false;
+        teamUserRepository.deleteById(id);
+        return true;
     }
 }

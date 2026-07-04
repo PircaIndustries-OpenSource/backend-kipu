@@ -58,4 +58,9 @@ public class TeamUserRepositoryAdapter implements TeamUserRepository {
         var entities = jpaRepository.findByEmailAndProjectId(email.address(), projectId);
         return entities.map(mapper::toDomain);
     }
+
+    @Override
+    public void deleteById(String id) {
+        jpaRepository.deleteById(id);
+    }
 }

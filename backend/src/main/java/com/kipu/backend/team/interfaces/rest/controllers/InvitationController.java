@@ -59,7 +59,7 @@ public class InvitationController {
         return new ResponseEntity<>(saved, HttpStatus.CREATED);
     }
 
-    @GetMapping
+    @GetMapping("/by-project")
     @Operation(summary = "Get invitations by project ID")
     public ResponseEntity<List<Invitation>> getInvitationsByProject(@RequestParam String projectId) {
         List<Invitation> invitations = invitationRepository.findByProjectId(projectId);
