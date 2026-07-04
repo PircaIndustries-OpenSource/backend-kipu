@@ -1,6 +1,6 @@
 #FileLock
-#Fri Jul 03 19:40:16 GMT-05:00 2026
-hostName=10.2.0.2
-id=19f2a91a74261494eff11e0b1ae023cc3c4124e6561
+#Fri Jul 03 21:04:08 GMT-05:00 2026
+hostName=norahccc-IdeaPad-Gaming-3-15IHU6
+id=19f2ade6fde80617a830f3b24ca5d43507760dba931
 method=file
-server=10.2.0.2\:62166
+server=127.0.1.1\:34395

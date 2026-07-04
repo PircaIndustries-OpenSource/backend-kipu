@@ -11,4 +11,5 @@ public interface TeamUserQueryService {
     Optional<TeamUser> handle(GetUserByIdQuery query);
     List<TeamUser> handle(SearchTeamUsersQuery query);
     List<TeamUser> handle(GetAllActiveTeamUsersQuery query);
+    List<TeamUser> handle(GetTeamUsersByEmailQuery query);
 }

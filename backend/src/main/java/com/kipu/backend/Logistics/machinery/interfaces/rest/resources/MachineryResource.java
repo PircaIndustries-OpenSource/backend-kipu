@@ -16,6 +16,9 @@ public record MachineryResource(
         @Schema(description = "Worker assigned (DNI - FullName)", example = "12345678 - Juan Pérez")
         String assignedTo,
 
+        @Schema(description = "Team worker ID assigned", example = "wrk-a1b2c3d4e5f6")
+        String assignedWorkerId,
+
         @Schema(description = "Registration date", example = "2024-01-15T10:30:00Z")
         String registrationDate,
 
@@ -23,5 +26,8 @@ public record MachineryResource(
         String maintenanceHours,
 
         @Schema(description = "Assignment detail/purpose", example = "Asignado para excavación en zona A")
-        String assignmentDetail
+        String assignmentDetail,
+
+        @Schema(description = "Project ID", example = "proj-01")
+        String projectId
 ) {}

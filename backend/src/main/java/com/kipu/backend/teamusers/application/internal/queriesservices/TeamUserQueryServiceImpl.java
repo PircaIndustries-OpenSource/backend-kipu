@@ -37,5 +37,10 @@ public class TeamUserQueryServiceImpl implements TeamUserQueryService {
         return this.teamUserRepository.findByIsActiveTrue(query.projectId());
     }
 
+    @Override
+    public List<TeamUser> handle(GetTeamUsersByEmailQuery query) {
+        return this.teamUserRepository.findByEmail(query.email());
+    }
+
 
 }

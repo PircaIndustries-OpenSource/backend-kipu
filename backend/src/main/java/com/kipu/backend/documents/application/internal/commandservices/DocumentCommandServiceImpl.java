@@ -1,14 +1,15 @@
 package com.kipu.backend.documents.application.internal.commandservices;
 
 import com.kipu.backend.documents.application.commands.CreateDocumentCommand;
+import com.kipu.backend.documents.application.commands.SendSignCodeCommand;
 import com.kipu.backend.documents.application.commands.SignDocumentCommand;
 import com.kipu.backend.documents.domain.model.aggregates.Document;
 import com.kipu.backend.documents.domain.model.repositories.DocumentRepository;
 import com.kipu.backend.documents.domain.model.valueobjects.Signer;
-
+import com.kipu.backend.iam.application.internal.outboundservices.email.EmailService;
+import com.kipu.backend.iam.application.internal.outboundservices.otp.OtpService;
+import com.kipu.backend.shared.domain.exceptions.BusinessException;
 import jakarta.transaction.Transactional;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -17,10 +18,15 @@ import java.util.Optional;
 public class DocumentCommandServiceImpl implements DocumentCommandService {
 
     private final DocumentRepository documentRepository;
+    private final OtpService otpService;
+    private final EmailService emailService;
 
-    public DocumentCommandServiceImpl(DocumentRepository documentRepository) {
+    public DocumentCommandServiceImpl(DocumentRepository documentRepository,
+                                      OtpService otpService,
+                                      EmailService emailService) {
         this.documentRepository = documentRepository;
-
+        this.otpService = otpService;
+        this.emailService = emailService;
     }
 
     @Override
@@ -38,16 +44,26 @@ public class DocumentCommandServiceImpl implements DocumentCommandService {
 
     @Override
     @Transactional
-    public Optional<Document> handle(SignDocumentCommand command) {
-
-        Document document = this.documentRepository.findById(command.id())
-                .orElseThrow(() -> new IllegalArgumentException("document.validation.documentNotFound"));
-
-        document.markAsSigned();
-
-        return Optional.of(this.documentRepository.save(document));
-
+    public void handle(SendSignCodeCommand command) {
+        if (!documentRepository.findById(command.documentId()).isPresent()) {
+            throw new BusinessException("document.validation.documentNotFound");
+        }
+        otpService.generateAndSendOtp(command.email());
     }
 
-}
+    @Override
+    @Transactional
+    public Optional<Document> handle(SignDocumentCommand command) {
+        boolean valid = otpService.validateOtp(command.email(), command.code());
+        if (!valid) {
+            throw new BusinessException("document.validation.invalidOrExpiredCode");
+        }
 
+        Document document = documentRepository.findById(command.id())
+                .orElseThrow(() -> new BusinessException("document.validation.documentNotFound"));
+
+        document.signAs(command.teamUserId());
+
+        return Optional.of(documentRepository.save(document));
+    }
+}

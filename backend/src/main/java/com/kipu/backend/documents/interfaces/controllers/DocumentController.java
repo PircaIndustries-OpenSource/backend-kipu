@@ -1,5 +1,6 @@
 package com.kipu.backend.documents.interfaces.controllers;
 
+import com.kipu.backend.documents.application.commands.SendSignCodeCommand;
 import com.kipu.backend.documents.application.commands.SignDocumentCommand;
 import com.kipu.backend.documents.application.internal.commandservices.DocumentCommandService;
 import com.kipu.backend.documents.application.internal.queriesservices.DocumentQueryService;
@@ -8,6 +9,8 @@ import com.kipu.backend.documents.application.queries.GetAllPendingDocumentsQuer
 import com.kipu.backend.documents.application.queries.GetAllSignedDocumentsQuery;
 import com.kipu.backend.documents.interfaces.resources.CreateDocumentResource;
 import com.kipu.backend.documents.interfaces.resources.DocumentResource;
+import com.kipu.backend.documents.interfaces.resources.SendSignCodeRequest;
+import com.kipu.backend.documents.interfaces.resources.SignDocumentRequest;
 import com.kipu.backend.documents.interfaces.transform.CreateDocumentCommandFromResourceAssembler;
 import com.kipu.backend.documents.interfaces.transform.DocumentResourceFromEntityAssembler;
 import jakarta.validation.Valid;
@@ -40,15 +43,25 @@ public class DocumentController {
                 .orElse(ResponseEntity.badRequest().build());
     }
 
+    @PostMapping("/{id}/send-code")
+    public ResponseEntity<Void> sendSignCode(@PathVariable String id,
+                                              @Valid @RequestBody SendSignCodeRequest request) {
+        var command = new SendSignCodeCommand(id, request.email());
+        commandService.handle(command);
+        return ResponseEntity.ok().build();
+    }
+
     @PatchMapping("/sign/{id}")
-    public ResponseEntity<DocumentResource> signDocument(@PathVariable String id) {
-        var command = new SignDocumentCommand(id);
+    public ResponseEntity<DocumentResource> signDocument(@PathVariable String id,
+                                                          @Valid @RequestBody SignDocumentRequest request) {
+        var command = new SignDocumentCommand(id, request.code(), request.email(),
+                request.teamUserId(), request.fullName());
         var result = commandService.handle(command);
 
         return result.map(d -> new ResponseEntity<>(
                 DocumentResourceFromEntityAssembler.toResource(d),
                 HttpStatus.ACCEPTED))
-                .orElse(ResponseEntity.notFound().build());
+                .orElse(ResponseEntity.badRequest().build());
     }
 
     @GetMapping

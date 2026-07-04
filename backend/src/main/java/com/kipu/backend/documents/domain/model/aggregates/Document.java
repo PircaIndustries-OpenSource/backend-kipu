@@ -7,7 +7,6 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -41,10 +40,6 @@ public class Document {
     }
 
     public void assignSigner(String teamUserId, String fullName) {
-        if (this.isSigned) {
-            throw new BusinessException("document.validation.assignToSigned");
-        }
-
         boolean alreadyAssigned = signers.stream()
                 .anyMatch(s -> s.teamUserId().equals(teamUserId));
 
@@ -55,12 +50,22 @@ public class Document {
         this.signers.add(new Signer(teamUserId, fullName));
     }
 
-    public void markAsSigned() {
-        if (this.signers.isEmpty()) {
-            throw new BusinessException("document.validation.signWithoutSigners");
+    public void signAs(String teamUserId) {
+        Signer signer = signers.stream()
+                .filter(s -> s.teamUserId().equals(teamUserId))
+                .findFirst()
+                .orElseThrow(() -> new BusinessException("document.validation.signerNotAssigned"));
+
+        if (signer.isSigned()) {
+            throw new BusinessException("document.validation.signerAlreadySigned");
         }
-        this.isSigned = true;
-        this.digitalSignatureToken = "SIGN-" + System.currentTimeMillis();
+
+        signer.markAsSigned();
+
+        if (signers.stream().allMatch(Signer::isSigned)) {
+            this.isSigned = true;
+            this.digitalSignatureToken = "SIGN-" + this.id;
+        }
     }
 
     public List<Signer> getSigners() {
