@@ -1,18 +1,3 @@
-2026-07-04 00:19:36.043815-05:00 jdbc[7]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "MATERIAL_WASTE" not found; SQL statement:
-SELECT * FROM material_waste WHERE project_id = ? [42102-240]
-2026-07-04 00:20:51.558798-05:00 jdbc[7]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "MATERIAL_WASTE" not found; SQL statement:
-SELECT * FROM material_waste WHERE project_id = ? [42102-240]
-2026-07-04 00:21:18.245546-05:00 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "MATERIAL_WASTE" not found; SQL statement:
-SELECT * FROM material_waste WHERE project_id = ? [42102-240]
-2026-07-04 00:21:24.073450-05:00 jdbc[6]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "MATERIAL_WASTE" not found; SQL statement:
-SELECT * FROM material_waste WHERE project_id = ? [42102-240]
-2026-07-04 00:21:29.458258-05:00 jdbc[7]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "MATERIAL_WASTE" not found; SQL statement:
-SELECT * FROM material_waste WHERE project_id = ? [42102-240]
-2026-07-04 00:21:45.001172-05:00 jdbc[6]: exception
+2026-07-04 00:32:35.213471-05:00 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "MATERIAL_WASTE" not found; SQL statement:
 SELECT * FROM material_waste WHERE project_id = ? [42102-240]
