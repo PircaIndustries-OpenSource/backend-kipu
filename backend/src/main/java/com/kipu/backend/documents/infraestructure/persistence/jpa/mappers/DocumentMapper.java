@@ -26,6 +26,7 @@ public class DocumentMapper {
             signer.setDocumentId(document.getId());
             signer.setFullName(s.fullName());
             signer.setTeamUserId(s.teamUserId());
+            signer.setSignedAt(s.signedAt());
             return signer;
         }).toList();
 
@@ -36,8 +37,7 @@ public class DocumentMapper {
     public Document toDomain(DocumentJpaEntity document) {
 
         List<Signer> signers = document.getSigners().stream().map(s ->
-                   new Signer(s.getTeamUserId(), s.getFullName())
-
+                   new Signer(s.getTeamUserId(), s.getFullName(), s.getSignedAt())
         ).toList();
 
         return new Document(document.getId(), document.getType(), document.isSigned(),

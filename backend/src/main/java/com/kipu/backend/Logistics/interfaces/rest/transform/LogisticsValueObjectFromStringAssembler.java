@@ -38,7 +38,7 @@ public class LogisticsValueObjectFromStringAssembler {
         return new WarehouseLocation(value);
     }
 
-    public static ProjectId toProjectIdFromInteger(Integer value) {
+    public static ProjectId toProjectIdFromString(String value) {
         return new ProjectId(value);
     }
 

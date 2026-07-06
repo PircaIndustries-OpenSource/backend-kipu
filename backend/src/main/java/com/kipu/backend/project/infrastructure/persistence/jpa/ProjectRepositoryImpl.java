@@ -50,6 +50,11 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     }
 
     @Override
+    public List<Project> findByIdIn(List<String> ids) {
+        return repositoryJPA.findByIdIn(ids);
+    }
+
+    @Override
     public void deleteById(String id) {
         repositoryJPA.deleteById(id);
     }

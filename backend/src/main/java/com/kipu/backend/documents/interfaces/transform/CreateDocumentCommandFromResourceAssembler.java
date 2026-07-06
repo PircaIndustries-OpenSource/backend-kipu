@@ -3,7 +3,6 @@ package com.kipu.backend.documents.interfaces.transform;
 import com.kipu.backend.documents.application.commands.CreateDocumentCommand;
 import com.kipu.backend.documents.domain.model.valueobjects.Signer;
 import com.kipu.backend.documents.interfaces.resources.CreateDocumentResource;
-import com.kipu.backend.documents.interfaces.resources.SignerResource;
 
 import java.util.List;
 

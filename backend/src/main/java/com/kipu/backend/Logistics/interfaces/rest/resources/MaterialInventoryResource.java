@@ -8,7 +8,7 @@ public record MaterialInventoryResource(
         Long id,
 
         @Schema(description = "Project identifier", example = "10")
-        Integer projectId,
+        String projectId,
 
         @Schema(description = "Material catalog identifier", example = "5")
         Integer materialCatalogId,

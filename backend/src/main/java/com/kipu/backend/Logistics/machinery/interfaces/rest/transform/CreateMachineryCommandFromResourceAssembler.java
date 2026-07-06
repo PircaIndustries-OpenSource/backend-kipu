@@ -10,6 +10,7 @@ public class CreateMachineryCommandFromResourceAssembler {
         return new CreateMachineryCommand(
                 new MachineryName(resource.name()),
                 resource.assignedTo() != null ? new MachineryAssignedTo(resource.assignedTo()) : new MachineryAssignedTo(null),
+                resource.assignedWorkerId(),
                 new MachineryAssignmentDetail(resource.assignmentDetail()),
                 projectId
         );

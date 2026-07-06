@@ -9,7 +9,7 @@ public class CreateMaterialInventoryCommandFromResourceAssembler {
 
     public static CreateMaterialInventoryCommand toCommandFromResource(CreateMaterialInventoryResource resource) {
         return new CreateMaterialInventoryCommand(
-                toProjectIdFromInteger(resource.projectId()),
+                toProjectIdFromString(resource.projectId()),
                 toMaterialCatalogIdFromInteger(resource.materialCatalogId()),
                 toQuantityFromInteger(resource.currentStock()),
                 resource.minimumStock() != null ? toQuantityFromInteger(resource.minimumStock()) : null,

@@ -3,6 +3,7 @@ package com.kipu.backend.teamusers.interfaces.rest.controllers;
 
 import com.kipu.backend.teamusers.application.commands.ActivateTeamUserCommand;
 import com.kipu.backend.teamusers.application.commands.DeactiveTeamUserCommand;
+import com.kipu.backend.teamusers.application.commands.UpdateTeamUserRoleCommand;
 import com.kipu.backend.teamusers.application.internal.commandservices.TeamUserCommandService;
 import com.kipu.backend.teamusers.application.internal.queriesservices.TeamUserQueryService;
 import com.kipu.backend.teamusers.application.queries.GetAllActiveTeamUsersQuery;
@@ -11,6 +12,7 @@ import com.kipu.backend.teamusers.application.queries.SearchTeamUsersQuery;
 import com.kipu.backend.teamusers.domain.model.aggregates.TeamUser;
 import com.kipu.backend.teamusers.interfaces.rest.resources.CreateTeamUserResource;
 import com.kipu.backend.teamusers.interfaces.rest.resources.TeamUserResource;
+import com.kipu.backend.teamusers.interfaces.rest.resources.UpdateTeamUserRoleResource;
 import com.kipu.backend.teamusers.interfaces.rest.transform.CreateTeamUserCommandFromResourceAssembler;
 import com.kipu.backend.teamusers.interfaces.rest.transform.TeamUserResourceFromEntityAssembler;
 import jakarta.validation.Valid;
@@ -76,6 +78,24 @@ public class TeamUserController {
         return result.map(user ->
                 ResponseEntity.ok(TeamUserResourceFromEntityAssembler.toResource(user)))
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PatchMapping("/{id}/role")
+    public ResponseEntity<TeamUserResource> updateTeamUserRole(
+            @PathVariable String id,
+            @Valid @RequestBody UpdateTeamUserRoleResource resource
+    ) {
+        var command = new UpdateTeamUserRoleCommand(id, resource.role());
+        var result = commandService.handle(command);
+        return result.map(user ->
+                        ResponseEntity.ok(TeamUserResourceFromEntityAssembler.toResource(user)))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTeamUser(@PathVariable String id) {
+        boolean deleted = commandService.handleDelete(id);
+        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 
     @PatchMapping("/{id}/activate")

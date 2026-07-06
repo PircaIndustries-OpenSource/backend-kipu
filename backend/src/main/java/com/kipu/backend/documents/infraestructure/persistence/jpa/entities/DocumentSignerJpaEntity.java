@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "document_signers")
 @Getter
@@ -23,5 +25,6 @@ public class DocumentSignerJpaEntity {
     @Column(name = "full_name")
     private String fullName;
 
-
+    @Column(name = "signed_at")
+    private LocalDateTime signedAt;
 }

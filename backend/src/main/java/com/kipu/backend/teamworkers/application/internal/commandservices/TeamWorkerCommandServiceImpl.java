@@ -1,5 +1,6 @@
 package com.kipu.backend.teamworkers.application.internal.commandservices;
 
+import com.kipu.backend.shared.domain.exceptions.BusinessException;
 import com.kipu.backend.teamworkers.application.commands.AssignMachineryToTeamWorkerCommand;
 import com.kipu.backend.teamworkers.application.commands.CreateTeamWorkerCommand;
 import com.kipu.backend.teamworkers.application.commands.DeleteTeamWorkerCommand;
@@ -7,8 +8,8 @@ import com.kipu.backend.teamworkers.application.commands.RemoveMachineryFromTeam
 import com.kipu.backend.teamworkers.domain.model.aggregates.TeamWorker;
 import com.kipu.backend.teamworkers.domain.model.repositories.TeamWorkerRepository;
 import com.kipu.backend.teamworkers.domain.model.valueobjects.WorkerId;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -22,7 +23,7 @@ public class TeamWorkerCommandServiceImpl implements TeamWorkerCommandService {
     }
 
     @Override
-    @Transactional
+    @Transactional(noRollbackFor = BusinessException.class)
     public Optional<TeamWorker> handle(CreateTeamWorkerCommand command) {
         var worker = new TeamWorker(
                 command.dni(),
@@ -41,7 +42,7 @@ public class TeamWorkerCommandServiceImpl implements TeamWorkerCommandService {
     }
 
     @Override
-    @Transactional
+    @Transactional(noRollbackFor = BusinessException.class)
     public boolean handle(DeleteTeamWorkerCommand command) {
         var workerId = new WorkerId(command.teamWorkerId());
         var workerOpt = teamWorkerRepository.findById(workerId);
@@ -53,7 +54,7 @@ public class TeamWorkerCommandServiceImpl implements TeamWorkerCommandService {
     }
 
     @Override
-    @Transactional
+    @Transactional(noRollbackFor = BusinessException.class)
     public Optional<TeamWorker> handle(AssignMachineryToTeamWorkerCommand command) {
         var workerId = new WorkerId(command.teamWorkerId());
 
@@ -64,7 +65,7 @@ public class TeamWorkerCommandServiceImpl implements TeamWorkerCommandService {
     }
 
     @Override
-    @Transactional
+    @Transactional(noRollbackFor = BusinessException.class)
     public Optional<TeamWorker> handle(RemoveMachineryFromTeamWorkerCommand command) {
         var workerId = new WorkerId(command.teamWorkerId());
 

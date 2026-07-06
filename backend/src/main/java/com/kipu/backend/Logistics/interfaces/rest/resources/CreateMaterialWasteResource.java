@@ -9,9 +9,8 @@ import java.time.LocalDate;
 public record CreateMaterialWasteResource(
 
         @Schema(description = "Project identifier", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
-        @NotNull(message = "material.waste.error.projectId.notBlank")
-        @Positive(message = "material.waste.error.projectId.invalidValue")
-        Integer projectId,
+        @NotBlank(message = "material.waste.error.projectId.notBlank")
+        String projectId,
 
         @Schema(description = "Material catalog identifier (materialId)", example = "5", requiredMode = Schema.RequiredMode.REQUIRED)
         @NotNull(message = "material.waste.error.materialId.notBlank")

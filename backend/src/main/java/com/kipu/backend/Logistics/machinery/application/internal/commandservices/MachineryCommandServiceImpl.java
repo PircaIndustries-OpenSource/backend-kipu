@@ -8,6 +8,7 @@ import com.kipu.backend.Logistics.machinery.domain.model.aggregates.Machinery;
 import com.kipu.backend.Logistics.machinery.domain.model.valueobjects.MachineryStatus;
 import com.kipu.backend.Logistics.machinery.domain.repositories.MachineryRepository;
 import com.kipu.backend.shared.application.result.Result;
+import com.kipu.backend.shared.domain.exceptions.BusinessException;
 import com.kipu.backend.teamworkers.application.commands.AssignMachineryToTeamWorkerCommand;
 import com.kipu.backend.teamworkers.application.commands.RemoveMachineryFromTeamWorkerCommand;
 import com.kipu.backend.teamworkers.application.internal.commandservices.TeamWorkerCommandService;
@@ -35,11 +36,17 @@ public class MachineryCommandServiceImpl implements MachineryCommandService {
             var machinery = Machinery.create(
                     command.name(),
                     command.assignedTo(),
+                    command.assignedWorkerId(),
                     command.assignmentDetail(),
                     command.projectId()
             );
             var saved = repository.save(machinery);
             log.info("Machinery created: id={}, name={}", saved.getId(), saved.getName().value());
+            try {
+                syncWorkerOnStatusChange(machinery, saved);
+            } catch (Exception e) {
+                log.warn("Worker sync skipped for new machinery {}: {}", saved.getId(), e.getMessage());
+            }
             return Result.success(saved);
         } catch (Exception e) {
             log.error("Error creating machinery", e);
@@ -48,7 +55,7 @@ public class MachineryCommandServiceImpl implements MachineryCommandService {
     }
 
     @Override
-    @Transactional
+    @Transactional(noRollbackFor = BusinessException.class)
     public Result<Machinery, MachineryCommandFailure> handleUpdate(String id, UpdateMachineryCommand command) {
         var existing = repository.findById(id);
         if (existing.isEmpty()) {
@@ -75,7 +82,7 @@ public class MachineryCommandServiceImpl implements MachineryCommandService {
     }
 
     @Override
-    @Transactional
+    @Transactional(noRollbackFor = BusinessException.class)
     public Result<Machinery, MachineryCommandFailure> handlePatch(String id, UpdateMachineryCommand command) {
         var existing = repository.findById(id);
         if (existing.isEmpty()) {
@@ -105,18 +112,22 @@ public class MachineryCommandServiceImpl implements MachineryCommandService {
         String machineryId = after.getId();
         String machineryName = after.getName().value();
 
-        if (after.getStatus() == MachineryStatus.IN_USE && after.getAssignedWorkerId() != null) {
-            var assignCmd = new AssignMachineryToTeamWorkerCommand(
-                    after.getAssignedWorkerId(), machineryId, machineryName);
-            teamWorkerCommandService.handle(assignCmd);
-            log.debug("Assigned machinery {} to worker {}", machineryId, after.getAssignedWorkerId());
-        }
+        try {
+            if (after.getStatus() == MachineryStatus.IN_USE && after.getAssignedWorkerId() != null) {
+                var assignCmd = new AssignMachineryToTeamWorkerCommand(
+                        after.getAssignedWorkerId(), machineryId, machineryName);
+                teamWorkerCommandService.handle(assignCmd);
+                log.debug("Assigned machinery {} to worker {}", machineryId, after.getAssignedWorkerId());
+            }
 
-        if (after.getStatus() != MachineryStatus.IN_USE && before.getAssignedWorkerId() != null) {
-            var removeCmd = new RemoveMachineryFromTeamWorkerCommand(
-                    before.getAssignedWorkerId(), machineryId);
-            teamWorkerCommandService.handle(removeCmd);
-            log.debug("Removed machinery {} from worker {}", machineryId, before.getAssignedWorkerId());
+            if (after.getStatus() != MachineryStatus.IN_USE && before.getAssignedWorkerId() != null) {
+                var removeCmd = new RemoveMachineryFromTeamWorkerCommand(
+                        before.getAssignedWorkerId(), machineryId);
+                teamWorkerCommandService.handle(removeCmd);
+                log.debug("Removed machinery {} from worker {}", machineryId, before.getAssignedWorkerId());
+            }
+        } catch (Exception e) {
+            log.warn("Worker sync skipped for machinery {}: {}", machineryId, e.getMessage());
         }
     }
 
