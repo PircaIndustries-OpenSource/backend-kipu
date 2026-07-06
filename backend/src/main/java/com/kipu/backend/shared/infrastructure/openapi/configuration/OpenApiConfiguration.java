@@ -67,7 +67,7 @@ public class OpenApiConfiguration {
                                 .url("http://localhost:8080")
                                 .description("Local Development Environment"),
                         new Server()
-                                .url("http://158.23.163.220")
+                                .url("https://kipu-api-os.duckdns.org")
                                 .description("Production Environment")
                 ));
 

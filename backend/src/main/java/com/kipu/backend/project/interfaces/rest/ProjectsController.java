@@ -71,7 +71,7 @@ public class ProjectsController {
         projectIds.addAll(created.stream().map(Project::getId).toList());
 
         try {
-            List<TeamUserJpaEntity> teamUsers = teamUserJpaRepository.findByEmail(username);
+            List<TeamUserJpaEntity> teamUsers = teamUserJpaRepository.findByEmailAndIsActiveTrue(username);
             projectIds.addAll(teamUsers.stream().map(TeamUserJpaEntity::getProjectId).toList());
         } catch (Exception e) {
             // ignore

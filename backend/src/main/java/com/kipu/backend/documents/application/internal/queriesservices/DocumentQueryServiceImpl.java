@@ -26,11 +26,11 @@ public class DocumentQueryServiceImpl implements DocumentQueryService {
 
     @Override
     public List<Document> handle(GetAllPendingDocumentsQuery query) {
-        return this.documentRepository.findByIsSignedFalse(query.projectId());
+        return this.documentRepository.findByProjectIdAndIsSignedFalse(query.projectId());
     }
 
     @Override
     public List<Document> handle(GetAllSignedDocumentsQuery query) {
-        return this.documentRepository.findByIsSignedTrue(query.projectId());
+        return this.documentRepository.findByProjectIdAndIsSignedTrue(query.projectId());
     }
 }

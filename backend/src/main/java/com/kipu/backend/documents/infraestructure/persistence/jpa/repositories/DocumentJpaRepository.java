@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface DocumentJpaRepository extends JpaRepository<DocumentJpaEntity, String> {
     List<DocumentJpaEntity> findByProjectId(String projectId);
-    List<DocumentJpaEntity> findByIsSignedTrue(String projectId);
-    List<DocumentJpaEntity> findByIsSignedFalse(String projectId);
+    List<DocumentJpaEntity> findByProjectIdAndIsSignedTrue(String projectId);
+    List<DocumentJpaEntity> findByProjectIdAndIsSignedFalse(String projectId);
 }

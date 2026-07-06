@@ -10,6 +10,6 @@ public interface DocumentRepository {
 
     Optional<Document> findById(String id);
     List<Document> findByProjectId(String id);
-    List<Document> findByIsSignedTrue(String projectId);
-    List<Document> findByIsSignedFalse(String projectId);
+    List<Document> findByProjectIdAndIsSignedTrue(String projectId);
+    List<Document> findByProjectIdAndIsSignedFalse(String projectId);
 }

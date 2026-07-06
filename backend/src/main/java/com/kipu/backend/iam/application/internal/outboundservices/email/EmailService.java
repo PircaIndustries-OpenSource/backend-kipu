@@ -2,6 +2,8 @@ package com.kipu.backend.iam.application.internal.outboundservices.email;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmailService {
 
+    private static final Logger log = LoggerFactory.getLogger(EmailService.class);
     private final JavaMailSender javaMailSender;
 
     public EmailService(JavaMailSender javaMailSender) {
@@ -20,6 +23,7 @@ public class EmailService {
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
+            helper.setFrom("pircaindustries@gmail.com");
             helper.setTo(to);
             helper.setSubject("Código de Verificación Kipu");
 
@@ -38,23 +42,26 @@ public class EmailService {
             helper.setText(htmlContent, true);
 
             javaMailSender.send(message);
-            System.out.println("Email enviado exitosamente a: " + to);
+            log.info("OTP email sent successfully to: {}", to);
         } catch (MessagingException e) {
-            System.err.println("Error enviando el correo OTP: " + e.getMessage());
+            log.error("Failed to send OTP email to {}: {}", to, e.getMessage(), e);
         }
     }
+
     public void sendHtmlEmail(String to, String subject, String htmlContent) {
         try {
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-            
+
+            helper.setFrom("pircaindustries@gmail.com");
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(htmlContent, true);
-            
+
             javaMailSender.send(message);
+            log.info("HTML email sent successfully to: {}", to);
         } catch (MessagingException e) {
-            System.err.println("Error enviando correo HTML: " + e.getMessage());
+            log.error("Failed to send HTML email to {}: {}", to, e.getMessage(), e);
         }
     }
 }
