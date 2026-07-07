@@ -51,4 +51,9 @@ public class NonConformityRecordRepositoryAdapter implements NonConformityRecord
                 .map(NonConformityRecordMapper::toDomain)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public void deleteById(String id) {
+        repository.deleteById(id);
+    }
 }

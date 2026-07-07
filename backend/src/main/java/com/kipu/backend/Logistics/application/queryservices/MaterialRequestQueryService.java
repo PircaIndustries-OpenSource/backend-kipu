@@ -38,4 +38,12 @@ public interface MaterialRequestQueryService {
      * @throws IllegalArgumentException if status is null
      */
     List<MaterialRequest> handle(GetMaterialRequestsByStatusQuery query);
+
+    /**
+     * Retrieves material requests by project identifier.
+     *
+     * @param query query containing the project identifier
+     * @return list of material requests for the given project, possibly empty
+     */
+    List<MaterialRequest> handle(GetMaterialRequestsByProjectQuery query);
 }

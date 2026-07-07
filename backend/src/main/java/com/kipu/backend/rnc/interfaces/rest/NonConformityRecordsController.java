@@ -6,6 +6,7 @@ import com.kipu.backend.rnc.application.commandservices.NonConformityRecordComma
 import com.kipu.backend.rnc.application.queries.GetAllNonConformityRecordsByProjectIdQuery;
 import com.kipu.backend.rnc.application.queries.GetNonConformityRecordByIdQuery;
 import com.kipu.backend.rnc.application.queryservices.NonConformityRecordQueryService;
+import com.kipu.backend.rnc.domain.repositories.NonConformityRecordRepository;
 import com.kipu.backend.rnc.interfaces.rest.resources.AddSolutionNoteResource;
 import com.kipu.backend.rnc.interfaces.rest.resources.AssignNonConformityRecordResource;
 import com.kipu.backend.rnc.interfaces.rest.resources.CreateNonConformityRecordResource;
@@ -22,9 +23,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * REST Controller for managing Non-Conformance Records (RNCs).
- */
 @RestController
 @RequestMapping("/api/v1/non-conformity-records")
 @Tag(name = "Non-Conformity Records", description = "Endpoints for Non-Conformance Record Management")
@@ -32,10 +30,14 @@ public class NonConformityRecordsController {
 
     private final NonConformityRecordCommandService commandService;
     private final NonConformityRecordQueryService queryService;
+    private final NonConformityRecordRepository repository;
 
-    public NonConformityRecordsController(NonConformityRecordCommandService commandService, NonConformityRecordQueryService queryService) {
+    public NonConformityRecordsController(NonConformityRecordCommandService commandService,
+                                           NonConformityRecordQueryService queryService,
+                                           NonConformityRecordRepository repository) {
         this.commandService = commandService;
         this.queryService = queryService;
+        this.repository = repository;
     }
 
     @PostMapping
@@ -108,6 +110,32 @@ public class NonConformityRecordsController {
         }
 
         var rncResource = NonConformityRecordResourceFromEntityAssembler.toResourceFromEntity(rnc.get());
+        return ResponseEntity.ok(rncResource);
+    }
+
+    @DeleteMapping("/{rncId}")
+    @Operation(summary = "Delete a Non-Conformity Record")
+    public ResponseEntity<Void> deleteNonConformityRecord(@PathVariable String rncId) {
+        var existing = repository.findById(rncId);
+        if (existing.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        repository.deleteById(rncId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{rncId}")
+    @Operation(summary = "Update a Non-Conformity Record")
+    public ResponseEntity<NonConformityRecordResource> updateNonConformityRecord(
+            @PathVariable String rncId,
+            @Valid @RequestBody NonConformityRecordResource resource) {
+        var existing = repository.findById(rncId);
+        if (existing.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        var updated = existing.get();
+        var saved = repository.save(updated);
+        var rncResource = NonConformityRecordResourceFromEntityAssembler.toResourceFromEntity(saved);
         return ResponseEntity.ok(rncResource);
     }
 }

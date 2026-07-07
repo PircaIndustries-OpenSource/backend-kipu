@@ -12,6 +12,10 @@ import java.util.List;
 
 @Schema(description = "Request resource used to create a material request")
 public record CreateMaterialRequestResource(
+        @Schema(description = "Project identifier", example = "proj-123", requiredMode = Schema.RequiredMode.REQUIRED)
+        @NotBlank(message = "material.request.error.projectId.notBlank")
+        String projectId,
+
         @Schema(description = "Deadline (ISO instant)", example = "2025-12-31T23:59:59Z", requiredMode = Schema.RequiredMode.REQUIRED)
         @NotNull(message = "material.request.error.deadline.notBlank")
         Instant deadline,

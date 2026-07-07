@@ -17,4 +17,6 @@ public interface SpringDataMaterialInventoryJpaRepository extends JpaRepository<
     List<MaterialInventoryJpaEntity> findByMaterialCatalogIdIn(@Param("catalogIds") List<MaterialCatalogId> catalogIds);
 
     List<MaterialInventoryJpaEntity> findByProjectIdAndMaterialCatalogId(ProjectId projectId, MaterialCatalogId materialCatalogId);
+
+    List<MaterialInventoryJpaEntity> findByProjectId(ProjectId projectId);
 }

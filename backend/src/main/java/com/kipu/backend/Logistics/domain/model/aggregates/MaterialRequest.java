@@ -12,6 +12,7 @@ import java.util.Objects;
 public class MaterialRequest {
 
     private final Long id;
+    private final String projectId;
     private final Instant deadline;
     private final RequestStatus requestStatus;
     private final RequestPriority requestPriority;
@@ -25,13 +26,14 @@ public class MaterialRequest {
     private final Instant createdAt;
     private final Instant updatedAt;
 
-    private MaterialRequest(Long id, Instant deadline, RequestStatus requestStatus,
+    private MaterialRequest(Long id, String projectId, Instant deadline, RequestStatus requestStatus,
                             RequestPriority requestPriority, String deliveryLocation,
                             BudgetLineId budgetLineId, String purpose, String additionalNotes,
                             UserId requestedBy, SupplierId suggestedSupplierId,
                             List<MaterialRequestItem> items,
                             Instant createdAt, Instant updatedAt) {
         this.id = id;
+        this.projectId = projectId;
         this.deadline = Objects.requireNonNull(deadline, "material.request.error.deadline.notBlank");
         this.requestStatus = Objects.requireNonNull(requestStatus, "material.request.error.requestStatus.notBlank");
         this.requestPriority = Objects.requireNonNull(requestPriority, "material.request.error.requestPriority.notBlank");
@@ -46,23 +48,23 @@ public class MaterialRequest {
         this.updatedAt = updatedAt;
     }
 
-    public static MaterialRequest create(Instant deadline, RequestPriority requestPriority,
+    public static MaterialRequest create(String projectId, Instant deadline, RequestPriority requestPriority,
                                          String deliveryLocation, BudgetLineId budgetLineId,
                                          String purpose, String additionalNotes, UserId requestedBy,
                                          SupplierId suggestedSupplierId, List<MaterialRequestItem> items) {
         Instant now = Instant.now();
-        return new MaterialRequest(null, deadline, RequestStatus.PENDING, requestPriority,
+        return new MaterialRequest(null, projectId, deadline, RequestStatus.PENDING, requestPriority,
                 deliveryLocation, budgetLineId, purpose, additionalNotes, requestedBy,
                 suggestedSupplierId, items, now, now);
     }
 
-    public static MaterialRequest rehydrate(Long id, Instant deadline, RequestStatus requestStatus,
+    public static MaterialRequest rehydrate(Long id, String projectId, Instant deadline, RequestStatus requestStatus,
                                             RequestPriority requestPriority, String deliveryLocation,
                                             BudgetLineId budgetLineId, String purpose, String additionalNotes,
                                             UserId requestedBy, SupplierId suggestedSupplierId,
                                             List<MaterialRequestItem> items,
                                             Instant createdAt, Instant updatedAt) {
-        return new MaterialRequest(id, deadline, requestStatus, requestPriority, deliveryLocation,
+        return new MaterialRequest(id, projectId, deadline, requestStatus, requestPriority, deliveryLocation,
                 budgetLineId, purpose, additionalNotes, requestedBy, suggestedSupplierId, items, createdAt, updatedAt);
     }
 
@@ -70,7 +72,7 @@ public class MaterialRequest {
                                    String deliveryLocation, String purpose, String additionalNotes,
                                    List<MaterialRequestItem> items) {
         return new MaterialRequest(
-                this.id,
+                this.id, this.projectId,
                 deadline != null ? deadline : this.deadline,
                 this.requestStatus,
                 requestPriority != null ? requestPriority : this.requestPriority,
@@ -87,7 +89,7 @@ public class MaterialRequest {
 
     public MaterialRequest withStatus(RequestStatus newStatus) {
         return new MaterialRequest(
-                this.id, this.deadline, newStatus, this.requestPriority,
+                this.id, this.projectId, this.deadline, newStatus, this.requestPriority,
                 this.deliveryLocation, this.budgetLineId, this.purpose,
                 this.additionalNotes, this.requestedBy, this.suggestedSupplierId,
                 this.items, this.createdAt, Instant.now()
@@ -95,6 +97,7 @@ public class MaterialRequest {
     }
 
     public Long getId() { return id; }
+    public String getProjectId() { return projectId; }
     public Instant getDeadline() { return deadline; }
     public RequestStatus getRequestStatus() { return requestStatus; }
     public RequestPriority getRequestPriority() { return requestPriority; }
