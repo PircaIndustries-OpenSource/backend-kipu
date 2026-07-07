@@ -24,6 +24,7 @@ public class CreateMaterialRequestCommandFromResourceAssembler {
                 resource.purpose(),
                 resource.additionalNotes(),
                 toUserIdFromInteger(resource.requestedBy()),
+                resource.suggestedSupplierId() != null ? toSupplierIdFromInteger(resource.suggestedSupplierId()) : null,
                 items
         );
     }

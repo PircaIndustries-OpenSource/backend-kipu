@@ -24,6 +24,7 @@ public final class MaterialRequestPersistenceMapper {
                 aggregate.getPurpose(),
                 aggregate.getAdditionalNotes(),
                 aggregate.getRequestedBy(),
+                aggregate.getSuggestedSupplierId(),
                 null,
                 aggregate.getCreatedAt(),
                 aggregate.getUpdatedAt()
@@ -51,6 +52,7 @@ public final class MaterialRequestPersistenceMapper {
                 entity.getPurpose(),
                 entity.getAdditionalNotes(),
                 entity.getRequestedBy(),
+                entity.getSuggestedSupplierId(),
                 items,
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()

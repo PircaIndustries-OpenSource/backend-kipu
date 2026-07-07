@@ -20,6 +20,7 @@ public class MaterialRequest {
     private final String purpose;
     private final String additionalNotes;
     private final UserId requestedBy;
+    private final SupplierId suggestedSupplierId;
     private final List<MaterialRequestItem> items;
     private final Instant createdAt;
     private final Instant updatedAt;
@@ -27,7 +28,8 @@ public class MaterialRequest {
     private MaterialRequest(Long id, Instant deadline, RequestStatus requestStatus,
                             RequestPriority requestPriority, String deliveryLocation,
                             BudgetLineId budgetLineId, String purpose, String additionalNotes,
-                            UserId requestedBy, List<MaterialRequestItem> items,
+                            UserId requestedBy, SupplierId suggestedSupplierId,
+                            List<MaterialRequestItem> items,
                             Instant createdAt, Instant updatedAt) {
         this.id = id;
         this.deadline = Objects.requireNonNull(deadline, "material.request.error.deadline.notBlank");
@@ -38,6 +40,7 @@ public class MaterialRequest {
         this.purpose = purpose;
         this.additionalNotes = additionalNotes;
         this.requestedBy = Objects.requireNonNull(requestedBy, "material.request.error.requestedBy.notBlank");
+        this.suggestedSupplierId = suggestedSupplierId;
         this.items = items != null ? new ArrayList<>(items) : new ArrayList<>();
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -46,19 +49,21 @@ public class MaterialRequest {
     public static MaterialRequest create(Instant deadline, RequestPriority requestPriority,
                                          String deliveryLocation, BudgetLineId budgetLineId,
                                          String purpose, String additionalNotes, UserId requestedBy,
-                                         List<MaterialRequestItem> items) {
+                                         SupplierId suggestedSupplierId, List<MaterialRequestItem> items) {
         Instant now = Instant.now();
         return new MaterialRequest(null, deadline, RequestStatus.PENDING, requestPriority,
-                deliveryLocation, budgetLineId, purpose, additionalNotes, requestedBy, items, now, now);
+                deliveryLocation, budgetLineId, purpose, additionalNotes, requestedBy,
+                suggestedSupplierId, items, now, now);
     }
 
     public static MaterialRequest rehydrate(Long id, Instant deadline, RequestStatus requestStatus,
                                             RequestPriority requestPriority, String deliveryLocation,
                                             BudgetLineId budgetLineId, String purpose, String additionalNotes,
-                                            UserId requestedBy, List<MaterialRequestItem> items,
+                                            UserId requestedBy, SupplierId suggestedSupplierId,
+                                            List<MaterialRequestItem> items,
                                             Instant createdAt, Instant updatedAt) {
         return new MaterialRequest(id, deadline, requestStatus, requestPriority, deliveryLocation,
-                budgetLineId, purpose, additionalNotes, requestedBy, items, createdAt, updatedAt);
+                budgetLineId, purpose, additionalNotes, requestedBy, suggestedSupplierId, items, createdAt, updatedAt);
     }
 
     public MaterialRequest update(Instant deadline, RequestPriority requestPriority,
@@ -74,6 +79,7 @@ public class MaterialRequest {
                 purpose != null ? purpose : this.purpose,
                 additionalNotes != null ? additionalNotes : this.additionalNotes,
                 this.requestedBy,
+                this.suggestedSupplierId,
                 items != null ? items : this.items,
                 this.createdAt, Instant.now()
         );
@@ -83,57 +89,22 @@ public class MaterialRequest {
         return new MaterialRequest(
                 this.id, this.deadline, newStatus, this.requestPriority,
                 this.deliveryLocation, this.budgetLineId, this.purpose,
-                this.additionalNotes, this.requestedBy, this.items,
-                this.createdAt, Instant.now()
+                this.additionalNotes, this.requestedBy, this.suggestedSupplierId,
+                this.items, this.createdAt, Instant.now()
         );
     }
 
-    // Getters
-    public Long getId() {
-        return id;
-    }
-
-    public Instant getDeadline() {
-        return deadline;
-    }
-
-    public RequestStatus getRequestStatus() {
-        return requestStatus;
-    }
-
-    public RequestPriority getRequestPriority() {
-        return requestPriority;
-    }
-
-    public String getDeliveryLocation() {
-        return deliveryLocation;
-    }
-
-    public BudgetLineId getBudgetLineId() {
-        return budgetLineId;
-    }
-
-    public String getPurpose() {
-        return purpose;
-    }
-
-    public String getAdditionalNotes() {
-        return additionalNotes;
-    }
-
-    public UserId getRequestedBy() {
-        return requestedBy;
-    }
-
-    public List<MaterialRequestItem> getItems() {
-        return new ArrayList<>(items);
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public Instant getUpdatedAt() {
-        return updatedAt;
-    }
+    public Long getId() { return id; }
+    public Instant getDeadline() { return deadline; }
+    public RequestStatus getRequestStatus() { return requestStatus; }
+    public RequestPriority getRequestPriority() { return requestPriority; }
+    public String getDeliveryLocation() { return deliveryLocation; }
+    public BudgetLineId getBudgetLineId() { return budgetLineId; }
+    public String getPurpose() { return purpose; }
+    public String getAdditionalNotes() { return additionalNotes; }
+    public UserId getRequestedBy() { return requestedBy; }
+    public SupplierId getSuggestedSupplierId() { return suggestedSupplierId; }
+    public List<MaterialRequestItem> getItems() { return new ArrayList<>(items); }
+    public Instant getCreatedAt() { return createdAt; }
+    public Instant getUpdatedAt() { return updatedAt; }
 }

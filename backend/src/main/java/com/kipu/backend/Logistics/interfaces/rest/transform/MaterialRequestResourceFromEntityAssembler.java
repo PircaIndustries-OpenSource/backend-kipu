@@ -30,6 +30,7 @@ public class MaterialRequestResourceFromEntityAssembler {
                 entity.getPurpose(),
                 entity.getAdditionalNotes(),
                 entity.getRequestedBy().value(),
+                entity.getSuggestedSupplierId() != null ? entity.getSuggestedSupplierId().value() : null,
                 itemResources
         );
     }

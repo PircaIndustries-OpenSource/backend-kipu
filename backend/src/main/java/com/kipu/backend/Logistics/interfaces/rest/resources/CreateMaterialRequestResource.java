@@ -42,6 +42,10 @@ public record CreateMaterialRequestResource(
         @Positive(message = "material.request.error.requestedBy.invalidValue")
         Integer requestedBy,
 
+        @Schema(description = "Suggested supplier identifier", example = "12", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+        @Positive(message = "material.request.error.supplierId.invalidValue")
+        Integer suggestedSupplierId,
+
         @Schema(description = "List of items requested", requiredMode = Schema.RequiredMode.REQUIRED)
         @NotNull(message = "material.request.error.items.notBlank")
         @Size(min = 1, message = "material.request.error.items.minSize")

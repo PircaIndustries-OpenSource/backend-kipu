@@ -6,6 +6,7 @@ import com.kipu.backend.Logistics.domain.model.repositories.MaterialCatalogRepos
 import com.kipu.backend.Logistics.domain.model.repositories.MaterialInventoryRepository;
 import com.kipu.backend.Logistics.domain.model.valueobjects.CategoryId;
 import com.kipu.backend.Logistics.domain.model.valueobjects.MaterialCatalogId;
+import com.kipu.backend.Logistics.domain.model.valueobjects.external.ProjectId;
 import com.kipu.backend.Logistics.infrastructure.persistence.jpa.mappers.MaterialInventoryPersistenceMapper;
 import com.kipu.backend.Logistics.infrastructure.persistence.jpa.repositories.SpringDataMaterialInventoryJpaRepository;
 import org.springframework.stereotype.Component;
@@ -36,6 +37,13 @@ public class MaterialInventoryPersistenceAdapter implements MaterialInventoryRep
     @Override
     public Optional<MaterialInventory> findById(Long id) {
         return repository.findById(id).map(MaterialInventoryPersistenceMapper::toDomain);
+    }
+
+    @Override
+    public Optional<MaterialInventory> findByProjectIdAndMaterialCatalogId(ProjectId projectId, MaterialCatalogId materialCatalogId) {
+        return repository.findByProjectIdAndMaterialCatalogId(projectId, materialCatalogId).stream()
+                .findFirst()
+                .map(MaterialInventoryPersistenceMapper::toDomain);
     }
 
     @Override

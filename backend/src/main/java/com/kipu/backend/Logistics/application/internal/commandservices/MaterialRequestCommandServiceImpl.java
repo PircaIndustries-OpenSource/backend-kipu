@@ -43,6 +43,7 @@ public class MaterialRequestCommandServiceImpl implements MaterialRequestCommand
                 command.purpose(),
                 command.additionalNotes(),
                 command.requestedBy(),
+                command.suggestedSupplierId(),
                 items
         );
         var saved = repository.save(request);

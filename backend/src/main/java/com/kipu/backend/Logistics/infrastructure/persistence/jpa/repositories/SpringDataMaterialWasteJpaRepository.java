@@ -11,6 +11,5 @@ import java.util.List;
 @Repository
 public interface SpringDataMaterialWasteJpaRepository extends JpaRepository<MaterialWasteJpaEntity, Long> {
 
-    @Query(value = "SELECT * FROM material_waste WHERE project_id = :projectId", nativeQuery = true)
-    List<MaterialWasteJpaEntity> findByProjectId(@Param("projectId") String projectId);
+    List<MaterialWasteJpaEntity> findByProjectId(String projectId);
 }

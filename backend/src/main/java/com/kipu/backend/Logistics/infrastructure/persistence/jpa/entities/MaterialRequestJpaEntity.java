@@ -2,11 +2,13 @@ package com.kipu.backend.Logistics.infrastructure.persistence.jpa.entities;
 
 import com.kipu.backend.Logistics.domain.model.valueobjects.RequestPriority;
 import com.kipu.backend.Logistics.domain.model.valueobjects.RequestStatus;
+import com.kipu.backend.Logistics.domain.model.valueobjects.SupplierId;
 import com.kipu.backend.Logistics.domain.model.valueobjects.external.BudgetLineId;
 import com.kipu.backend.Logistics.domain.model.valueobjects.external.UserId;
 import com.kipu.backend.Logistics.infrastructure.persistence.jpa.converters.BudgetLineIdAttributeConverter;
 import com.kipu.backend.Logistics.infrastructure.persistence.jpa.converters.RequestPriorityAttributeConverter;
 import com.kipu.backend.Logistics.infrastructure.persistence.jpa.converters.RequestStatusAttributeConverter;
+import com.kipu.backend.Logistics.infrastructure.persistence.jpa.converters.SupplierIdAttributeConverter;
 import com.kipu.backend.Logistics.infrastructure.persistence.jpa.converters.UserIdAttributeConverter;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -58,6 +60,10 @@ public class MaterialRequestJpaEntity {
     @Convert(converter = UserIdAttributeConverter.class)
     private UserId requestedBy;
 
+    @Column(name = "suggested_supplier_id")
+    @Convert(converter = SupplierIdAttributeConverter.class)
+    private SupplierId suggestedSupplierId;
+
     @OneToMany(mappedBy = "materialRequest", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MaterialRequestItemJpaEntity> items = new ArrayList<>();
 
@@ -72,7 +78,8 @@ public class MaterialRequestJpaEntity {
     public MaterialRequestJpaEntity(Long id, Instant deadline, RequestStatus requestStatus,
                                     RequestPriority requestPriority, String deliveryLocation,
                                     BudgetLineId budgetLineId, String purpose, String additionalNotes,
-                                    UserId requestedBy, List<MaterialRequestItemJpaEntity> items,
+                                    UserId requestedBy, SupplierId suggestedSupplierId,
+                                    List<MaterialRequestItemJpaEntity> items,
                                     Instant createdAt, Instant updatedAt) {
         this.id = id;
         this.deadline = deadline;
@@ -83,6 +90,7 @@ public class MaterialRequestJpaEntity {
         this.purpose = purpose;
         this.additionalNotes = additionalNotes;
         this.requestedBy = requestedBy;
+        this.suggestedSupplierId = suggestedSupplierId;
         this.items = items != null ? items : new ArrayList<>();
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;

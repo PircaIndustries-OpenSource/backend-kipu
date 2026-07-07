@@ -34,6 +34,9 @@ public record MaterialRequestResource(
         @Schema(description = "User who requested", example = "42")
         Integer requestedBy,
 
+        @Schema(description = "Suggested supplier identifier", example = "12")
+        Integer suggestedSupplierId,
+
         @Schema(description = "List of items")
         List<MaterialRequestItemResource> items
 ) {}

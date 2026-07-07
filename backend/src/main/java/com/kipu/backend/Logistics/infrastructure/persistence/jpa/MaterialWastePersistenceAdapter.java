@@ -31,14 +31,24 @@ public class MaterialWastePersistenceAdapter implements MaterialWasteRepository 
 
     @Override
     public Optional<MaterialWaste> findById(Long id) {
-        return repository.findById(id).map(MaterialWastePersistenceMapper::toDomain);
+        try {
+            return repository.findById(id).map(MaterialWastePersistenceMapper::toDomain);
+        } catch (Exception e) {
+            log.warn("Could not find waste by id {}: {}", id, e.getMessage());
+            return Optional.empty();
+        }
     }
 
     @Override
     public List<MaterialWaste> findAll() {
-        return repository.findAll().stream()
-                .map(MaterialWastePersistenceMapper::toDomain)
-                .collect(Collectors.toList());
+        try {
+            return repository.findAll().stream()
+                    .map(MaterialWastePersistenceMapper::toDomain)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            log.warn("Could not query all wastes: {}", e.getMessage());
+            return List.of();
+        }
     }
 
     @Override
