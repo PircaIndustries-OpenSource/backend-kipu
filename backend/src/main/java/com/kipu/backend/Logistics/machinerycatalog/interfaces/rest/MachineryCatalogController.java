@@ -13,11 +13,13 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@Transactional(readOnly = true)
 @RequestMapping(value = "/api/v1/machinery-catalog", produces = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "Machinery Catalog", description = "Endpoints for machinery catalog management")
 public class MachineryCatalogController {
@@ -49,6 +51,7 @@ public class MachineryCatalogController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @Transactional
     @PostMapping
     public ResponseEntity<MachineryCatalogResource> create(
             @Valid @RequestBody CreateMachineryCatalogResource resource) {
@@ -60,6 +63,7 @@ public class MachineryCatalogController {
                 .orElse(ResponseEntity.badRequest().build());
     }
 
+    @Transactional
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable String id) {
         boolean deleted = commandService.handleDelete(id);

@@ -18,12 +18,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@Transactional(readOnly = true)
 @RequestMapping("/api/v1/non-conformity-records")
 @Tag(name = "Non-Conformity Records", description = "Endpoints for Non-Conformance Record Management")
 public class NonConformityRecordsController {
@@ -40,6 +42,7 @@ public class NonConformityRecordsController {
         this.repository = repository;
     }
 
+    @Transactional
     @PostMapping
     @Operation(summary = "Create a new Non-Conformity Record")
     public ResponseEntity<NonConformityRecordResource> createNonConformityRecord(@Valid @RequestBody CreateNonConformityRecordResource resource) {
@@ -81,6 +84,7 @@ public class NonConformityRecordsController {
         return ResponseEntity.ok(resources);
     }
 
+    @Transactional
     @PostMapping("/{rncId}/solution-notes")
     @Operation(summary = "Add a solution note to a Non-Conformity Record")
     public ResponseEntity<NonConformityRecordResource> addSolutionNote(
@@ -97,6 +101,7 @@ public class NonConformityRecordsController {
         return ResponseEntity.ok(rncResource);
     }
 
+    @Transactional
     @PutMapping("/{rncId}/assignee")
     @Operation(summary = "Assign a Non-Conformity Record to a user")
     public ResponseEntity<NonConformityRecordResource> assignNonConformityRecord(
@@ -113,6 +118,7 @@ public class NonConformityRecordsController {
         return ResponseEntity.ok(rncResource);
     }
 
+    @Transactional
     @DeleteMapping("/{rncId}")
     @Operation(summary = "Delete a Non-Conformity Record")
     public ResponseEntity<Void> deleteNonConformityRecord(@PathVariable String rncId) {
@@ -124,6 +130,7 @@ public class NonConformityRecordsController {
         return ResponseEntity.noContent().build();
     }
 
+    @Transactional
     @PutMapping("/{rncId}")
     @Operation(summary = "Update a Non-Conformity Record")
     public ResponseEntity<NonConformityRecordResource> updateNonConformityRecord(

@@ -26,12 +26,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
 @RestController
+@Transactional(readOnly = true)
 @RequestMapping(value = "/api/v1/material-wastes", produces = APPLICATION_JSON_VALUE)
 @Tag(name = "Material Wastes", description = "Endpoints for material waste report management")
 public class MaterialWasteController {
@@ -57,6 +59,7 @@ public class MaterialWasteController {
             @ApiResponse(responseCode = "400", description = "Bad request – missing or invalid fields",
                     content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     })
+    @Transactional
     @PostMapping
     public ResponseEntity<?> createMaterialWaste(@Valid @RequestBody CreateMaterialWasteResource resource) {
         log.debug("POST /api/v1/material-wastes – projectId={}, materialCatalogId={}, type={}",
@@ -75,6 +78,7 @@ public class MaterialWasteController {
             @ApiResponse(responseCode = "404", description = "Material waste not found",
                     content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     })
+    @Transactional
     @PutMapping("/{id}")
     public ResponseEntity<?> updateMaterialWaste(
             @Parameter(description = "Material waste ID", required = true) @PathVariable Long id,
@@ -91,6 +95,7 @@ public class MaterialWasteController {
             @ApiResponse(responseCode = "404", description = "Material waste not found",
                     content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     })
+    @Transactional
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteMaterialWaste(
             @Parameter(description = "Material waste ID", required = true) @PathVariable Long id) {

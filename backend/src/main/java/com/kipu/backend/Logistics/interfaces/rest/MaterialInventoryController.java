@@ -27,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,6 +37,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
 @RestController
+@Transactional(readOnly = true)
 @RequestMapping(value = "/api/v1/material-inventories", produces = APPLICATION_JSON_VALUE)
 @Tag(name = "Material Inventories", description = "Endpoints for material inventory management")
 public class MaterialInventoryController {
@@ -64,6 +66,7 @@ public class MaterialInventoryController {
             @ApiResponse(responseCode = "409", description = "Conflict - inventory for same project and material already exists",
                     content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     })
+    @Transactional
     @PostMapping
     public ResponseEntity<?> createMaterialInventory(@Valid @RequestBody CreateMaterialInventoryResource resource) {
         log.debug("POST /api/v1/material-inventories – projectId={}, materialCatalogId={}, location={}",
@@ -137,6 +140,7 @@ public class MaterialInventoryController {
             @ApiResponse(responseCode = "404", description = "Inventory not found",
                     content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     })
+    @Transactional
     @PatchMapping("/{id}/minimum-stock")
     public ResponseEntity<?> updateMinimumStock(@PathVariable Long id,
                                                  @Valid @RequestBody UpdateMinimumStockResource resource) {

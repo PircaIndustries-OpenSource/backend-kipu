@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -29,6 +30,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
 @RestController
+@Transactional(readOnly = true)
 @RequestMapping(value = "/api/v1/material-catalogs", produces = APPLICATION_JSON_VALUE)
 @Tag(name = "Material Catalogs", description = "Endpoints for material catalog management")
 public class MaterialCatalogController {
@@ -54,6 +56,7 @@ public class MaterialCatalogController {
             @ApiResponse(responseCode = "409", description = "Conflict - catalog with same name already exists",
                     content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     })
+    @Transactional
     @PostMapping
     public ResponseEntity<?> createMaterialCatalog(@Valid @RequestBody CreateMaterialCatalogResource resource) {
         log.debug("POST /api/v1/material-catalogs – name={}, categoryId={}, measureUnit={}",

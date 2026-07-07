@@ -23,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -31,6 +32,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
 @RestController
+@Transactional(readOnly = true)
 @RequestMapping(value = "/api/v1/machinery", produces = APPLICATION_JSON_VALUE)
 @Tag(name = "Machinery", description = "Endpoints for machinery management")
 public class MachineryController {
@@ -54,6 +56,7 @@ public class MachineryController {
             @ApiResponse(responseCode = "400", description = "Bad request",
                     content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     })
+    @Transactional
     @PostMapping
     public ResponseEntity<?> createMachinery(@RequestParam String projectId,
                                              @Valid @RequestBody CreateMachineryResource resource) {
@@ -102,6 +105,7 @@ public class MachineryController {
             @ApiResponse(responseCode = "404", description = "Machinery not found",
                     content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     })
+    @Transactional
     @PatchMapping("/{id}")
     public ResponseEntity<?> patchMachinery(@PathVariable String id,
                                             @RequestBody UpdateMachineryResource resource) {
@@ -117,6 +121,7 @@ public class MachineryController {
             @ApiResponse(responseCode = "404", description = "Machinery not found",
                     content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     })
+    @Transactional
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteMachinery(@PathVariable String id) {
         log.debug("DELETE /api/v1/machinery/{}", id);

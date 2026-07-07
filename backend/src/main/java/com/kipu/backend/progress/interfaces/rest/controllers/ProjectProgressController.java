@@ -9,12 +9,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@Transactional(readOnly = true)
 @RequestMapping("/api/v1/progress")
 @CrossOrigin(origins = {"http://localhost:4200", "https://mmanuel-fd.github.io"}, allowedHeaders = "*", allowCredentials = "true")
 @Tag(name = "Progress", description = "Project Advancement Management Endpoints")
@@ -26,6 +28,7 @@ public class ProjectProgressController {
         this.progressRepository = progressRepository;
     }
 
+    @Transactional
     @PostMapping
     @Operation(summary = "Create a new main project progress line or a hierarchy sub-advance entry")
     public ResponseEntity<ProjectProgressResource> createProgress(@RequestBody CreateProjectProgressResource resource) {
@@ -93,6 +96,7 @@ public class ProjectProgressController {
         return ResponseEntity.ok(resources);
     }
 
+    @Transactional
     @PutMapping("/{id}")
     @Operation(summary = "Modify metrics and operational data logs inside an existing progress line")
     public ResponseEntity<ProjectProgressResource> updateProgress(@PathVariable Long id, @RequestBody CreateProjectProgressResource resource) {
@@ -121,6 +125,7 @@ public class ProjectProgressController {
         }).orElse(ResponseEntity.notFound().build());
     }
 
+    @Transactional
     @DeleteMapping("/{id}")
     @Operation(summary = "Remove a progress baseline log entry from the database system registries")
     public ResponseEntity<Void> deleteProgress(@PathVariable Long id) {

@@ -26,6 +26,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,6 +36,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
 @RestController
+@Transactional(readOnly = true)
 @RequestMapping(value = "/api/v1/supplier-offers", produces = APPLICATION_JSON_VALUE)
 @Tag(name = "Supplier Offers", description = "Endpoints for supplier offer management")
 public class SupplierOfferController {
@@ -60,6 +62,7 @@ public class SupplierOfferController {
             @ApiResponse(responseCode = "409", description = "Conflict - offer for same supplier and material already exists",
                     content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     })
+    @Transactional
     @PostMapping
     public ResponseEntity<?> createSupplierOffer(@Valid @RequestBody CreateSupplierOfferResource resource) {
         log.debug("POST /api/v1/supplier-offers – supplierId={}, materialCatalogId={}, unitPrice={}",
@@ -138,6 +141,7 @@ public class SupplierOfferController {
             @ApiResponse(responseCode = "404", description = "Supplier offer not found",
                     content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     })
+    @Transactional
     @PutMapping("/{id}")
     public ResponseEntity<?> updateSupplierOffer(@PathVariable Long id,
                                                   @Valid @RequestBody UpdateSupplierOfferResource resource) {
@@ -153,6 +157,7 @@ public class SupplierOfferController {
             @ApiResponse(responseCode = "404", description = "Supplier offer not found",
                     content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     })
+    @Transactional
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteSupplierOffer(@PathVariable Long id) {
         log.debug("DELETE /api/v1/supplier-offers/{}", id);

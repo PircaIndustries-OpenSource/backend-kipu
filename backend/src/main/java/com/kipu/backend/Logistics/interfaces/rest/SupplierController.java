@@ -28,6 +28,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -36,6 +37,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
 @RestController
+@Transactional(readOnly = true)
 @RequestMapping(value = "/api/v1/suppliers", produces = APPLICATION_JSON_VALUE)
 @Tag(name = "Suppliers", description = "Endpoints for supplier management")
 public class SupplierController {
@@ -61,6 +63,7 @@ public class SupplierController {
             @ApiResponse(responseCode = "409", description = "Conflict - supplier with same RUC already exists",
                     content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     })
+    @Transactional
     @PostMapping
     public ResponseEntity<?> createSupplier(@Valid @RequestBody CreateSupplierResource resource) {
         log.debug("POST /api/v1/suppliers – ruc={}, socialReason={}, email={}",
@@ -154,6 +157,7 @@ public class SupplierController {
             @ApiResponse(responseCode = "404", description = "Supplier not found",
                     content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     })
+    @Transactional
     @PutMapping("/{id}")
     public ResponseEntity<?> updateSupplier(@PathVariable Long id,
                                             @Valid @RequestBody UpdateSupplierResource resource) {
@@ -172,6 +176,7 @@ public class SupplierController {
             @ApiResponse(responseCode = "404", description = "Supplier not found",
                     content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     })
+    @Transactional
     @PatchMapping("/{id}")
     public ResponseEntity<?> patchSupplier(@PathVariable Long id,
                                            @RequestBody UpdateSupplierResource resource) {
@@ -187,6 +192,7 @@ public class SupplierController {
             @ApiResponse(responseCode = "404", description = "Supplier not found",
                     content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     })
+    @Transactional
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteSupplier(@PathVariable Long id) {
         log.debug("DELETE /api/v1/suppliers/{}", id);

@@ -26,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -34,6 +35,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
 @RestController
+@Transactional(readOnly = true)
 @RequestMapping(value = "/api/v1/material-requests", produces = APPLICATION_JSON_VALUE)
 @Tag(name = "Material Requests", description = "Endpoints for material request management")
 public class MaterialRequestController {
@@ -59,6 +61,7 @@ public class MaterialRequestController {
             @ApiResponse(responseCode = "402", description = "Insufficient budget",
                     content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     })
+    @Transactional
     @PostMapping
     public ResponseEntity<?> createMaterialRequest(@Valid @RequestBody CreateMaterialRequestResource resource) {
         log.debug("POST /api/v1/material-requests – budgetLineId={}, deadline={}, itemsCount={}",
@@ -134,6 +137,7 @@ public class MaterialRequestController {
             @ApiResponse(responseCode = "404", description = "Material request not found",
                     content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     })
+    @Transactional
     @PutMapping("/{id}")
     public ResponseEntity<?> updateMaterialRequest(@PathVariable Long id,
                                                    @Valid @RequestBody UpdateMaterialRequestResource resource) {
@@ -152,6 +156,7 @@ public class MaterialRequestController {
             @ApiResponse(responseCode = "404", description = "Material request not found",
                     content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     })
+    @Transactional
     @PatchMapping("/{id}")
     public ResponseEntity<?> patchMaterialRequest(@PathVariable Long id,
                                                    @RequestBody UpdateMaterialRequestResource resource) {
@@ -170,6 +175,7 @@ public class MaterialRequestController {
             @ApiResponse(responseCode = "404", description = "Material request not found",
                     content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     })
+    @Transactional
     @PatchMapping("/{id}/status")
     public ResponseEntity<?> updateMaterialRequestStatus(@PathVariable Long id,
                                                           @Valid @RequestBody UpdateMaterialRequestStatusResource resource) {
