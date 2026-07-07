@@ -10,6 +10,7 @@ public interface MaterialRequestRepository {
     MaterialRequest save(MaterialRequest materialRequest);
     Optional<MaterialRequest> findById(Long id);
     List<MaterialRequest> findByRequestStatus(RequestStatus requestStatus);
+    List<MaterialRequest> findByProjectId(String projectId);
     List<MaterialRequest> findAll();
     boolean existsById(Long id);
     void deleteById(Long id);

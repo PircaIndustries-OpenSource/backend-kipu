@@ -10,6 +10,9 @@ public record MaterialRequestResource(
         @Schema(description = "Persistent identifier", example = "1")
         Long id,
 
+        @Schema(description = "Project identifier", example = "proj-123")
+        String projectId,
+
         @Schema(description = "Deadline", example = "2025-12-31T23:59:59Z")
         Instant deadline,
 
@@ -38,5 +41,8 @@ public record MaterialRequestResource(
         Integer suggestedSupplierId,
 
         @Schema(description = "List of items")
-        List<MaterialRequestItemResource> items
+        List<MaterialRequestItemResource> items,
+
+        @Schema(description = "Creation timestamp", example = "2025-12-31T23:59:59Z")
+        Instant createdAt
 ) {}

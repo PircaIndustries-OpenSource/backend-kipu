@@ -3,6 +3,7 @@ package com.kipu.backend.budget.interfaces.rest.controllers;
 import com.kipu.backend.budget.domain.model.aggregates.Budget;
 import com.kipu.backend.budget.domain.repositories.BudgetRepository;
 import com.kipu.backend.budget.interfaces.rest.resources.BudgetResource;
+import com.kipu.backend.budget.interfaces.rest.resources.CreateBudgetResource;
 import com.kipu.backend.budget.interfaces.rest.resources.CreateExpenseResource;
 import com.kipu.backend.budget.interfaces.rest.resources.CreateExtensionResource;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,22 +31,23 @@ public class BudgetController {
     public ResponseEntity<List<BudgetResource>> getBudgetsByProject(@RequestParam(required = false) String projectId) {
         String queryId = (projectId != null) ? projectId : "unknown";
         List<Budget> results = budgetRepository.findByProjectId(queryId);
-
-        if (results.isEmpty() && !"unknown".equals(queryId)) {
-            Budget sample = new Budget();
-            sample.setProjectId(queryId);
-            sample.setProgressId(1L);
-            sample.setCode("BG-001");
-            sample.setName("Initial Structural Foundation Budget");
-            sample.setDescription("Base budget linked to excavation milestones");
-            sample.setBudgeted(50000.0);
-            sample.setAvailable(50000.0);
-            budgetRepository.save(sample);
-            results = budgetRepository.findByProjectId(queryId);
-        }
-
         List<BudgetResource> resources = results.stream().map(this::mapToResource).collect(Collectors.toList());
         return ResponseEntity.ok(resources);
+    }
+
+    @PostMapping
+    @Operation(summary = "Create a new budget baseline linked to a progress activity")
+    public ResponseEntity<BudgetResource> createBudget(@RequestBody CreateBudgetResource resource) {
+        Budget budget = new Budget();
+        budget.setProjectId(resource.projectId());
+        budget.setProgressId(resource.progressId());
+        budget.setCode(resource.code() != null ? resource.code() : "01.XX");
+        budget.setName(resource.name());
+        budget.setDescription(resource.description() != null ? resource.description() : "");
+        budget.setBudgeted(resource.budgeted() != null ? resource.budgeted() : 0.0);
+        budget.setAvailable(budget.getBudgeted());
+        Budget saved = budgetRepository.save(budget);
+        return ResponseEntity.ok(mapToResource(saved));
     }
 
     @GetMapping("/{id}")

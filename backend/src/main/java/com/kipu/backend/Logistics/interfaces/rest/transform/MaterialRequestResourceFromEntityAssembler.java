@@ -22,6 +22,7 @@ public class MaterialRequestResourceFromEntityAssembler {
 
         return new MaterialRequestResource(
                 entity.getId(),
+                entity.getProjectId(),
                 entity.getDeadline(),
                 entity.getRequestStatus().name(),
                 entity.getRequestPriority().name(),
@@ -31,7 +32,8 @@ public class MaterialRequestResourceFromEntityAssembler {
                 entity.getAdditionalNotes(),
                 entity.getRequestedBy().value(),
                 entity.getSuggestedSupplierId() != null ? entity.getSuggestedSupplierId().value() : null,
-                itemResources
+                itemResources,
+                entity.getCreatedAt()
         );
     }
 }

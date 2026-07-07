@@ -86,15 +86,19 @@ public class MaterialRequestController {
         return ResponseEntityFromMaterialRequestQueryResultAssembler.toResponseEntityFromMaterialRequest(request.get());
     }
 
-    @Operation(summary = "Get all material requests")
+    @Operation(summary = "Get all material requests, optionally filtered by project")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "List of material requests",
                     content = @Content(schema = @Schema(implementation = MaterialRequestResource[].class)))
     })
     @GetMapping
-    public ResponseEntity<?> getAllMaterialRequests() {
-        log.debug("GET /api/v1/material-requests");
-        var requests = queryService.handle(new GetAllMaterialRequestsQuery());
+    public ResponseEntity<?> getAllMaterialRequests(
+            @Parameter(description = "Project identifier to filter by", required = false)
+            @RequestParam(required = false) String projectId) {
+        log.debug("GET /api/v1/material-requests{}", projectId != null ? "?projectId=" + projectId : "");
+        var requests = projectId != null
+                ? queryService.handle(new GetMaterialRequestsByProjectQuery(projectId))
+                : queryService.handle(new GetAllMaterialRequestsQuery());
         return ResponseEntityFromMaterialRequestQueryResultAssembler.toResponseEntityFromList(requests);
     }
 

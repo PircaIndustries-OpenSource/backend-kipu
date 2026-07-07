@@ -16,6 +16,7 @@ public final class MaterialRequestPersistenceMapper {
     public static MaterialRequestJpaEntity toJpaEntity(MaterialRequest aggregate) {
         MaterialRequestJpaEntity entity = new MaterialRequestJpaEntity(
                 aggregate.getId(),
+                aggregate.getProjectId(),
                 aggregate.getDeadline(),
                 aggregate.getRequestStatus(),
                 aggregate.getRequestPriority(),
@@ -44,6 +45,7 @@ public final class MaterialRequestPersistenceMapper {
 
         return MaterialRequest.rehydrate(
                 entity.getId(),
+                entity.getProjectId(),
                 entity.getDeadline(),
                 entity.getRequestStatus(),
                 entity.getRequestPriority(),

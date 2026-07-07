@@ -17,6 +17,7 @@ public class CreateMaterialRequestCommandFromResourceAssembler {
                 .collect(Collectors.toList());
 
         return new CreateMaterialRequestCommand(
+                resource.projectId(),
                 resource.deadline(),
                 toRequestPriorityFromString(resource.requestPriority()),
                 resource.deliveryLocation(),

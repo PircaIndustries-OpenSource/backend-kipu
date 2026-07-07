@@ -15,4 +15,5 @@ public interface NonConformityRecordRepository {
     Optional<NonConformityRecord> findById(String id);
     List<NonConformityRecord> findAllByProjectId(ProjectId projectId);
     List<NonConformityRecord> findAllByProjectIdAndStatus(ProjectId projectId, RncStatus status);
+    void deleteById(String id);
 }

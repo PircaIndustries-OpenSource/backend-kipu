@@ -32,6 +32,9 @@ public class MaterialRequestJpaEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "project_id", nullable = false, length = 36)
+    private String projectId;
+
     @Column(name = "deadline", nullable = false)
     private Instant deadline;
 
@@ -75,13 +78,14 @@ public class MaterialRequestJpaEntity {
     @LastModifiedDate
     private Instant updatedAt;
 
-    public MaterialRequestJpaEntity(Long id, Instant deadline, RequestStatus requestStatus,
+    public MaterialRequestJpaEntity(Long id, String projectId, Instant deadline, RequestStatus requestStatus,
                                     RequestPriority requestPriority, String deliveryLocation,
                                     BudgetLineId budgetLineId, String purpose, String additionalNotes,
                                     UserId requestedBy, SupplierId suggestedSupplierId,
                                     List<MaterialRequestItemJpaEntity> items,
                                     Instant createdAt, Instant updatedAt) {
         this.id = id;
+        this.projectId = projectId;
         this.deadline = deadline;
         this.requestStatus = requestStatus;
         this.requestPriority = requestPriority;

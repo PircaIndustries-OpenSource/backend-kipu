@@ -21,4 +21,6 @@ public interface SpringDataMaterialRequestJpaRepository extends JpaRepository<Ma
 
     @Query("SELECT DISTINCT mr FROM MaterialRequestJpaEntity mr LEFT JOIN FETCH mr.items")
     List<MaterialRequestJpaEntity> findAllWithItems();
+    @Query("SELECT DISTINCT mr FROM MaterialRequestJpaEntity mr LEFT JOIN FETCH mr.items WHERE mr.projectId = :projectId")
+    List<MaterialRequestJpaEntity> findByProjectIdWithItems(@Param("projectId") String projectId);
 }

@@ -40,6 +40,13 @@ public class MaterialRequestPersistenceAdapter implements MaterialRequestReposit
     }
 
     @Override
+    public List<MaterialRequest> findByProjectId(String projectId) {
+        return repository.findByProjectIdWithItems(projectId).stream()
+                .map(MaterialRequestPersistenceMapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<MaterialRequest> findAll() {
         return repository.findAllWithItems().stream()
                 .map(MaterialRequestPersistenceMapper::toDomain)

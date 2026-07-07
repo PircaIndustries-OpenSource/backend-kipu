@@ -68,6 +68,13 @@ public class MaterialInventoryPersistenceAdapter implements MaterialInventoryRep
     }
 
     @Override
+    public List<MaterialInventory> findByProjectId(ProjectId projectId) {
+        return repository.findByProjectId(projectId).stream()
+                .map(MaterialInventoryPersistenceMapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public boolean existsById(Long id) {
         return repository.existsById(id);
     }
