@@ -15,11 +15,13 @@ import com.kipu.backend.teamworkers.interfaces.rest.transform.TeamWorkerResource
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@Transactional(readOnly = true)
 @RequestMapping("/api/v1/team-workers")
 public class TeamWorkersController {
 
@@ -31,6 +33,7 @@ public class TeamWorkersController {
         this.queryService = queryService;
     }
 
+    @Transactional
     @PostMapping
     public ResponseEntity<TeamWorkerResource> createTeamWorker(@Valid @RequestBody CreateTeamWorkerResource resource) {
         var command = CreateTeamWorkerCommandFromResourceAssembler.toCommandFromResource(resource);
@@ -42,6 +45,7 @@ public class TeamWorkersController {
         return new ResponseEntity<>(responseResource, HttpStatus.CREATED); // Equivale a CreatedAtAction
     }
 
+    @Transactional
     @DeleteMapping("/{teamWorkerId}")
     public ResponseEntity<Void> deleteTeamWorker(@PathVariable String teamWorkerId) {
         var command = new DeleteTeamWorkerCommand(teamWorkerId);
@@ -52,6 +56,7 @@ public class TeamWorkersController {
         return ResponseEntity.noContent().build(); // 204 No Content
     }
 
+    @Transactional
     @PostMapping("/{teamWorkerId}/machineries")
     public ResponseEntity<TeamWorkerResource> assignMachinery(
             @PathVariable String teamWorkerId,
@@ -66,6 +71,7 @@ public class TeamWorkersController {
         return ResponseEntity.ok(responseResource);
     }
 
+    @Transactional
     @DeleteMapping("/{teamWorkerId}/machineries/{machineryId}")
     public ResponseEntity<TeamWorkerResource> removeMachinery(
             @PathVariable String teamWorkerId,

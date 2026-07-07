@@ -15,12 +15,14 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
+@Transactional(readOnly = true)
 @RequestMapping("/api/v1/projects")
 @Tag(name = "Projects", description = "Endpoints for project lifecycle management")
 @SecurityRequirement(name = "bearerAuth")
@@ -38,6 +40,7 @@ public class ProjectsController {
         this.teamUserJpaRepository = teamUserJpaRepository;
     }
 
+    @Transactional
     @PostMapping
     @Operation(summary = "Register a new project")
     public ResponseEntity<ProjectResource> createProject(@Valid @RequestBody CreateProjectCommand command) {
@@ -94,6 +97,7 @@ public class ProjectsController {
         return ResponseEntity.ok(ProjectResource.fromProject(project));
     }
 
+    @Transactional
     @PatchMapping("/{id}/status")
     @Operation(summary = "Update project status (Gherkin mapping)")
     public ResponseEntity<ProjectResource> updateProjectStatusGherkin(
@@ -103,6 +107,7 @@ public class ProjectsController {
         return ResponseEntity.ok(ProjectResource.fromProject(project));
     }
 
+    @Transactional
     @PatchMapping("/{id}")
     @Operation(summary = "Update project status (Frontend mapping)")
     public ResponseEntity<ProjectResource> updateProjectStatusFrontend(
@@ -112,6 +117,7 @@ public class ProjectsController {
         return ResponseEntity.ok(ProjectResource.fromProject(project));
     }
 
+    @Transactional
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete project by ID")
     public ResponseEntity<Void> deleteProject(@PathVariable("id") String id) {

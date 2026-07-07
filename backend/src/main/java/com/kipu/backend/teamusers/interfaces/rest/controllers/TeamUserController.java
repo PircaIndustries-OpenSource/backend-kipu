@@ -18,11 +18,13 @@ import com.kipu.backend.teamusers.interfaces.rest.transform.TeamUserResourceFrom
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@Transactional(readOnly = true)
 @RequestMapping("/api/v1/team-users")
 public class TeamUserController {
 
@@ -34,6 +36,7 @@ public class TeamUserController {
         this.queryService = queryService;
     }
 
+    @Transactional
     @PostMapping
     public ResponseEntity<TeamUserResource> createTeamUser(@Valid @RequestBody CreateTeamUserResource resource) {
         var command = CreateTeamUserCommandFromResourceAssembler.toCommand(resource);
@@ -68,6 +71,7 @@ public class TeamUserController {
                 .stream().map(TeamUserResourceFromEntityAssembler::toResource).toList());
     }
 
+    @Transactional
     @PatchMapping("/{id}/deactivate")
     public ResponseEntity<TeamUserResource> deactivateTeamUser(
             @PathVariable String id
@@ -80,6 +84,7 @@ public class TeamUserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @Transactional
     @PatchMapping("/{id}/role")
     public ResponseEntity<TeamUserResource> updateTeamUserRole(
             @PathVariable String id,
@@ -92,12 +97,14 @@ public class TeamUserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @Transactional
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTeamUser(@PathVariable String id) {
         boolean deleted = commandService.handleDelete(id);
         return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 
+    @Transactional
     @PatchMapping("/{id}/activate")
     public ResponseEntity<TeamUserResource> activateTeamUser(
             @PathVariable String id

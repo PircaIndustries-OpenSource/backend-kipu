@@ -13,11 +13,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@Transactional(readOnly = true)
 @RequestMapping("/api/v1/invitations")
 @CrossOrigin(origins = {"http://localhost:4200", "https://mmanuel-fd.github.io"}, allowedHeaders = "*", allowCredentials = "true")
 @Tag(name = "Invitations", description = "Team Invitations Endpoints")
@@ -35,6 +37,7 @@ public class InvitationController {
         this.userRepository = userRepository;
     }
 
+    @Transactional
     @PostMapping
     @Operation(summary = "Send a new invitation")
     public ResponseEntity<?> sendInvitation(@RequestBody Invitation invitation) {
@@ -82,6 +85,7 @@ public class InvitationController {
         return ResponseEntity.ok(invitations);
     }
     
+    @Transactional
     @PutMapping("/{id}/accept")
     @Operation(summary = "Accept an invitation and create team user")
     public ResponseEntity<?> acceptInvitation(@PathVariable Long id) {
@@ -110,6 +114,7 @@ public class InvitationController {
         }).orElse(ResponseEntity.notFound().build());
     }
 
+    @Transactional
     @PutMapping("/{id}/reject")
     @Operation(summary = "Reject an invitation")
     public ResponseEntity<Invitation> rejectInvitation(@PathVariable Long id) {
