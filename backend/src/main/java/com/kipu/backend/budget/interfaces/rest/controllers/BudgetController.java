@@ -9,6 +9,7 @@ import com.kipu.backend.budget.interfaces.rest.resources.CreateExtensionResource
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/budgets")
 @CrossOrigin(origins = {"http://localhost:4200", "https://mmanuel-fd.github.io"}, allowedHeaders = "*", allowCredentials = "true")
 @Tag(name = "Budget", description = "Financial and Budgetary Allocation Endpoints")
+@Transactional(readOnly = true)
 public class BudgetController {
 
     private final BudgetRepository budgetRepository;
@@ -36,6 +38,7 @@ public class BudgetController {
     }
 
     @PostMapping
+    @Transactional
     @Operation(summary = "Create a new budget baseline linked to a progress activity")
     public ResponseEntity<BudgetResource> createBudget(@RequestBody CreateBudgetResource resource) {
         Budget budget = new Budget();
@@ -59,6 +62,7 @@ public class BudgetController {
     }
 
     @PostMapping("/{id}/expenses")
+    @Transactional
     @Operation(summary = "Deduct money from available budget baseline to record a construction operational cost")
     public ResponseEntity<?> addExpenseToItem(@PathVariable Long id, @RequestBody CreateExpenseResource resource) {
         return budgetRepository.findById(id).map(budget -> {
@@ -73,6 +77,7 @@ public class BudgetController {
     }
 
     @PostMapping("/{id}/extensions")
+    @Transactional
     @Operation(summary = "Inject supplementary capital into an existing budget baseline with business authorization")
     public ResponseEntity<BudgetResource> addExtensionToItem(@PathVariable Long id, @RequestBody CreateExtensionResource resource) {
         return budgetRepository.findById(id).map(budget -> {
