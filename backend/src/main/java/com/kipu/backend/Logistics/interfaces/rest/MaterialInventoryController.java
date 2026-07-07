@@ -5,10 +5,13 @@ import com.kipu.backend.Logistics.application.queryservices.MaterialInventoryQue
 import com.kipu.backend.Logistics.application.queries.GetAllMaterialInventoriesQuery;
 import com.kipu.backend.Logistics.application.queries.GetMaterialInventoriesByCategoryIdQuery;
 import com.kipu.backend.Logistics.application.queries.GetMaterialInventoryByIdQuery;
+import com.kipu.backend.Logistics.domain.model.valueobjects.*;
+import com.kipu.backend.Logistics.domain.model.valueobjects.external.ProjectId;
 import com.kipu.backend.Logistics.domain.model.aggregates.MaterialInventory;
-import com.kipu.backend.Logistics.domain.model.valueobjects.CategoryId;
+import com.kipu.backend.Logistics.domain.model.repositories.MaterialInventoryRepository;
 import com.kipu.backend.Logistics.interfaces.rest.resources.CreateMaterialInventoryResource;
 import com.kipu.backend.Logistics.interfaces.rest.resources.MaterialInventoryResource;
+import com.kipu.backend.Logistics.interfaces.rest.resources.UpdateMinimumStockResource;
 import com.kipu.backend.Logistics.interfaces.rest.transform.CreateMaterialInventoryCommandFromResourceAssembler;
 import com.kipu.backend.Logistics.interfaces.rest.transform.ResponseEntityFromMaterialInventoryCommandResultAssembler;
 import com.kipu.backend.Logistics.interfaces.rest.transform.ResponseEntityFromMaterialInventoryQueryResultAssembler;
@@ -26,6 +29,7 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -38,13 +42,16 @@ public class MaterialInventoryController {
 
     private final MaterialInventoryCommandService commandService;
     private final MaterialInventoryQueryService queryService;
+    private final MaterialInventoryRepository repository;
     private final MessageSource messageSource;
 
     public MaterialInventoryController(MaterialInventoryCommandService commandService,
                                        MaterialInventoryQueryService queryService,
+                                       MaterialInventoryRepository repository,
                                        MessageSource messageSource) {
         this.commandService = commandService;
         this.queryService = queryService;
+        this.repository = repository;
         this.messageSource = messageSource;
     }
 
@@ -84,15 +91,22 @@ public class MaterialInventoryController {
         return ResponseEntityFromMaterialInventoryQueryResultAssembler.toResponseEntityFromMaterialInventory(inventory.get());
     }
 
-    @Operation(summary = "Get all material inventories")
+    @Operation(summary = "Get all material inventories, optionally filtered by project")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "List of material inventories",
                     content = @Content(schema = @Schema(implementation = MaterialInventoryResource[].class)))
     })
     @GetMapping
-    public ResponseEntity<?> getAllMaterialInventories() {
-        log.debug("GET /api/v1/material-inventories");
-        var inventories = queryService.handle(new GetAllMaterialInventoriesQuery());
+    public ResponseEntity<?> getAllMaterialInventories(
+            @Parameter(description = "Project identifier", required = false)
+            @RequestParam(required = false) String projectId) {
+        log.debug("GET /api/v1/material-inventories{}", projectId != null ? "?projectId=" + projectId : "");
+        List<MaterialInventory> inventories;
+        if (projectId != null && !projectId.isBlank()) {
+            inventories = repository.findByProjectId(new ProjectId(projectId));
+        } else {
+            inventories = queryService.handle(new GetAllMaterialInventoriesQuery());
+        }
         return ResponseEntityFromMaterialInventoryQueryResultAssembler.toResponseEntityFromList(inventories);
     }
 
@@ -114,5 +128,29 @@ public class MaterialInventoryController {
         }
         var inventories = queryService.handle(new GetMaterialInventoriesByCategoryIdQuery(new CategoryId(categoryId)));
         return ResponseEntityFromMaterialInventoryQueryResultAssembler.toResponseEntityFromList(inventories);
+    }
+
+    @Operation(summary = "Update minimum stock for an inventory item")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Minimum stock updated",
+                    content = @Content(schema = @Schema(implementation = MaterialInventoryResource.class))),
+            @ApiResponse(responseCode = "404", description = "Inventory not found",
+                    content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+    })
+    @PatchMapping("/{id}/minimum-stock")
+    public ResponseEntity<?> updateMinimumStock(@PathVariable Long id,
+                                                 @Valid @RequestBody UpdateMinimumStockResource resource) {
+        log.debug("PATCH /api/v1/material-inventories/{}/minimum-stock", id);
+        Optional<MaterialInventory> opt = repository.findById(id);
+        if (opt.isEmpty()) {
+            return ResponseEntityFromMaterialInventoryQueryResultAssembler.notFound(
+                    messageSource, "material.inventory.error.notFoundById", id);
+        }
+        MaterialInventory updated = opt.get().withMinimumStock(new Quantity(resource.minimumStock()));
+        MaterialInventory saved = repository.save(updated);
+        return ResponseEntity.ok(
+                new MaterialInventoryResource(
+                        saved.getId(), saved.getProjectId().value(), saved.getMaterialCatalogId().value(),
+                        saved.getCurrentStock().value(), saved.getMinimumStock().value(), saved.getLocation().value()));
     }
 }

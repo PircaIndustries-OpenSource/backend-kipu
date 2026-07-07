@@ -8,14 +8,21 @@ import com.kipu.backend.Logistics.application.commands.UpdateMaterialRequestComm
 import com.kipu.backend.Logistics.application.commands.UpdateMaterialRequestItemCommand;
 import com.kipu.backend.Logistics.domain.model.aggregates.MaterialRequest;
 import com.kipu.backend.Logistics.domain.model.aggregates.MaterialRequestItem;
+import com.kipu.backend.Logistics.domain.model.aggregates.MaterialInventory;
 import com.kipu.backend.Logistics.domain.model.repositories.MaterialRequestRepository;
-import com.kipu.backend.Logistics.domain.model.valueobjects.RequestStatus;
+import com.kipu.backend.Logistics.domain.model.repositories.MaterialInventoryRepository;
+import com.kipu.backend.Logistics.domain.model.valueobjects.*;
+import com.kipu.backend.Logistics.domain.model.valueobjects.external.ProjectId;
+import com.kipu.backend.budget.domain.model.aggregates.Budget;
+import com.kipu.backend.budget.domain.repositories.BudgetRepository;
 import com.kipu.backend.shared.application.result.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -23,9 +30,15 @@ import java.util.stream.Collectors;
 public class MaterialRequestCommandServiceImpl implements MaterialRequestCommandService {
 
     private final MaterialRequestRepository repository;
+    private final BudgetRepository budgetRepository;
+    private final MaterialInventoryRepository inventoryRepository;
 
-    public MaterialRequestCommandServiceImpl(MaterialRequestRepository repository) {
+    public MaterialRequestCommandServiceImpl(MaterialRequestRepository repository,
+                                              BudgetRepository budgetRepository,
+                                              MaterialInventoryRepository inventoryRepository) {
         this.repository = repository;
+        this.budgetRepository = budgetRepository;
+        this.inventoryRepository = inventoryRepository;
     }
 
     @Override
@@ -36,6 +49,7 @@ public class MaterialRequestCommandServiceImpl implements MaterialRequestCommand
                 .collect(Collectors.toList());
 
         var request = MaterialRequest.create(
+                command.projectId(),
                 command.deadline(),
                 command.requestPriority(),
                 command.deliveryLocation(),
@@ -114,10 +128,111 @@ public class MaterialRequestCommandServiceImpl implements MaterialRequestCommand
             log.warn("Invalid status value: {}", status);
             return Result.failure(new MaterialRequestCommandFailure.UpdateFailed());
         }
-        var updated = existing.get().withStatus(requestStatus);
+
+        var request = existing.get();
+        var previousStatus = request.getRequestStatus();
+        var updated = request.withStatus(requestStatus);
         var saved = repository.save(updated);
+
+        if (requestStatus == RequestStatus.ACCEPTED && previousStatus != RequestStatus.ACCEPTED) {
+            deductFromBudget(request);
+            addToInventory(request);
+        } else if (requestStatus != RequestStatus.ACCEPTED && previousStatus == RequestStatus.ACCEPTED) {
+            restoreBudget(request);
+            removeFromInventory(request);
+        }
+
         log.info("Material request status updated: id={}, status={}", saved.getId(), saved.getRequestStatus());
         return Result.success(saved);
+    }
+
+    private void deductFromBudget(MaterialRequest request) {
+        if (request.getBudgetLineId() == null) return;
+        long budgetId = request.getBudgetLineId().value();
+        Optional<Budget> budgetOpt = budgetRepository.findById(budgetId);
+        if (budgetOpt.isEmpty()) {
+            log.warn("Budget not found for deduction: budgetId={}, requestId={}", budgetId, request.getId());
+            return;
+        }
+        Budget budget = budgetOpt.get();
+        BigDecimal totalCost = request.getItems().stream()
+                .map(MaterialRequestItem::getTotalPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        double cost = totalCost.doubleValue();
+        try {
+            budget.addExpense("Material request #" + request.getId(), cost,
+                    String.valueOf(request.getRequestedBy().value()),
+                    "Auto-deducted on request acceptance");
+            budgetRepository.save(budget);
+            log.info("Budget deducted: budgetId={}, amount={}, requestId={}", budgetId, cost, request.getId());
+        } catch (IllegalStateException e) {
+            log.warn("Insufficient funds to deduct: budgetId={}, amount={}, available={}",
+                    budgetId, cost, budget.getAvailable());
+        }
+    }
+
+    private void restoreBudget(MaterialRequest request) {
+        if (request.getBudgetLineId() == null) return;
+        long budgetId = request.getBudgetLineId().value();
+        Optional<Budget> budgetOpt = budgetRepository.findById(budgetId);
+        if (budgetOpt.isEmpty()) return;
+        Budget budget = budgetOpt.get();
+        BigDecimal totalCost = request.getItems().stream()
+                .map(MaterialRequestItem::getTotalPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        double cost = totalCost.doubleValue();
+        budget.addExtension(cost);
+        budgetRepository.save(budget);
+        log.info("Budget restored: budgetId={}, amount={}, requestId={}", budgetId, cost, request.getId());
+    }
+
+    private void addToInventory(MaterialRequest request) {
+        if (request.getProjectId() == null) return;
+        ProjectId projectId = new ProjectId(request.getProjectId());
+
+        for (MaterialRequestItem item : request.getItems()) {
+            MaterialCatalogId matId = item.getMaterialCatalogId();
+            int qty = item.getQuantity().intValue();
+
+            Optional<MaterialInventory> existing = inventoryRepository
+                    .findByProjectIdAndMaterialCatalogId(projectId, matId);
+
+            if (existing.isPresent()) {
+                MaterialInventory inv = existing.get();
+                int newStock = inv.getCurrentStock().value() + qty;
+                inventoryRepository.save(inv.withStock(new Quantity(newStock)));
+                log.info("Inventory updated: materialId={}, prevStock={}, added={}, newStock={}",
+                        matId.value(), inv.getCurrentStock().value(), qty, newStock);
+            } else {
+                MaterialInventory inv = MaterialInventory.create(
+                        projectId, matId,
+                        new Quantity(qty), new Quantity(0),
+                        new WarehouseLocation("A1-R1-S1"));
+                inventoryRepository.save(inv);
+                log.info("Inventory created: materialId={}, stock={}", matId.value(), qty);
+            }
+        }
+    }
+
+    private void removeFromInventory(MaterialRequest request) {
+        if (request.getProjectId() == null) return;
+        ProjectId projectId = new ProjectId(request.getProjectId());
+
+        for (MaterialRequestItem item : request.getItems()) {
+            MaterialCatalogId matId = item.getMaterialCatalogId();
+            int qty = item.getQuantity().intValue();
+
+            Optional<MaterialInventory> existing = inventoryRepository
+                    .findByProjectIdAndMaterialCatalogId(projectId, matId);
+
+            if (existing.isPresent()) {
+                MaterialInventory inv = existing.get();
+                int newStock = Math.max(0, inv.getCurrentStock().value() - qty);
+                inventoryRepository.save(inv.withStock(new Quantity(newStock)));
+                log.info("Inventory reduced: materialId={}, prevStock={}, removed={}, newStock={}",
+                        matId.value(), inv.getCurrentStock().value(), qty, newStock);
+            }
+        }
     }
 
     private MaterialRequestItem toDomainItem(CreateMaterialRequestItemCommand cmd) {

@@ -45,4 +45,12 @@ public class MaterialRequestQueryServiceImpl implements MaterialRequestQueryServ
         log.debug("Found {} material request(s) with status={}", results.size(), query.status());
         return results;
     }
+
+    @Override
+    public List<MaterialRequest> handle(GetMaterialRequestsByProjectQuery query) {
+        log.debug("Querying material requests by projectId={}", query.projectId());
+        var results = repository.findByProjectId(query.projectId());
+        log.debug("Found {} material request(s) for projectId={}", results.size(), query.projectId());
+        return results;
+    }
 }

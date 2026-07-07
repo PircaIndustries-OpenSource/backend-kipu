@@ -13,6 +13,7 @@ public interface MaterialInventoryRepository {
     Optional<MaterialInventory> findById(Long id);
     List<MaterialInventory> findByCategoryId(CategoryId categoryId);
     Optional<MaterialInventory> findByProjectIdAndMaterialCatalogId(ProjectId projectId, MaterialCatalogId materialCatalogId);
+    List<MaterialInventory> findByProjectId(ProjectId projectId);
     List<MaterialInventory> findAll();
     boolean existsById(Long id);
     void deleteById(Long id);

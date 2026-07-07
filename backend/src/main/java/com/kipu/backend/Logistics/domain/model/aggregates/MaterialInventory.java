@@ -37,9 +37,19 @@ public class MaterialInventory {
     }
 
     public static MaterialInventory rehydrate(Long id, ProjectId projectId, MaterialCatalogId materialCatalogId,
-                                              Quantity currentStock, Quantity minimumStock, WarehouseLocation location,
-                                              Instant createdAt, Instant updatedAt) {
+                                               Quantity currentStock, Quantity minimumStock, WarehouseLocation location,
+                                               Instant createdAt, Instant updatedAt) {
         return new MaterialInventory(id, projectId, materialCatalogId, currentStock, minimumStock, location, createdAt, updatedAt);
+    }
+
+    public MaterialInventory withStock(Quantity newStock) {
+        return new MaterialInventory(this.id, this.projectId, this.materialCatalogId,
+                newStock, this.minimumStock, this.location, this.createdAt, Instant.now());
+    }
+
+    public MaterialInventory withMinimumStock(Quantity newMinStock) {
+        return new MaterialInventory(this.id, this.projectId, this.materialCatalogId,
+                this.currentStock, newMinStock, this.location, this.createdAt, Instant.now());
     }
 
     // Getters
